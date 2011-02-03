@@ -1,0 +1,14 @@
+cd /working_directory
+
+cvs co -r CMSSW_38X UserCode/NewPhysicsBrussels/TopTreeAnalysis
+mv UserCode/NewPhysicsBrussels/TopTreeAnalysis/ .
+
+rm -r UserCode/
+
+cd TopTreeAnalysis/
+
+cd TMVA/
+source setup.sh
+mkdir lib/
+cd src/
+make

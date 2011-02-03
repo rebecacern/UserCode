@@ -1,0 +1,92 @@
+///////////////////////////////////////////
+//  .bashrc 
+///////////////////////////////////////////
+
+(First paragraph - basic, second - ROOT, third - ports, fourth - CVS)
+---------------------------------------------------------
+PATH=$PATH:$HOME/bin:/usr/local/bin
+alias lc=ls
+alias l="ls -l"
+SHELL=/bin/bash
+
+export ROOTSYS=/usr/local/root
+export PATH=$ROOTSYS/bin:$PATH
+export DYLD_LIBRARY_PATH=$ROOTSYS/lib:$DYLD_LIBRARY_PATH
+
+export PATH=$PATH:/opt/local/bin
+
+export CVS_RSH=/usr/bin/ssh
+export CVSROOT=:ext:rebeca@cmscvs.cern.ch:/cvs_server/repositories/CMSSW
+#export CVSEDITOR=emacs
+---------------------------------------------------------
+
+///////////////////////////////////////////
+//  ROOT in MAC
+///////////////////////////////////////////
+
+** Required: xcode and mac ports 
+http://developer.apple.com/technologies/tools/xcode.html
+http://www.macports.org/
+---------------------------------------------------------
+cd /usr/local
+
+curl -O ftp://root.cern.ch/root/root_v5.27.06.source.tar.gz
+tar -xzf root_v5.27.06.source.tar.gz
+
+port install gsl-devel
+
+cd root
+sudo ./configure macosx64 --enable-mathmore --enable-minuit2 --enable-roofit
+sudo make -j 4
+---------------------------------------------------------
+
+///////////////////////////////////////////
+//  Trees code
+///////////////////////////////////////////
+
+cd /working_directory
+
+cvs co -r CMSSW_38X_v1 UserCode/TopBrussels/TopTreeProducer 
+mv UserCode/TopBrussels/ .
+
+cvs co -r CMSSW_38X UserCode/NewPhysicsBrussels/TopTreeAnalysis
+mv UserCode/NewPhysicsBrussels/TopTreeAnalysis/ .
+
+rm -r UserCode/
+
+cd TopTreeAnalysis/
+
+cd TMVA/
+source setup.sh
+mkdir lib/
+cd src/
+make
+
+cd ../.. 
+
+make clean
+make -f Makefile.MacOSX -j 2
+
+cd macros
+
+(inside the folder, a file named "compile")
+ 
+---------------------------------------------------------
+cp -v ../*.dylib .
+cp -v ../TMVA/lib/*.dylib .
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:.
+
+g++ -m64 -g -L. -l TopTreeAnaContent -l TopTreeAna -lTMVA -lTreePlayer -lMLP -I `root-config --incdir` `root-config --libs` $1.cc -o $1
+
+if [ $? == "0" ];then
+
+ ./$1 $2
+
+fi
+
+---------------------------------------------------------
+
+mkdir plots
+sh compile SyncRefSel
