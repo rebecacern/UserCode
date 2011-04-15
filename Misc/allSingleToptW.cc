@@ -53,7 +53,7 @@ int main() {
   cout << "*************************************************" << endl;
   
   
-  int sample = 0; 
+  int sample = 3; 
   
   char name[100];
   double weight;
@@ -94,8 +94,6 @@ int main() {
   treeLoader.LoadDatasets (datasets, xmlfile.c_str());
   for(unsigned int i=0;i<datasets.size();i++) new ((*tcdatasets)[i]) Dataset(*datasets[i]);
 
-
-  //vector of objects
   vector < TRootVertex* > vertex;
   vector < TRootMuon* > init_muons;
   vector < TRootElectron* > init_electrons;
