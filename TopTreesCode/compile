@@ -1,0 +1,13 @@
+cp -v ../*.dylib .
+cp -v ../TMVA/lib/*.dylib .
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:.
+
+g++ -m64 -g -L. -l TopTreeAnaContent -l TopTreeAna -lTMVA -lTreePlayer -lMLP -I `root-config --incdir` `root-config --libs` $1.cc -o $1
+
+if [ $? == "0" ];then
+
+ ./$1 $2
+
+fi

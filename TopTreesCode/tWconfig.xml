@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<datasets>
+<!-- SM samples -->
+
+<d name="mc" title="mc" add="1" filenames="../../../Files/TopTrees_1e1mu/VQQJets.root"/>
+
+</datasets>
+
+<analysis>
+<a type="Collections" PVCollection="PrimaryVertex" JetType="2" JetCollection="PFJets_selectedPatJetsAK5PF" METType="2" METCollection="PFMET" MuonCollection="Muons_selectedPatMuons" ElectronCollection="Electrons_selectedPatElectrons" loadGenJetCollection="0" GenJetCollection="GenJets_ak5GenJets" loadGenEventCollection="0" GenEventCollection="GenEvent" loadNPGenEventCollection="0" NPGenEventCollection="NPGenEvent" loadMCParticles="0" MCParticlesCollection="MCParticles"/>
+<a type="Selection" PVertexNdofCut="4" PVertexZCut="15." PVertexRhoCut="2." MuonPtCutSR="20." MuonEtaCutSR="2.1" MuonRelIsoCutSR="0.05" MuonNHitsCutSR="10" MuonD0CutSR="0.02" MuonDRJetsCut="0.3" MuonPtCutVetoSR="15." MuonEtaCutVetoSR="2.5" MuonRelIsoCutVetoSR="0.2" ElectronPtCut="15." ElectronEtaCut="2.5" ElectronRelIsoCut="0.2" JetsPtCutSR="15." JetsEtaCutSR="2.4" applyJetID="1" JetEMFCut="0.01" n90HitsCut="1" fHPDCut="0.98" NofJets="4" NofJetBins="2"/>
+</analysis>
+
