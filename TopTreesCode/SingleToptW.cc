@@ -63,13 +63,13 @@ int main() {
   else if (sample == 4){	sprintf(name, "wjets"); 		weight = lumi*31314/14805546;}//
   else if (sample == 5){	sprintf(name, "zjets"); 		weight = lumi*3048/2543706;}
   else if (sample == 6){	sprintf(name, "vqq");			weight = lumi*36/735976;}
-  else if (sample == 7){	sprintf(name, "qcd_mu");		weight = lumi*84679.3/28884866;} //
+  else if (sample == 7){	sprintf(name, "qcd_mu");		weight = lumi*84679.3/29066955;} 
   else if (sample == 8){	sprintf(name, "qcd_bc_2030");		weight = lumi*132160/2205812;}//
-  else if (sample == 9){	sprintf(name, "qcd_bc_3080");  		weight = lumi*136804/1975502;}//
-  else if (sample == 10){	sprintf(name, "qcd_bc_80170"); 	 	weight = lumi*9360/1043390;}//
-  else if (sample == 11){	sprintf(name, "qcd_em_2030"); 	 	weight = lumi*2454400/36616469;}//
+  else if (sample == 9){	sprintf(name, "qcd_bc_3080");  		weight = lumi*136804/735502;}
+  else if (sample == 10){	sprintf(name, "qcd_bc_80170"); 	 	weight = lumi*9360/899446;}
+  else if (sample == 11){	sprintf(name, "qcd_em_2030"); 	 	weight = lumi*2454400/30518227;}
   else if (sample == 12){	sprintf(name, "qcd_em_3080"); 	 	weight = lumi*3866200/71748368;}//
-  else if (sample == 13){	sprintf(name, "qcd_em_80170"); 	 	weight = lumi*139500/8049720;}//
+  else if (sample == 13){	sprintf(name, "qcd_em_80170"); 	 	weight = lumi*139500/7635061;}
   else {			sprintf(name, "test"); 	 		weight = 1;}//
   
  
@@ -239,7 +239,7 @@ int main() {
 		  lepton0.SetPxPyPzE(electron0->Px(), electron0->Py(), electron0->Pz(), electron0->Energy());
 		  lepton1.SetPxPyPzE(electron1->Px(), electron1->Py(), electron1->Pz(), electron1->Energy());
 		  q0 = electron0->charge();
-		  q1 = electron0->charge();
+		  q1 = electron1->charge();
 		}
 		
 		if (charge){
