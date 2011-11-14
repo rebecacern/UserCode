@@ -145,17 +145,17 @@ void TMVAClassificationApplication_tW(TString signal = "DATA")
   
   TString folder = "rootfiles/";
   
-  if(signal == "DATA") { TString fname = folder+"tmva_test_0_data.root"; }
+  if(signal == "data") { TString fname = folder+"tmva_test_0_data.root"; }
   
-  if(signal == "HWW"){ TString fname = folder+"tmva_test_0_twdr.root"; }
-  if(signal == "WW"){ TString fname = folder+"tmva_test_0_ww.root"; }
-  if(signal == "VV"){ TString fname = folder+"tmva_test_0_qcd_mu.root"; }
-  if(signal == "WZ"){ TString fname = folder+"tmva_test_0_wz.root"; }
-  if(signal == "ZZ"){ TString fname = folder+"tmva_test_0_zz.root"; }
-  if(signal == "tW"){ TString fname = folder+"tmva_test_0_st.root"; }
+  if(signal == "tw"){ TString fname = folder+"tmva_test_0_twdr.root"; }
+  if(signal == "ww"){ TString fname = folder+"tmva_test_0_ww.root"; }
+  if(signal == "qcd"){ TString fname = folder+"tmva_test_0_qcd_mu.root"; }
+  if(signal == "wz"){ TString fname = folder+"tmva_test_0_wz.root"; }
+  if(signal == "zz"){ TString fname = folder+"tmva_test_0_zz.root"; }
+  if(signal == "st"){ TString fname = folder+"tmva_test_0_st.root"; }
   if(signal == "tt"){ TString fname = folder+"tmva_test_0_tt.root"; }
-  if(signal == "Wj"){ TString fname = folder+"tmva_test_0_wjets.root"; }
-  if(signal == "Zj"){ TString fname = folder+"tmva_test_0_zjets.root"; }
+  if(signal == "wjets"){ TString fname = folder+"tmva_test_0_wjets.root"; }
+  if(signal == "zjets"){ TString fname = folder+"tmva_test_0_zjets.root"; }
   
   input = TFile::Open( fname,"UPDATE");   
   
