@@ -119,7 +119,7 @@ void TMVAClassificationApplicationCompact(TString signal = "data")
   
   TString dir    = "weights/";
   
-  TString prefix = "test_tw_short_00";
+  TString prefix = "test_tw_short_01";
   TString name = "BDT_"+prefix;
   std::cout<<"********* name = "<<name<<std::endl;
   
@@ -145,18 +145,18 @@ void TMVAClassificationApplicationCompact(TString signal = "data")
   
   TString folder = "rootfiles/";
   
-  if(signal == "data") { TString fname = folder+"tmva_test_0_data.root"; }
+  if(signal == "data") { TString fname = folder+"tmva_test_1_data.root"; }
   
-  if(signal == "tw"){ TString fname = folder+"tmva_test_0_twdr.root"; }
-  if(signal == "ww"){ TString fname = folder+"tmva_test_0_ww.root"; }
-  if(signal == "qcd"){ TString fname = folder+"tmva_test_0_qcd_mu.root"; }
-  if(signal == "wz"){ TString fname = folder+"tmva_test_0_wz.root"; }
-  if(signal == "zz"){ TString fname = folder+"tmva_test_0_zz.root"; }
-  if(signal == "st"){ TString fname = folder+"tmva_test_0_st.root"; }
-  if(signal == "tt"){ TString fname = folder+"tmva_test_0_tt.root"; }
-  if(signal == "wjets"){ TString fname = folder+"tmva_test_0_wjets.root"; }
-  if(signal == "zjets"){ TString fname = folder+"tmva_test_0_zjets.root"; }
-  if(signal == "di"){TString fname = folder + "tmva_test_0_di.root";}
+  if(signal == "tw"){ TString fname = folder+"tmva_test_1_twdr.root"; }
+  if(signal == "ww"){ TString fname = folder+"tmva_test_1_ww.root"; }
+  if(signal == "qcd"){ TString fname = folder+"tmva_test_1_qcd_mu.root"; }
+  if(signal == "wz"){ TString fname = folder+"tmva_test_1_wz.root"; }
+  if(signal == "zz"){ TString fname = folder+"tmva_test_1_zz.root"; }
+  if(signal == "st"){ TString fname = folder+"tmva_test_1_st.root"; }
+  if(signal == "tt"){ TString fname = folder+"tmva_test_1_tt.root"; }
+  if(signal == "wjets"){ TString fname = folder+"tmva_test_1_wjets.root"; }
+  if(signal == "zjets"){ TString fname = folder+"tmva_test_1_zjets.root"; }
+  if(signal == "di"){TString fname = folder + "tmva_test_1_di.root";}
   
   input = TFile::Open( fname,"UPDATE");   
   

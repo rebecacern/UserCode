@@ -59,7 +59,7 @@ void TMVAClassificationCompact()
   // --- Here the preparation phase begins
   
   // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-  TString TrainName = "test_tw_short_00";
+  TString TrainName = "test_tw_short_01";
   
   TString outfileName( "trainrootfiles/"+TrainName+".root" );
   TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
@@ -131,11 +131,11 @@ void TMVAClassificationCompact()
   TFile *inputBTrain(0);
   TFile *inputBTest(0);
   
-  TString sigFileTrain  = "rootfiles/tmva_train_0_tw_dr.root";
-  TString sigFileTest   = "rootfiles/tmva_test_0_tw_dr.root";
+  TString sigFileTrain  = "rootfiles/tmva_train_1_tw_dr.root";
+  TString sigFileTest   = "rootfiles/tmva_test_1_tw_dr.root";
   
-  TString bkgFileTrain = "rootfiles/tmva_train_0_tt.root";
-  TString bkgFileTest  = "rootfiles/tmva_test_0_tt.root";
+  TString bkgFileTrain = "rootfiles/tmva_train_1_tt.root";
+  TString bkgFileTest  = "rootfiles/tmva_test_1_tt.root";
   
   inputSTrain  = TFile::Open( sigFileTrain );
   inputSTest   = TFile::Open( sigFileTest );
