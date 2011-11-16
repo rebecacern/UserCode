@@ -1,12 +1,3 @@
-/**********************************************************************************
- * Project   : TMVA - a Root-integrated toolkit for multivariate data analysis    *
- * Package   : TMVA                                                               *
- * Exectuable: TMVAClassificationApplication                                      *
- *                                                                                *
- * This macro provides a simple example on how to use the trained classifiers     *
- * within an analysis module                                                      *
- **********************************************************************************/
-
 #include <cstdlib>
 #include <vector>
 #include <iostream>
@@ -30,7 +21,7 @@
 
 using namespace TMVA;
 
-void TMVAClassificationApplication_tW(TString signal = "data") 
+void TMVAClassificationApplicationCompact(TString signal = "data") 
 {   
 #ifdef __CINT__
   gROOT->ProcessLine( ".O0" ); // turn off optimization in CINT
@@ -85,7 +76,7 @@ void TMVAClassificationApplication_tW(TString signal = "data")
   Float_t metphi;
   Float_t metminusptsysnomet;
   
-  reader->AddVariable ("jetpt", &jetpt);
+ /* reader->AddVariable ("jetpt", &jetpt);
   reader->AddVariable ("jeteta", &jeteta);
   reader->AddVariable ("jetphi", &jetphi);
   reader->AddVariable ("metpt", &metpt);
@@ -95,32 +86,32 @@ void TMVAClassificationApplication_tW(TString signal = "data")
   reader->AddVariable ("lep0eta",&lep0eta);
   reader->AddVariable ("lep1eta",&lep1eta);
   reader->AddVariable ("lep0phi",&lep0phi);
-  reader->AddVariable ("lep1phi",&lep1phi);
+  reader->AddVariable ("lep1phi",&lep1phi);*/
   reader->AddVariable ("ptsys",&ptsys);
-  reader->AddVariable ("ht",&ht);
+ /* reader->AddVariable ("ht",&ht);
   reader->AddVariable ("oblateness", &oblateness);
   reader->AddVariable ("sphericity", &sphericity);
   reader->AddVariable ("aplanarity", &aplanarity);
   reader->AddVariable ("njetw", &njetw);
-  reader->AddVariable ("sqrts", &sqrts);
+  reader->AddVariable ("sqrts", &sqrts);*/
   reader->AddVariable ("deltarleps", &deltarleps);
-  reader->AddVariable ("deltaphileps", &deltaphileps);
+ /* reader->AddVariable ("deltaphileps", &deltaphileps);
   reader->AddVariable ("deltaetaleps", &deltaetaleps);
   reader->AddVariable ("philepmetclose", &philepmetclose);
-  reader->AddVariable ("philepmetfar", &philepmetfar);
+  reader->AddVariable ("philepmetfar", &philepmetfar);*/
   reader->AddVariable ("rlepmetclose", &rlepmetclose);
-  reader->AddVariable ("rlepmetfar", &rlepmetfar);
+ /* reader->AddVariable ("rlepmetfar", &rlepmetfar);
   reader->AddVariable ("philepjetclose", &philepjetclose);
-  reader->AddVariable ("philepjetfar", &philepjetfar);
+  reader->AddVariable ("philepjetfar", &philepjetfar);*/
   reader->AddVariable ("rlepjetclose", &rlepjetclose);
-  reader->AddVariable ("rlepjetfar", &rlepjetfar);
-  reader->AddVariable ("phijetmet", &phijetmet);
+  /*reader->AddVariable ("rlepjetfar", &rlepjetfar);
+  reader->AddVariable ("phijetmet", &phijetmet);*/
   reader->AddVariable ("rjetmet", &rjetmet);
-  reader->AddVariable ("mll", &mll);
+/*  reader->AddVariable ("mll", &mll);
   reader->AddVariable ("htnomet", &htnomet);
   reader->AddVariable ("ptsysnomet", &ptsysnomet);
   reader->AddVariable ("metphi", &metphi);
-  reader->AddVariable ("metminusptsysnomet", &metminusptsysnomet);
+  reader->AddVariable ("metminusptsysnomet", &metminusptsysnomet);*/
   
   // *************************************************
   
@@ -128,7 +119,7 @@ void TMVAClassificationApplication_tW(TString signal = "data")
   
   TString dir    = "weights/";
   
-  TString prefix = "test_tw_00";
+  TString prefix = "test_tw_short_00";
   TString name = "BDT_"+prefix;
   std::cout<<"********* name = "<<name<<std::endl;
   

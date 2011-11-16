@@ -48,7 +48,7 @@
 #include "TMVA/Tools.h"
 #endif
 
-void TMVAClassification_tW()
+void TMVAClassificationCompact()
 {
 
   // ---------------------------------------------------------------
@@ -59,7 +59,7 @@ void TMVAClassification_tW()
   // --- Here the preparation phase begins
   
   // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-  TString TrainName = "test_tw_00";
+  TString TrainName = "test_tw_short_00";
   
   TString outfileName( "trainrootfiles/"+TrainName+".root" );
   TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
@@ -86,7 +86,7 @@ void TMVAClassification_tW()
   // note that you may also use variable expressions, such as: "3*var1/var2*abs(var3)"
   // [all types of expressions that can also be parsed by TTree::Draw( "expression" )]
   
-  factory->AddVariable ("jetpt", 'F');
+  /*factory->AddVariable ("jetpt", 'F');
   factory->AddVariable ("jeteta", 'F');
   factory->AddVariable ("jetphi", 'F');
   factory->AddVariable ("metpt", 'F');
@@ -96,32 +96,32 @@ void TMVAClassification_tW()
   factory->AddVariable ("lep0eta",'F');
   factory->AddVariable ("lep1eta",'F');
   factory->AddVariable ("lep0phi",'F');
-  factory->AddVariable ("lep1phi",'F');
+  factory->AddVariable ("lep1phi",'F');*/
   factory->AddVariable ("ptsys",'F');
-  factory->AddVariable ("ht",'F');
+/*  factory->AddVariable ("ht",'F');
   factory->AddVariable ("oblateness", 'F');
   factory->AddVariable ("sphericity", 'F');
   factory->AddVariable ("aplanarity", 'F');
   factory->AddVariable ("njetw", 'F');
-  factory->AddVariable ("sqrts", 'F');
+  factory->AddVariable ("sqrts", 'F');*/
   factory->AddVariable ("deltarleps", 'F');
-  factory->AddVariable ("deltaphileps", 'F');
+/*  factory->AddVariable ("deltaphileps", 'F');
   factory->AddVariable ("deltaetaleps", 'F');
   factory->AddVariable ("philepmetclose", 'F');
-  factory->AddVariable ("philepmetfar", 'F');
+  factory->AddVariable ("philepmetfar", 'F');*/
   factory->AddVariable ("rlepmetclose", 'F');
-  factory->AddVariable ("rlepmetfar", 'F');
+ /* factory->AddVariable ("rlepmetfar", 'F');
   factory->AddVariable ("philepjetclose", 'F');
-  factory->AddVariable ("philepjetfar", 'F');
+  factory->AddVariable ("philepjetfar", 'F');*/
   factory->AddVariable ("rlepjetclose", 'F');
-  factory->AddVariable ("rlepjetfar", 'F');
-  factory->AddVariable ("phijetmet", 'F');
+ /* factory->AddVariable ("rlepjetfar", 'F');
+  factory->AddVariable ("phijetmet", 'F');*/
   factory->AddVariable ("rjetmet", 'F');
-  factory->AddVariable ("mll", 'F');
+ /* factory->AddVariable ("mll", 'F');
   factory->AddVariable ("htnomet", 'F');
   factory->AddVariable ("ptsysnomet", 'F');
   factory->AddVariable ("metphi", 'F');
-  factory->AddVariable ("metminusptsysnomet", 'F');
+  factory->AddVariable ("metminusptsysnomet", 'F');*/
   
   //Load the signal and background event samples from ROOT trees
   
