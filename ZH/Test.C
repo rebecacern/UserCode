@@ -27,7 +27,7 @@ void Test() {
   
   TString bgdInputFile    = "samples/backgroundA_3l.root";
   TString dataInputFile   = "samples/data_3l.root";
-  TString sigInputFile   =  "samples/hww120.root";
+  TString sigInputFile   =  "samples/hww125.root";
   
   SmurfTree background;
   background.LoadTree(bgdInputFile,-1);
@@ -50,11 +50,14 @@ void Test() {
   TH1D* bckg_mllz = new TH1D("bckg_mllz", "m_{ll}", 200, 0, 200);
   TH1D* bckg_mt = new TH1D("bckg_mt", "m_t", 200, 0, 200);
   TH1D* bckg_ptjet = new TH1D("bckg_ptjet", "P_t of leading jet", 200, 0, 200);
+  TH1D* bckg_mH = new TH1D("bckg_mH", "m_H", 200, 0, 200);
   
   TH1D* sig_met = new TH1D("sig_met", "MET", 200, 0, 200);
   TH1D* sig_mllz = new TH1D("sig_mllz", "m_{ll}", 200, 0, 200);
   TH1D* sig_mt = new TH1D("sig_mt", "m_t", 200, 0, 200);
   TH1D* sig_ptjet = new TH1D("sig_ptjet", "P_t of leading jet", 200, 0, 200);
+  TH1D* sig_mH = new TH1D("sig_mH", "m_H", 200, 0, 200);
+
   
   int nBgd=background.tree_->GetEntries();
   for (int i=0; i<nBgd; ++i) {
@@ -88,11 +91,11 @@ void Test() {
     
    double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
    
-   LorentzVector pair;
-   double mt;
-   if (min == fabs(mz - m[0])){  pair = pair1; mt =  background.mt3_;} 
-   else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  background.mt1_;} 
-   else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  background.mt2_;} 
+    LorentzVector pair, tlepton;
+    double mt = 0;
+    if (min == fabs(mz - m[0])){  pair = pair1; mt =  background.mt3_; tlepton = background.lep3_;} 
+    else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  background.mt1_; tlepton = background.lep1_;} 
+    else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  background.mt2_; tlepton = background.lep2_;} 
    
    if (mt < 40 || background.met_ < 25) continue;
    types->Fill(background.dstype_);
@@ -100,7 +103,9 @@ void Test() {
    bckg_mllz->Fill(pair.M());
    bckg_mt->Fill(mt);
    bckg_ptjet->Fill(background.jet1_.Pt());
-   
+    LorentzVector metvector(background.met_*cos(background.metPhi_), background.met_*sin(background.metPhi_), 0, 0);
+    LorentzVector higgsSystem = tlepton + + metvector + background.jet1_  + background.jet2_;
+    bckg_mH->Fill(higgsSystem.M());
   }
   
   int nSig=signal.tree_->GetEntries();
@@ -135,11 +140,11 @@ void Test() {
     
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
     
-    LorentzVector pair;
-    double mt;
-    if (min == fabs(mz - m[0])){  pair = pair1; mt =  signal.mt3_;} 
-    else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  signal.mt1_;} 
-    else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  signal.mt2_;} 
+    LorentzVector pair, tlepton;
+    double mt = 0;
+    if (min == fabs(mz - m[0])){  pair = pair1; mt =  signal.mt3_; tlepton = signal.lep3_;} 
+    else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  signal.mt1_; tlepton = signal.lep1_;} 
+    else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  signal.mt2_; tlepton = signal.lep2_;} 
     
     if (mt < 40 || signal.met_ < 25) continue;
     types->Fill(signal.dstype_);
@@ -147,6 +152,9 @@ void Test() {
     sig_mllz->Fill(pair.M());
     sig_mt->Fill(mt);
     sig_ptjet->Fill(signal.jet1_.Pt());  
+    LorentzVector metvector(signal.met_*cos(signal.metPhi_), signal.met_*sin(signal.metPhi_), 0, 0);
+    LorentzVector higgsSystem = tlepton + + metvector + signal.jet1_  + signal.jet2_;
+    sig_mH->Fill(higgsSystem.M());
     
   }
   

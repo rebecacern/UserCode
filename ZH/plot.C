@@ -22,10 +22,10 @@ void plot(){
   
   TFile *_file0 = TFile::Open(myRootFile);
   
-  const int nPlots = 4;
-  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet"};
-  int rebinHisto[nPlots] =       { 4, 4, 4, 4};
-  TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet"};
+  const int nPlots = 5;
+  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH"};
+  int rebinHisto[nPlots] =       { 4, 4, 4, 4, 4};
+  TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet", "Reconstructed mass"};
   TH1F*  h [2][nPlots];
   
   for (const int iPlot = 0; iPlot < nPlots; iPlot++){
@@ -35,18 +35,18 @@ void plot(){
     h[0][iPlot]->SetLineColor(kRed);
     h[0][iPlot]->SetLineWidth(2);
     h[0][iPlot]->SetNormFactor(1);
-    h[0][iPlot]->Rebin(4);
+    h[0][iPlot]->Rebin(rebinHisto[iPlot]);
     
     h[1][iPlot]->SetLineColor(kBlue);
     h[1][iPlot]->SetLineWidth(2);
     h[1][iPlot]->SetNormFactor(1);
-    h[1][iPlot]->Rebin(4);
+    h[1][iPlot]->Rebin(rebinHisto[iPlot]);
     
     leg = new TLegend(0.7,0.7,0.94,0.94);
     leg ->SetFillStyle(1001);
     leg ->SetFillColor(kWhite);
     leg ->SetBorderSize(1);
-    leg->AddEntry(h[0][iPlot], "m_{H} = 120", "l");
+    leg->AddEntry(h[0][iPlot], "m_{H} = 125", "l");
     leg->AddEntry(h[1][iPlot], "Background", "l");
     
     TCanvas *c1 = new TCanvas();
