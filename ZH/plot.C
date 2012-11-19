@@ -51,8 +51,8 @@ void plot(){
     leg->AddEntry(h[1][iPlot], "Background", "l");
     
     TCanvas *c1 = new TCanvas();
-    h[0][iPlot]->Draw();
-    h[1][iPlot]->Draw("sames");
+    h[0][iPlot]->Draw("histo");
+    h[1][iPlot]->Draw("histo,sames");
     sig_ptjet->GetYaxis()->SetTitle("Normalized to 1");
     sig_ptjet->GetXaxis()->SetTitle(cutTitle[iPlot]);
     sig_ptjet->GetYaxis()->CenterTitle(); 

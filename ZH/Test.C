@@ -64,12 +64,19 @@ void Test() {
   bckg_dphill->Sumw2();
   
   TH1D* sig_met = new TH1D("sig_met", "MET", 200, 0, 200);
+  sig_met->Sumw2();
   TH1D* sig_mllz = new TH1D("sig_mllz", "m_{ll}", 200, 0, 200);
+  sig_mllz->Sumw2();
   TH1D* sig_mt = new TH1D("sig_mt", "m_t", 200, 0, 200);
+  sig_mt->Sumw2();
   TH1D* sig_ptjet = new TH1D("sig_ptjet", "P_t of leading jet", 200, 0, 200);
+  sig_ptjet->Sumw2();
   TH1D* sig_mH = new TH1D("sig_mH", "m_H", 200, 0, 400);
+  sig_mH->Sumw2();
   TH1D* sig_mjj = new TH1D("sig_mjj", "m_jj", 200, 0, 400);
+  sig_mjj->Sumw2();
   TH1D* sig_dphill = new TH1D("sig_dphill", "#Delta#phi_{ll}", 200, 0, 3.5);
+  sig_dphill->Sumw2();
 
   double lumi = 12.1;
   double weight = 1;
@@ -125,15 +132,15 @@ void Test() {
     if (mt < 40 || background.met_ < 25) continue;
    
     types->Fill(background.dstype_);
-    bckg_met->Fill(background.met_);
-    bckg_mllz->Fill(pair.M());
-    bckg_mt->Fill(mt);
-    bckg_ptjet->Fill(background.jet1_.Pt());
+    bckg_met->Fill(background.met_, weight);
+    bckg_mllz->Fill(pair.M(), weight);
+    bckg_mt->Fill(mt, weight);
+    bckg_ptjet->Fill(background.jet1_.Pt(), weight);
     LorentzVector metvector(background.met_*cos(background.metPhi_), background.met_*sin(background.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + background.jet1_  + background.jet2_;
-    bckg_mH->Fill(higgsSystem.M());
-    bckg_mjj->Fill(pairjet.M());
-    bckg_dphill->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    bckg_mH->Fill(higgsSystem.M(), weight);
+    bckg_mjj->Fill(pairjet.M(), weight);
+    bckg_dphill->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
  eventsPass += weight;
  
   }
@@ -149,10 +156,10 @@ void Test() {
     signal.tree_->GetEntry(i);
     
     weight = 1;
-    weight *= background.scale1fb_*lumi;
-    weight *= background.sfWeightPU_;
-    weight *= background.sfWeightEff_;
-    weight *= background.sfWeightTrig_;
+    weight *= signal.scale1fb_*lumi;
+    weight *= signal.sfWeightPU_;
+    weight *= signal.sfWeightEff_;
+    weight *= signal.sfWeightTrig_;
     
     if (signal.njets_ != 2) continue;
     if (signal.lid3_ == signal.lid2_ && signal.lid3_ == signal.lid1_) continue;
@@ -188,15 +195,15 @@ void Test() {
         
     if (mt < 40 || signal.met_ < 25) continue;
     types->Fill(signal.dstype_);
-    sig_met->Fill(signal.met_);
-    sig_mllz->Fill(pair.M());
-    sig_mt->Fill(mt);
-    sig_ptjet->Fill(signal.jet1_.Pt());  
+    sig_met->Fill(signal.met_, weight);
+    sig_mllz->Fill(pair.M(), weight);
+    sig_mt->Fill(mt, weight);
+    sig_ptjet->Fill(signal.jet1_.Pt(), weight);  
     LorentzVector metvector(signal.met_*cos(signal.metPhi_), signal.met_*sin(signal.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + signal.jet1_  + signal.jet2_;
-    sig_mH->Fill(higgsSystem.M());
-    sig_mjj->Fill(pairjet.M());
-    sig_dphill->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    sig_mH->Fill(higgsSystem.M(), weight);
+    sig_mjj->Fill(pairjet.M(), weight);
+    sig_dphill->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
  eventsPassSig += weight;
   }
   
