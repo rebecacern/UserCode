@@ -10,7 +10,8 @@ void plot(){
   
   gStyle->SetOptStat(0);
   gStyle->SetPalette(1);
-  
+  gROOT->SetBatch(1);
+    
   gStyle->SetCanvasBorderMode(0);
   gStyle->SetCanvasColor(kWhite);
   gStyle->SetCanvasDefH(600);
@@ -22,10 +23,10 @@ void plot(){
   
   TFile *_file0 = TFile::Open(myRootFile);
   
-  const int nPlots = 5;
-  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH"};
-  int rebinHisto[nPlots] =       { 4, 4, 4, 4, 4};
-  TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet", "Reconstructed mass"};
+  const int nPlots = 7;
+  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphill"};
+  int rebinHisto[nPlots] =       { 4, 4, 4, 4, 4, 4, 4};
+  TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet", "Reconstructed mass",  "M_{jj}", "#Delta#Phi"};
   TH1F*  h [2][nPlots];
   
   for (const int iPlot = 0; iPlot < nPlots; iPlot++){
