@@ -25,7 +25,7 @@ void plot(){
   
   const int nPlots = 7;
   TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphill"};
-  int rebinHisto[nPlots] =       { 4, 4, 4, 4, 4, 4, 4};
+  int rebinHisto[nPlots] =       { 8, 8, 8, 8, 8, 8, 8};
   TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet", "Reconstructed mass",  "M_{jj}", "#Delta#Phi"};
   TH1F*  h [2][nPlots];
   
