@@ -87,22 +87,25 @@ void Test() {
     if (i%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",i,nBgd);
     background.tree_->GetEntry(i);
+    if (background.njets_ <2 )continue;
+    if (!((background.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection 
+       && (background.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ) continue;
   
-  weight = 1;
+    weight = 1;
     
-     int nFake = 0;
-      if(((background.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (background.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
-      if(((background.cuts_ & SmurfTree::Lep2LooseMuV2)  == SmurfTree::Lep2LooseMuV2)  && (background.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
-      if(((background.cuts_ & SmurfTree::Lep3LooseMuV2)  == SmurfTree::Lep3LooseMuV2)  && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
-      if(((background.cuts_ & SmurfTree::Lep1LooseEleV4) == SmurfTree::Lep1LooseEleV4) && (background.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
-      if(((background.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (background.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
-      if(((background.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
-
-   
-    if (nFake > 1) continue; 
-    if (nFake == 1) weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_*background.sfWeightFR_ ;
-    else weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;
+    int nFake = 0;
+    if(((background.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (background.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
+    if(((background.cuts_ & SmurfTree::Lep2LooseMuV2)  == SmurfTree::Lep2LooseMuV2)  && (background.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
+    if(((background.cuts_ & SmurfTree::Lep3LooseMuV2)  == SmurfTree::Lep3LooseMuV2)  && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
+    if(((background.cuts_ & SmurfTree::Lep1LooseEleV4) == SmurfTree::Lep1LooseEleV4) && (background.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
+    if(((background.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (background.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
+    if(((background.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
+    if (nFake !=0) continue; 
     
+      if (nFake > 1) continue; 
+      if (nFake == 1) weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_*background.sfWeightFR_ ;
+      else weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;
+    //weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;
   
     if (background.lid3_ == background.lid2_ && background.lid3_ == background.lid1_) continue;
     if (background.lid3_ == background.lid2_ && fabs(background.lid3_) != fabs(background.lid1_)) continue;
@@ -125,7 +128,8 @@ void Test() {
       m[2] = pair3.M();
     }
     
-    if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
+    //if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
+    if ( (m[0] < 40 || m[0] > 120) &&  (m[1] < 40 || m[1] > 120) &&  (m[2] < 40 || m[2] > 120)) continue;
     
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
    
@@ -137,7 +141,8 @@ void Test() {
     pairjet = background.jet1_+ background.jet2_;
     
     if (mt < 40 || background.met_ < 25) continue;
-   
+    if (pairjet.M() < 65 || pairjet.M() > 95) continue;
+    
     types->Fill(background.dstype_);
     bckg_met->Fill(background.met_, weight);
     bckg_mllz->Fill(pair.M(), weight);
@@ -148,10 +153,10 @@ void Test() {
     bckg_mH->Fill(higgsSystem.M(), weight);
     bckg_mjj->Fill(pairjet.M(), weight);
     bckg_dphill->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
- eventsPass += weight;
+    eventsPass += weight;
  
   }
- cout << eventsPass << " background events in " << lumi << " fb" << endl; 
+  cout << eventsPass << " background events in " << lumi << " fb" << endl; 
   
   
   int nSig=signal.tree_->GetEntries();
@@ -162,18 +167,22 @@ void Test() {
       printf("--- reading event %5d of %5d\n",i,nSig);
     signal.tree_->GetEntry(i);
     
-     
-  weight = 1;
-    
-     int nFake = 0;
-      if(((signal.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (signal.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
-      if(((signal.cuts_ & SmurfTree::Lep2LooseMuV2)  == SmurfTree::Lep2LooseMuV2)  && (signal.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
-      if(((signal.cuts_ & SmurfTree::Lep3LooseMuV2)  == SmurfTree::Lep3LooseMuV2)  && (signal.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
-      if(((signal.cuts_ & SmurfTree::Lep1LooseEleV4) == SmurfTree::Lep1LooseEleV4) && (signal.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
-      if(((signal.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (signal.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
-      if(((signal.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (signal.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
+    if (signal.njets_ < 2 )continue;
 
- weight = lumi*signal.scale1fb_*signal.sfWeightPU_*signal.sfWeightEff_*signal.sfWeightTrig_;
+    if(!((signal.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection 
+       &&(signal.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection)) continue;
+     
+    weight = 1;
+    
+    int nFake = 0;
+    if(((signal.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (signal.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
+    if(((signal.cuts_ & SmurfTree::Lep2LooseMuV2)  == SmurfTree::Lep2LooseMuV2)  && (signal.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
+    if(((signal.cuts_ & SmurfTree::Lep3LooseMuV2)  == SmurfTree::Lep3LooseMuV2)  && (signal.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
+    if(((signal.cuts_ & SmurfTree::Lep1LooseEleV4) == SmurfTree::Lep1LooseEleV4) && (signal.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
+    if(((signal.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (signal.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
+    if(((signal.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (signal.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
+
+    weight = lumi*signal.scale1fb_*signal.sfWeightPU_*signal.sfWeightEff_*signal.sfWeightTrig_;
     
     
     if (signal.lid3_ == signal.lid2_ && signal.lid3_ == signal.lid1_) continue;
@@ -196,8 +205,9 @@ void Test() {
       m[2] = pair3.M();
     }
     
-    if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
-    
+ //if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
+    if ( (m[0] < 40 || m[0] > 120) &&  (m[1] < 40 || m[1] > 120) &&  (m[2] < 40 || m[2] > 120)) continue;
+        
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
     
     LorentzVector pair, tlepton, pairjet;
@@ -207,7 +217,10 @@ void Test() {
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  signal.mt2_; tlepton = signal.lep2_;} 
     pairjet = signal.jet1_+ signal.jet2_;
         
+     
     if (mt < 40 || signal.met_ < 25) continue;
+    if (pairjet.M() < 65 || pairjet.M() > 95) continue;
+    
     types->Fill(signal.dstype_);
     sig_met->Fill(signal.met_, weight);
     sig_mllz->Fill(pair.M(), weight);
@@ -218,10 +231,12 @@ void Test() {
     sig_mH->Fill(higgsSystem.M(), weight);
     sig_mjj->Fill(pairjet.M(), weight);
     sig_dphill->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
- eventsPassSig += weight;
+    //    cout << signal.njets_ << " - " ;
+    eventsPassSig += weight;
   }
+  cout << endl;
   
-   cout << eventsPassSig << " signal events in " << lumi << " fb" << endl; 
+  cout << eventsPassSig << " signal events in " << lumi << " fb" << endl; 
 
   int nData=data.tree_->GetEntries();
   double eventsPassData = 0;
@@ -230,10 +245,23 @@ void Test() {
     if (i%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",i,nData);
     data.tree_->GetEntry(i);
+    if (data.njets_ < 2 )continue;
+
+    if(!((data.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection 
+      && (data.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection)) continue;
+
     
     weight = 1;
 
-  
+    int nFake = 0;
+    if(((data.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (data.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
+    if(((data.cuts_ & SmurfTree::Lep2LooseMuV2)  == SmurfTree::Lep2LooseMuV2)  && (data.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
+    if(((data.cuts_ & SmurfTree::Lep3LooseMuV2)  == SmurfTree::Lep3LooseMuV2)  && (data.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
+    if(((data.cuts_ & SmurfTree::Lep1LooseEleV4) == SmurfTree::Lep1LooseEleV4) && (data.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
+    if(((data.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (data.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
+    if(((data.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (data.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
+    if (nFake !=0) continue; 
+ 
     if (data.lid3_ == data.lid2_ && data.lid3_ == data.lid1_) continue;
     if (data.lid3_ == data.lid2_ && fabs(data.lid3_) != fabs(data.lid1_)) continue;
     if (data.lid3_ == data.lid1_ && fabs(data.lid3_) != fabs(data.lid2_)) continue;
@@ -254,8 +282,8 @@ void Test() {
       m[2] = pair3.M();
     }
     
-    if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
-    
+ //if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
+    if ( (m[0] < 40 || m[0] > 120) &&  (m[1] < 40 || m[1] > 120) &&  (m[2] < 40 || m[2] > 120)) continue;    
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
     
     LorentzVector pair, tlepton, pairjet;
@@ -265,12 +293,14 @@ void Test() {
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  data.mt2_; tlepton = data.lep2_;} 
     pairjet = data.jet1_+ data.jet2_;
         
+    
     if (mt < 40 || data.met_ < 25) continue;
-   
- eventsPassData += weight;
+    if (pairjet.M() < 65 || pairjet.M() > 95) continue;
+
+    eventsPassData += weight;
   }
   
-   cout << eventsPassData << " data events in " << lumi << " fb" << endl; 
+  cout << eventsPassData << " data events in " << lumi << " fb" << endl; 
 
   outFileNjets->Write();
   outFileNjets->Close();
