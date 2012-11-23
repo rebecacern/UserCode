@@ -19,19 +19,19 @@ void plot(){
   gStyle->SetLabelFont(18,"");
   
   char myRootFile[300];
-  sprintf(myRootFile,"histo_test.root");
+  sprintf(myRootFile,"signal_study.root");
   
   TFile *_file0 = TFile::Open(myRootFile);
   
   const int nPlots = 7;
-  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphill"};
+  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphiljj"};
   int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10};
   TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet", "Reconstructed mass",  "M_{jj}", "#Delta#Phi_{jjl}"};
   TH1F*  h [2][nPlots];
   
   for (const int iPlot = 0; iPlot < nPlots; iPlot++){
     h[0][iPlot] = (TH1F*) _file0->Get("sig_" + cutLabel[iPlot]);
-    h[1][iPlot] = (TH1F*) _file0->Get("bckg_" + cutLabel[iPlot]);
+    h[1][iPlot] = (TH1F*) _file0->Get("bck_" + cutLabel[iPlot]);
     
     h[0][iPlot]->SetLineColor(kRed);
     h[0][iPlot]->SetLineWidth(2);
