@@ -211,6 +211,33 @@ void Signal() {
   cout << endl;
 
   //Backgrounds
+   double bckType[60] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+
+  double weiType[60] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+  
+   TString bckName[60] = {"null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
+                         "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
+                         "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
+                         "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null"};
+  
+  bckName[0] = "data";
+    bckName[1] = "qqww";
+      bckName[2] = "ggww";
+      bckName[43] = "ttbar";
+      bckName[44] = "tw";
+      bckName[46] = "dymm";
+      bckName[49] = "wz";
+      bckName[50] = "zz";
+      bckName[51] = "wgamma";
+      bckName[59] = "www";
+   bckName[60] = "dyttdd";    
+  
   double eventsPassBck = 0;
   int before_type = -1;
   int nBck=background.tree_->GetEntries();
@@ -224,6 +251,8 @@ void Signal() {
     weight = 1;
     if (background.dstype_ != SmurfTree::data) weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;    
 
+int nsel = background.dstype_;
+  
     //Fill histos that are general
     bck_njets->Fill(background.njets_, weight);
     
@@ -233,7 +262,7 @@ void Signal() {
     if((TMath::Abs(background.lep1McId_) == 11 || TMath::Abs(background.lep1McId_) == 13) &&
        (TMath::Abs(background.lep2McId_) == 11 || TMath::Abs(background.lep2McId_) == 13) &&
        (TMath::Abs(background.lep3McId_) == 11 || TMath::Abs(background.lep3McId_) == 13)) isRealLepton = true; 
-    if (!isRealLepton && background.dstype_ == SmurfTree::data) continue;
+    if (!isRealLepton && background.dstype_ != SmurfTree::data) continue;
      
     //Check for fakes
     int nFake = 0;
@@ -245,6 +274,7 @@ void Signal() {
     if(((background.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
     if (nFake) weight*= background.sfWeightFR_*0.5;
     bck_nfakes->Fill(nFake);
+    
     bck_cuts->Fill(0., weight);
     
     //2 same flavor, oppposite sign leptons + extra one
@@ -252,6 +282,13 @@ void Signal() {
     if (background.lid3_ == background.lid2_ && fabs(background.lid3_) != fabs(background.lid1_)) continue;
     if (background.lid3_ == background.lid1_ && fabs(background.lid3_) != fabs(background.lid2_)) continue;
     if (background.lid2_ == background.lid1_ && fabs(background.lid2_) != fabs(background.lid3_)) continue;
+    
+    //check which backgrounds affect us
+    if (background.dstype_ != before_type){
+      cout << "background type: " << background.dstype_ << endl;
+      before_type = background.dstype_;
+    }
+    
     bck_cuts->Fill(1., weight);
     
     //At least 2 jets
@@ -303,6 +340,9 @@ void Signal() {
 
     eventsPassBck += weight;
         
+ bckType[(int)nsel] += weight;
+        weiType[(int)nsel] += weight*weight;
+		
     //Fill histos
     types->Fill(background.dstype_);
     bck_met->Fill(background.met_, weight);
@@ -379,9 +419,7 @@ void Signal() {
     else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  data.mt1_; tlepton = data.lep1_;} 
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  data.mt2_; tlepton = data.lep2_;} 
     pairjet = data.jet1_+ data.jet2_;
-    LorentzVector metvector(data.met_*cos(data.metPhi_), data.met_*sin(data.metPhi_), 0, 0);
-    LorentzVector higgsSystem = tlepton + metvector + data.jet1_+ data.jet2_;
-    
+
     //Kinematic cuts
     if (pair.M() < 80 || pair.M() > 100) continue; 
     data_cuts->Fill(3., weight);
@@ -428,6 +466,10 @@ void Signal() {
       if (i == 6) cout << " mt:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
       if (i == 7) cout << " mjj:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
     }
+      for(int i=0; i<60; i++){
+    if(bckType[i] != 0 )
+     cout << i <<"\t" << bckName[i] << ":\t\t" << bckType[i] << "+-" << sqrt(weiType[i]) <<endl;
+  }
     cout << "------------------------------------------" << endl; 
     cout << "[Data:] " << endl;
     cout << "------------------------------------------" << endl;  
