@@ -211,35 +211,35 @@ void Signal() {
   cout << endl;
 
   //Backgrounds
-   double bckType[60] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+  double bckType[60] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
 
   double weiType[60] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
   
-   TString bckName[60] = {"null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
+  TString bckName[60] = {"null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
                          "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
                          "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
                          "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null"};
   
   bckName[0] = "data";
-    bckName[1] = "qqww";
-      bckName[2] = "ggww";
-      bckName[43] = "ttbar";
-      bckName[44] = "tw";
-      bckName[46] = "dymm";
-      bckName[49] = "wz";
-      bckName[50] = "zz";
-      bckName[51] = "wgamma";
-      bckName[59] = "www";
-   bckName[60] = "dyttdd";    
+  bckName[1] = "qqww";
+  bckName[2] = "ggww";
+  bckName[43] = "ttbar";
+  bckName[44] = "tw";
+  bckName[46] = "dymm";
+  bckName[49] = "wz";
+  bckName[50] = "zz";
+  bckName[51] = "wgamma";
+  bckName[59] = "www";
+  bckName[60] = "dyttdd";    
   
   double eventsPassBck = 0;
-  int before_type = -1;
+  
   int nBck=background.tree_->GetEntries();
   for (int i=0; i<nBck; ++i) {
     
@@ -251,7 +251,7 @@ void Signal() {
     weight = 1;
     if (background.dstype_ != SmurfTree::data) weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;    
 
-int nsel = background.dstype_;
+    int nsel = background.dstype_;
   
     //Fill histos that are general
     bck_njets->Fill(background.njets_, weight);
@@ -282,13 +282,7 @@ int nsel = background.dstype_;
     if (background.lid3_ == background.lid2_ && fabs(background.lid3_) != fabs(background.lid1_)) continue;
     if (background.lid3_ == background.lid1_ && fabs(background.lid3_) != fabs(background.lid2_)) continue;
     if (background.lid2_ == background.lid1_ && fabs(background.lid2_) != fabs(background.lid3_)) continue;
-    
-    //check which backgrounds affect us
-    if (background.dstype_ != before_type){
-      cout << "background type: " << background.dstype_ << endl;
-      before_type = background.dstype_;
-    }
-    
+   
     bck_cuts->Fill(1., weight);
     
     //At least 2 jets
@@ -340,8 +334,8 @@ int nsel = background.dstype_;
 
     eventsPassBck += weight;
         
- bckType[(int)nsel] += weight;
-        weiType[(int)nsel] += weight*weight;
+    bckType[(int)nsel] += weight;
+    weiType[(int)nsel] += weight*weight;
 		
     //Fill histos
     types->Fill(background.dstype_);
@@ -466,10 +460,12 @@ int nsel = background.dstype_;
       if (i == 6) cout << " mt:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
       if (i == 7) cout << " mjj:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
     }
-      for(int i=0; i<60; i++){
-    if(bckType[i] != 0 )
-     cout << i <<"\t" << bckName[i] << ":\t\t" << bckType[i] << "+-" << sqrt(weiType[i]) <<endl;
-  }
+    cout << endl;
+    cout << "[Breakdown:] " << endl;
+    for(int i=0; i<60; i++){
+      if(bckType[i] != 0 )
+	cout << i <<"\t" << bckName[i] << ":\t\t" << bckType[i] << "+-" << sqrt(weiType[i]) <<endl;
+    }
     cout << "------------------------------------------" << endl; 
     cout << "[Data:] " << endl;
     cout << "------------------------------------------" << endl;  
