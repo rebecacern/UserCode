@@ -117,11 +117,10 @@ void Signal() {
 
     //Three real leptons
     bool isRealLepton = false;
-    if((TMath::Abs(signal.lid1_) == 11 || TMath::Abs(signal.lid1_)) &&
-       (TMath::Abs(signal.lid2_) == 11 || TMath::Abs(signal.lid2_)) &&
-       (TMath::Abs(signal.lid3_) == 11 || TMath::Abs(signal.lid3_))) isRealLepton = true; 
+    if((TMath::Abs(signal.lep1McId_) == 11 || TMath::Abs(signal.lep1McId_) == 13) &&
+       (TMath::Abs(signal.lep2McId_) == 11 || TMath::Abs(signal.lep2McId_) == 13) &&
+       (TMath::Abs(signal.lep3McId_) == 11 || TMath::Abs(signal.lep3McId_) == 13)) isRealLepton = true; 
     if (!isRealLepton) continue;
-    
      
     int nFake = 0;
     if(((signal.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (signal.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
@@ -210,17 +209,18 @@ void Signal() {
     background.tree_->GetEntry(i);
 
     weight = 1;
-    weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;    
+    if (background.dstype_ != SmurfTree::data) weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;    
     
     bck_njets->Fill(background.njets_, weight);
     if (background.njets_ < 2) continue; // At least one jet
 
     //Three real leptons
+    
     bool isRealLepton = false;
-    if((TMath::Abs(background.lid1_) == 11 || TMath::Abs(background.lid1_)) &&
-       (TMath::Abs(background.lid2_) == 11 || TMath::Abs(background.lid2_)) &&
-       (TMath::Abs(background.lid3_) == 11 || TMath::Abs(background.lid3_))) isRealLepton = true; 
-    if (!isRealLepton) continue;
+    if((TMath::Abs(background.lep1McId_) == 11 || TMath::Abs(background.lep1McId_) == 13) &&
+       (TMath::Abs(background.lep2McId_) == 11 || TMath::Abs(background.lep2McId_) == 13) &&
+       (TMath::Abs(background.lep3McId_) == 11 || TMath::Abs(background.lep3McId_) == 13)) isRealLepton = true; 
+    if (!isRealLepton &&  background.dstype_ == SmurfTree::data) continue;
     
    // if (before_type != background.dstype_ )cout << background.dstype_ << endl;
     before_type = background.dstype_;
@@ -234,7 +234,7 @@ void Signal() {
     if(((background.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
     if (nFake) weight*= background.sfWeightFR_*0.5;
     bck_nfakes->Fill(nFake, weight);
-    //if (nFake !=0) continue;
+   // if (nFake !=0) continue;
       
     //2 same flavor, oppposite sign leptons + extra one
     if (background.lid3_ == background.lid2_ && background.lid3_ == background.lid1_) continue;
