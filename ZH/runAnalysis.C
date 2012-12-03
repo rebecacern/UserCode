@@ -49,65 +49,21 @@ void runAnalysis() {
   TFile* outFileNjets = new TFile(output,"recreate");
   
   //Histograms 
-  TH1F* types = new TH1F("types", "types", 80, -0.5 , 79.5);
-  types->Sumw2();
-  
   TH1D* sig_cuts = new TH1D("sig_cuts", "cuts", 10, 0, 10);
-  TH1D* sig_met = new TH1D("sig_met", "MET", 200, 0, 200);
-  TH1D* sig_mllz = new TH1D("sig_mllz", "m_{ll}", 200, 0, 200);
-  TH1D* sig_mt = new TH1D("sig_mt", "m_t", 200, 0, 200);
-  TH1D* sig_ptjet = new TH1D("sig_ptjet", "P_t of leading jet", 200, 0, 200);
-  TH1D* sig_mH = new TH1D("sig_mH", "m_H", 200, 0, 400);
-  TH1D* sig_mjj = new TH1D("sig_mjj", "m_jj", 200, 0, 400);
-  TH1D* sig_dphiljj = new TH1D("sig_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
-  TH1D* sig_njets = new TH1D("sig_njets", "Number of jets", 30, -0.5, 29.5);
-  TH1D* sig_nfakes = new TH1D("sig_fakes", "Number of fakes", 30, -0.5, 29.5);
-
   sig_cuts->Sumw2();
-  sig_met->Sumw2();
-  sig_mllz->Sumw2();
-  sig_mt->Sumw2();
-  sig_ptjet->Sumw2();
-  sig_mH->Sumw2();
-  sig_mjj->Sumw2();  
-  sig_dphiljj->Sumw2();
-  sig_njets->Sumw2();
-  sig_nfakes->Sumw2();
   
   TH1D* bck_cuts = new TH1D("bck_cuts", "cuts", 10, 0, 10);
-  TH1D* bck_met = new TH1D("bck_met", "MET", 200, 0, 200);
-  TH1D* bck_mllz = new TH1D("bck_mllz", "m_{ll}", 200, 0, 200);
-  TH1D* bck_mt = new TH1D("bck_mt", "m_t", 200, 0, 200);
-  TH1D* bck_ptjet = new TH1D("bck_ptjet", "P_t of leading jet", 200, 0, 200);
-  TH1D* bck_mH = new TH1D("bck_mH", "m_H", 200, 0, 400);
-  TH1D* bck_mjj = new TH1D("bck_mjj", "m_jj", 200, 0, 400);
-  TH1D* bck_dphiljj = new TH1D("bck_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
-  TH1D* bck_njets = new TH1D("bck_njets", "Number of jets", 30, -0.5, 29.5);
-  TH1D* bck_nfakes = new TH1D("bck_fakes", "Number of fakes", 30, -0.5, 29.5);
-
   bck_cuts->Sumw2();
-  bck_met->Sumw2();
-  bck_mllz->Sumw2();
-  bck_mt->Sumw2();
-  bck_ptjet->Sumw2();
-  bck_mH->Sumw2();
-  bck_mjj->Sumw2();  
-  bck_dphiljj->Sumw2();
-  bck_njets->Sumw2();
-  bck_nfakes->Sumw2();
   
   TH1D* data_cuts = new TH1D("data_cuts", "cuts", 10, 0, 10);
   data_cuts->Sumw2();
   
   double weight = 1;
   //Signal ZH -> 3l2j1nu
-  double eventsPassSig = 0;
 
   int nSig=signal.tree_->GetEntries();
   for (int i=0; i<nSig; ++i) {
     
-    if (i%100000 == 0 && verboseLevel > 0)
-      printf("--- reading event %5d of %5d\n",i,nSig);
     signal.tree_->GetEntry(i);
 
     weight = 1;
@@ -115,10 +71,6 @@ void runAnalysis() {
     
     //if(signal.processId_!=24) continue;
     
-    //Fill histos that are general
-    sig_njets->Fill(signal.njets_, weight);
-    
-
     //Three real leptons MC level
     bool isRealLepton = false;
     if((TMath::Abs(signal.lep1McId_) == 11 || TMath::Abs(signal.lep1McId_) == 13) &&
@@ -134,7 +86,6 @@ void runAnalysis() {
     if(((signal.cuts_ & SmurfTree::Lep1LooseEleV4) == SmurfTree::Lep1LooseEleV4) && (signal.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
     if(((signal.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (signal.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
     if(((signal.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (signal.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
-    sig_nfakes->Fill(nFake);
     if (nFake !=0) continue; //No fakes allowed
     sig_cuts->Fill(0., weight);
     
@@ -191,25 +142,9 @@ void runAnalysis() {
  
     if (pairjet.M() < 65 || pairjet.M() > 95) continue;
     sig_cuts->Fill(6., weight);
-    
-    eventsPassSig += weight;
-    
-    //Fill histos
-    sig_met->Fill(signal.met_, weight);
-    sig_mllz->Fill(pair.M(), weight);
-    sig_mt->Fill(mt, weight);
-    sig_ptjet->Fill(signal.jet1_.Pt(), weight);  
-    sig_mH->Fill(higgsSystem.M(), weight);
-    sig_mjj->Fill(pairjet.M(), weight);
-    sig_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
-    
 
   }
   
-  cout << endl;
-  cout << eventsPassSig << " signal events in " << lumi << " fb" << endl; 
-  cout << endl;
-
   //Backgrounds
   double bckType[60] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
 			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
@@ -238,24 +173,16 @@ void runAnalysis() {
   bckName[59] = "www";
   bckName[60] = "dyttdd";    
   
-  double eventsPassBck = 0;
   
   int nBck=background.tree_->GetEntries();
   for (int i=0; i<nBck; ++i) {
     
-    
-    if (i%100000 == 0 && verboseLevel > 0)
-      printf("--- reading event %5d of %5d\n",i,nBck);
     background.tree_->GetEntry(i);
 
     weight = 1;
     if (background.dstype_ != SmurfTree::data) weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;    
 
-    int nsel = background.dstype_;
-  
-    //Fill histos that are general
-    bck_njets->Fill(background.njets_, weight);
-    
+    int nsel = background.dstype_;    
 
     //Three real leptons MC level
     bool isRealLepton = false;
@@ -273,8 +200,6 @@ void runAnalysis() {
     if(((background.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (background.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
     if(((background.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
     if (nFake) weight*= background.sfWeightFR_*0.5;
-    bck_nfakes->Fill(nFake);
-    
     bck_cuts->Fill(0., weight);
     
     //2 same flavor, oppposite sign leptons + extra one
@@ -331,35 +256,16 @@ void runAnalysis() {
  
     if (pairjet.M() < 65 || pairjet.M() > 95) continue;
     bck_cuts->Fill(6., weight);
-
-    eventsPassBck += weight;
         
     bckType[(int)nsel] += weight;
     weiType[(int)nsel] += weight*weight;
-		
-    //Fill histos
-    types->Fill(background.dstype_);
-    bck_met->Fill(background.met_, weight);
-    bck_mllz->Fill(pair.M(), weight);
-    bck_mt->Fill(mt, weight);
-    bck_ptjet->Fill(background.jet1_.Pt(), weight);  
-    bck_mH->Fill(higgsSystem.M(), weight);
-    bck_mjj->Fill(pairjet.M(), weight);
-    bck_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
 
   }
   
-  cout << endl;
-  cout << eventsPassBck << " background events in " << lumi << " fb" << endl; 
-  cout << endl;
-  
   //data
-  double eventsPassData = 0;
   int nData=data.tree_->GetEntries();
   for (int i=0; i<nData; ++i) {
       
-    if (i%100000 == 0 && verboseLevel > 0)
-      printf("--- reading event %5d of %5d\n",i,nData);
     data.tree_->GetEntry(i);
 
     weight = 1;
@@ -426,16 +332,9 @@ void runAnalysis() {
  
     if (pairjet.M() < 65 || pairjet.M() > 95) continue;
     data_cuts->Fill(6., weight);
-    
-    eventsPassData += weight;
-    
-  
 
   }
   
-  cout << endl;
-  cout << eventsPassData << " data events in " << lumi << " fb" << endl; 
-  cout << endl;
   
   if (verboseLevel){ 
     cout << "------------------------------------------" << endl;
