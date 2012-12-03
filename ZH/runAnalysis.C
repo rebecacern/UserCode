@@ -23,7 +23,7 @@
 const int verboseLevel =   1;
 const double mz = 91.1876;
 const double lumi = 17.6;
-void Signal() {
+void runAnalysis() {
   
   TString bgdInputFile    = "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root";
   TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww125.root";
@@ -45,7 +45,7 @@ void Signal() {
   
   //Prepare output
   char output[200];
-  sprintf(output,"signal_study.root");     
+  sprintf(output,"rootfiles/analysis_%dfb.root", (int) lumi);     
   TFile* outFileNjets = new TFile(output,"recreate");
   
   //Histograms 
