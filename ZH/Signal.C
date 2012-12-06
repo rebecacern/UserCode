@@ -24,6 +24,10 @@ const int verboseLevel =   1;
 const double mz = 91.1876;
 const double lumi = 17.6;
 const double separation = 10;
+const double metcut = 25;
+const double mtcut = 30;
+const double lowpair = 65;
+const double highpair = 95;
 
 void Signal() {
   
@@ -55,6 +59,7 @@ void Signal() {
   types->Sumw2();
   
   TH1D* sig_cuts = new TH1D("sig_cuts", "cuts", 10, 0, 10);
+  TH1D* sig_cuts_zh = new TH1D("sig_cuts_zh", "cuts", 10, 0, 10);
   TH1D* sig_met = new TH1D("sig_met", "MET", 200, 0, 200);
   TH1D* sig_mllz = new TH1D("sig_mllz", "m_{ll}", 200, 0, 200);
   TH1D* sig_mt = new TH1D("sig_mt", "m_t", 200, 0, 200);
@@ -67,6 +72,7 @@ void Signal() {
   TH2D* sig_mh_mll = new TH2D("sig_mh_mll", "", 200, 0, 400, 200, 0, 400);
 
   sig_cuts->Sumw2();
+  sig_cuts_zh->Sumw2();
   sig_met->Sumw2();
   sig_mllz->Sumw2();
   sig_mt->Sumw2();
@@ -78,6 +84,11 @@ void Signal() {
   sig_nfakes->Sumw2();
   
   TH1D* bck_cuts = new TH1D("bck_cuts", "cuts", 10, 0, 10);
+  TH1D* bck_cuts_wz = new TH1D("bck_cuts_wz", "cuts", 10, 0, 10);
+  TH1D* bck_cuts_www = new TH1D("bck_cuts_www", "cuts", 10, 0, 10);
+  TH1D* bck_cuts_data = new TH1D("bck_cuts_data", "cuts", 10, 0, 10);
+  TH1D* bck_cuts_zz = new TH1D("bck_cuts_zz", "cuts", 10, 0, 10);
+  
   TH1D* bck_met = new TH1D("bck_met", "MET", 200, 0, 200);
   TH1D* bck_mllz = new TH1D("bck_mllz", "m_{ll}", 200, 0, 200);
   TH1D* bck_mt = new TH1D("bck_mt", "m_t", 200, 0, 200);
@@ -90,6 +101,11 @@ void Signal() {
   TH2D* bck_mh_mll = new TH2D("bck_mh_mll", "", 200, 0, 400, 200, 0, 400);
 
   bck_cuts->Sumw2();
+  bck_cuts_wz->Sumw2();
+  bck_cuts_www->Sumw2();
+  bck_cuts_data->Sumw2();
+  bck_cuts_zz->Sumw2();
+  
   bck_met->Sumw2();
   bck_mllz->Sumw2();
   bck_mt->Sumw2();
@@ -100,8 +116,41 @@ void Signal() {
   bck_njets->Sumw2();
   bck_nfakes->Sumw2();
   
+  
+  //Discrminant variables separated
+  TH1D* bck_mH_wz = new TH1D("bck_mH_wz", "m_H", 200, 0, 400);
+  TH1D* bck_mH_www = new TH1D("bck_mH_www", "m_H", 200, 0, 400);
+  TH1D* bck_mH_data = new TH1D("bck_mH_data", "m_H", 200, 0, 400);
+  TH1D* bck_mH_zz = new TH1D("bck_mH_zz", "m_H", 200, 0, 400);
+  TH1D* bck_mH_tt = new TH1D("bck_mH_tt", "m_H", 200, 0, 400);
+  
+  bck_mH_wz->Sumw2();
+  bck_mH_www->Sumw2();
+  bck_mH_data->Sumw2(); 
+  bck_mH_zz->Sumw2();
+  bck_mH_tt->Sumw2();
+  
+  TH1D* bck_dphiljj_wz = new TH1D("bck_dphiljj_wz", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  TH1D* bck_dphiljj_www = new TH1D("bck_dphiljj_www", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  TH1D* bck_dphiljj_data = new TH1D("bck_dphiljj_data", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  TH1D* bck_dphiljj_zz = new TH1D("bck_dphiljj_zz", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  TH1D* bck_dphiljj_tt = new TH1D("bck_dphiljj_tt", "#Delta#phi_{ljj}", 200, 0, 3.5);
+ 
+  bck_dphiljj_wz->Sumw2();
+  bck_dphiljj_www->Sumw2();
+  bck_dphiljj_data->Sumw2(); 
+  bck_dphiljj_zz->Sumw2();
+  bck_dphiljj_tt->Sumw2();
+  
+  
   TH1D* data_cuts = new TH1D("data_cuts", "cuts", 10, 0, 10);
   data_cuts->Sumw2();
+  
+  TH1D* data_mH = new TH1D("data_mH", "m_H", 200, 0, 400);
+  TH1D* data_dphiljj = new TH1D("data_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  data_mH->Sumw2();
+  data_dphiljj->Sumw2();
+  
   
   double weight = 1;
   //Signal ZH -> 3l2j1nu
@@ -143,6 +192,7 @@ void Signal() {
     sig_nfakes->Fill(nFake);
     if (nFake !=0) continue; //No fakes allowed
     sig_cuts->Fill(0., weight);
+    if(signal.processId_ == 24)sig_cuts_zh->Fill(0., weight);
     
     //2 same flavor, oppposite sign leptons + extra one
     if (signal.lid3_ == signal.lid2_ && signal.lid3_ == signal.lid1_) continue;
@@ -150,10 +200,12 @@ void Signal() {
     if (signal.lid3_ == signal.lid1_ && fabs(signal.lid3_) != fabs(signal.lid2_)) continue;
     if (signal.lid2_ == signal.lid1_ && fabs(signal.lid2_) != fabs(signal.lid3_)) continue;
     sig_cuts->Fill(1., weight);
-    
+    if(signal.processId_ == 24)sig_cuts_zh->Fill(1., weight);
+
     //At least 2 jets
     if (signal.njets_ < 2) continue; 
     sig_cuts->Fill(2., weight);
+    if(signal.processId_ == 24)sig_cuts_zh->Fill(2., weight);
 
     
     //Make z-compatible pairs
@@ -189,15 +241,19 @@ void Signal() {
      //Kinematic cuts
     if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
     sig_cuts->Fill(3., weight);
-    
-    if (signal.met_ < 25) continue;
+    if(signal.processId_ == 24)sig_cuts_zh->Fill(3., weight);
+
+    if (signal.met_ < metcut) continue;
     sig_cuts->Fill(4., weight);
+    if(signal.processId_ == 24)sig_cuts_zh->Fill(4., weight);
     
-    if (mt < 30) continue;
+    if (mt < mtcut) continue;
     sig_cuts->Fill(5., weight);
- 
-    if (pairjet.M() < 65 || pairjet.M() > 95) continue;
+    if(signal.processId_ == 24)sig_cuts_zh->Fill(5., weight);
+   
+    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
     sig_cuts->Fill(6., weight);
+    if(signal.processId_ == 24)sig_cuts_zh->Fill(6., weight);
     
      //Fill histos
     sig_met->Fill(signal.met_, weight);
@@ -287,6 +343,11 @@ void Signal() {
     bck_nfakes->Fill(nFake);
     
     bck_cuts->Fill(0., weight);
+       
+    if (nsel == 49) bck_cuts_wz->Fill(0., weight);
+    else if (nsel == 59) bck_cuts_www->Fill(0., weight);
+    else if (nsel == 0) bck_cuts_data->Fill(0., weight);
+    else if (nsel == 50) bck_cuts_zz->Fill(0., weight);
     
     //2 same flavor, oppposite sign leptons + extra one
     if (background.lid3_ == background.lid2_ && background.lid3_ == background.lid1_) continue;
@@ -295,11 +356,21 @@ void Signal() {
     if (background.lid2_ == background.lid1_ && fabs(background.lid2_) != fabs(background.lid3_)) continue;
    
     bck_cuts->Fill(1., weight);
+       
+    if (nsel == 49) bck_cuts_wz->Fill(1., weight);
+    else if (nsel == 59) bck_cuts_www->Fill(1., weight);
+    else if (nsel == 0) bck_cuts_data->Fill(1., weight);
+    else if (nsel == 50) bck_cuts_zz->Fill(1., weight);
     
     //At least 2 jets
     if (background.njets_ < 2) continue; 
     bck_cuts->Fill(2., weight);
-
+   
+    if (nsel == 49) bck_cuts_wz->Fill(2., weight);
+    else if (nsel == 59) bck_cuts_www->Fill(2., weight);
+    else if (nsel == 0) bck_cuts_data->Fill(2., weight);
+    else if (nsel == 50) bck_cuts_zz->Fill(2., weight);
+    
     
     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
@@ -334,15 +405,36 @@ void Signal() {
     //Kinematic cuts
     if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
     bck_cuts->Fill(3., weight); 
+       
+    if (nsel == 49) bck_cuts_wz->Fill(3., weight);
+    else if (nsel == 59) bck_cuts_www->Fill(3., weight);
+    else if (nsel == 0) bck_cuts_data->Fill(3., weight);
+    else if (nsel == 50) bck_cuts_zz->Fill(3., weight);
     
-    if (background.met_ < 25) continue;
+    if (background.met_ < metcut) continue;
     bck_cuts->Fill(4., weight);
+       
+    if (nsel == 49) bck_cuts_wz->Fill(4., weight);
+    else if (nsel == 59) bck_cuts_www->Fill(4., weight);
+    else if (nsel == 0) bck_cuts_data->Fill(4., weight);
+    else if (nsel == 50) bck_cuts_zz->Fill(4., weight);
     
-    if (mt < 30) continue;
+    
+    if (mt < mtcut) continue;
     bck_cuts->Fill(5., weight);
- 
-    if (pairjet.M() < 65 || pairjet.M() > 95) continue;
+    
+    if (nsel == 49) bck_cuts_wz->Fill(5., weight);
+    else if (nsel == 59) bck_cuts_www->Fill(5., weight);
+    else if (nsel == 0) bck_cuts_data->Fill(5., weight);
+    else if (nsel == 50) bck_cuts_zz->Fill(5., weight);
+    
+    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
     bck_cuts->Fill(6., weight);
+       
+    if (nsel == 49) bck_cuts_wz->Fill(6., weight);
+    else if (nsel == 59) bck_cuts_www->Fill(6., weight);
+    else if (nsel == 0) bck_cuts_data->Fill(6., weight);
+    else if (nsel == 50) bck_cuts_zz->Fill(6., weight);
     
      //Fill histos
     types->Fill(background.dstype_);
@@ -355,6 +447,24 @@ void Signal() {
     bck_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
     bck_mh_mll->Fill(higgsSystem.M(), pair.M(), weight);
     
+    if (nsel == 49){
+     bck_mH_wz->Fill(higgsSystem.M(), weight);
+     bck_dphiljj_wz->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    } else if (nsel == 59){
+     bck_mH_www->Fill(higgsSystem.M(), weight);
+     bck_dphiljj_www->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    } else if (nsel == 0){
+     bck_mH_data->Fill(higgsSystem.M(), weight);
+     bck_dphiljj_data->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    } else if (nsel == 50){
+     bck_mH_zz->Fill(higgsSystem.M(), weight);
+     bck_dphiljj_zz->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    } else if (nsel == 43){
+     bck_mH_tt->Fill(higgsSystem.M(), weight);
+     bck_dphiljj_tt->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    }
+  
+ 
     eventsPassBck += weight;
         
     bckType[(int)nsel] += weight;
@@ -433,16 +543,21 @@ void Signal() {
     if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
     data_cuts->Fill(3., weight);
     
-    if (data.met_ < 25) continue;
+    if (data.met_ < metcut) continue;
     data_cuts->Fill(4., weight);
     
-    if (mt < 30) continue;
+    if (mt < mtcut) continue;
     data_cuts->Fill(5., weight);
  
-    if (pairjet.M() < 65 || pairjet.M() > 95) continue;
+    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
     data_cuts->Fill(6., weight);
     
-    
+  
+    LorentzVector metvector(data.met_*cos(data.metPhi_), data.met_*sin(data.metPhi_), 0, 0);
+    LorentzVector higgsSystem = tlepton + metvector + data.jet1_+ data.jet2_;
+   
+    data_mH->Fill(higgsSystem.M(), weight);
+    data_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
     eventsPassData += weight;
     
   
@@ -458,13 +573,13 @@ void Signal() {
     cout << "[Signal HWW 125 GeV:] " << endl;
     cout << "------------------------------------------" << endl;  
     for (int i = 1; i < 9; i++){
-      if (i == 1) cout << " 3 lep:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
-      if (i == 2) cout << " OSSF:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
-      if (i == 3) cout << " 2 jet:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
-      if (i == 4) cout << " mll:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
-      if (i == 5) cout << " met:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
-      if (i == 6) cout << " mt:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
-      if (i == 7) cout << " mjj:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
+      if (i == 1) cout << " 3 lep:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+      if (i == 2) cout << " OSSF:\t\t"  <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+      if (i == 3) cout << " 2 jet:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+      if (i == 4) cout << " mll:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+      if (i == 5) cout << " met:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+      if (i == 6) cout << " mt:\t\t"    <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+      if (i == 7) cout << " mjj:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
     }
     cout << "(from which " << eventsZH << " are genuine ZH events)" << endl;
     cout << "------------------------------------------" << endl;  

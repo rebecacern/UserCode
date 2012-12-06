@@ -23,52 +23,96 @@ void plot(){
   
   TFile *_file0 = TFile::Open(myRootFile);
   
-  const int nPlots = 7;
-  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphiljj"};
-  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10};
-  TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet",
-  				   "Reconstructed mass m_{H}",  "M_{jj}", "#Delta#Phi_{jjl}"};
-  TH1F*  h [2][nPlots];
+  const int nProcess = 5;
+  TString processName[nProcess] =  { "wz", "www", "data","zz", "tt"};
+  TString processTitle[nProcess] = { "WZ", "WWW", "data", "ZZ", "t#bar{t}"};
+  Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kYellow-10, kMagenta+3};
+ 
+  const int nPlots = 2;
+  TString cutLabel[nPlots] =     { "mH", "dphiljj"};
+  int rebinHisto[nPlots] =       { 10, 10};
+  TString cutTitle[nPlots] =     { "Reconstructed mass m_{H}", "#Delta#Phi_{jjl}"}; 
+ 
+  TH1D*  h [nPlots][nProcess];
+  TH1D*  h0 [nPlots];
+  TH1D*  h1 [nPlots];
+  THStack* hStack[nPlots];
   
   for (const int iPlot = 0; iPlot < nPlots; iPlot++){
-    h[0][iPlot] = (TH1F*) _file0->Get("sig_" + cutLabel[iPlot]);
-    h[1][iPlot] = (TH1F*) _file0->Get("bck_" + cutLabel[iPlot]);
-    
-    h[0][iPlot]->SetLineColor(kMagenta-4);
-    h[0][iPlot]->SetLineWidth(2);
-    //h[0][iPlot]->SetNormFactor(1);
-    h[0][iPlot]->Rebin(rebinHisto[iPlot]);
-    
-    h[1][iPlot]->SetFillColor(kBlue);
-    h[1][iPlot]->SetFillStyle(3001);
-    h[1][iPlot]->SetLineWidth(2);
-    //h[1][iPlot]->SetNormFactor(1);
-    h[1][iPlot]->Rebin(rebinHisto[iPlot]);
-    
+    h0[iPlot] = (TH1D*) _file0->Get("sig_" + cutLabel[iPlot]);
+       
+    h0[iPlot]->SetLineColor(kMagenta-4);
+    h0[iPlot]->SetLineWidth(2);
+    h0[iPlot]->Rebin(rebinHisto[iPlot]);
+
     leg = new TLegend(0.70,0.80,0.99,0.99);
     leg ->SetFillStyle(1001);
     leg ->SetFillColor(kWhite);
     leg ->SetBorderSize(1);
-    leg->AddEntry(h[0][iPlot], "m_{H} = 125", "l");
-    leg->AddEntry(h[1][iPlot], "Background", "f");
+    leg->AddEntry( h0[iPlot], "m_{H} = 125", "l");
     
-    double max = TMath::Max(h[0][iPlot]->GetMaximum(), h[1][iPlot]->GetMaximum());
+     for (int iProcess = 0; iProcess < nProcess; iProcess++){
+      h[iPlot][iProcess] = (TH1D*) _file0->Get("bck_" + cutLabel[iPlot]+ "_" + processName[iProcess]);
+      h[iPlot][iProcess]->Rebin(rebinHisto[iPlot]);
+      h[iPlot][iProcess]->SetFillColor(color[iProcess]);
+      h[iPlot][iProcess]->SetLineColor(kBlack);
+      h[iPlot][iProcess]->SetLineWidth(1);
+      leg->AddEntry(h[iPlot][iProcess], processTitle[iProcess], "f");
+      h[iPlot][iProcess]->Draw();
+    }
+    
+     hStack[iPlot] = new THStack(cutLabel[iPlot],cutLabel[iPlot]);
+     for (int iProcess = nProcess-1; iProcess > -1; iProcess--){
+      hStack[iPlot]->Add(h[iPlot][iProcess]);
+    }
+ 
+    double max = TMath::Max(h0[iPlot]->GetMaximum(), hStack[iPlot]->GetMaximum());
     TCanvas *c1 = new TCanvas();
-    h[1][iPlot]->Draw("histo");
-   // h[1][iPlot]->SetMaximum(0.2);
-   // h[0][iPlot]->SetMinimum(1);
-    h[0][iPlot]->Draw("histo,sames");
-    h[1][iPlot]->Draw("histo,sames");
-    h[1][iPlot]->GetYaxis()->SetTitle("Normalized to 1");
-    h[1][iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
-    h[1][iPlot]->GetYaxis()->SetLimits(0,0.5);
-    h[1][iPlot]->GetYaxis()->CenterTitle(); 
-    h[1][iPlot]->GetYaxis()->SetTitleOffset(1.5);
+    hStack[iPlot]->Draw("histo");
+    hStack[iPlot]->SetMaximum(max*1.25);
+    hStack[iPlot]->SetMinimum(0.01);
+    h0[iPlot]->Draw("histo,sames");
+    hStack[iPlot]->GetYaxis()->SetTitle("events / 17.6fb^{-1}");
+    hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
+    hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
+    hStack[iPlot]->GetYaxis()->CenterTitle(); 
+    hStack[iPlot]->GetYaxis()->SetTitleOffset(1.5);
+    if (iPlot == 1) hStack[iPlot]->GetXaxis()->SetRangeUser(0.0, 3.1415);
     leg->Draw();
     
     c1->SaveAs("plots/"+cutLabel[iPlot]+".png");
     c1->SetLogy();
     c1->SaveAs("plots/"+cutLabel[iPlot]+"_log.png");
+    
+    h1[iPlot] = (TH1D*) _file0->Get("data_" + cutLabel[iPlot]);
+    h1[iPlot]->Rebin(rebinHisto[iPlot]);
+    h1[iPlot]->SetMarkerStyle(20);
+    h1[iPlot]->SetMarkerSize(1.2);
+    h1[iPlot]->SetLineWidth(1);
+    h1[iPlot]->SetMarkerColor(kBlack);
+    h1[iPlot]->SetLineColor(kBlack);
+    leg->AddEntry( h1[iPlot], "data", "p");
+    
+    max = TMath::Max(h1[iPlot]->GetMaximum(), hStack[iPlot]->GetMaximum());
+    TCanvas *c1 = new TCanvas();
+    hStack[iPlot]->Draw("histo");
+    hStack[iPlot]->SetMaximum(max*1.5);
+    hStack[iPlot]->SetMinimum(0.01);
+    h0[iPlot]->Draw("histo,sames");
+    h1[iPlot]->Draw("e,sames");
+    hStack[iPlot]->GetYaxis()->SetTitle("events / 17.6fb^{-1}");
+    hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
+    hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
+    hStack[iPlot]->GetYaxis()->CenterTitle(); 
+    hStack[iPlot]->GetYaxis()->SetTitleOffset(1.5);
+    leg->Draw();
+    
+    c1->SaveAs("plots/data_"+cutLabel[iPlot]+".png");
+    c1->SetLogy();
+    c1->SaveAs("plots/data_"+cutLabel[iPlot]+"_log.png");
+    
+    
+    
   }
   
 }
