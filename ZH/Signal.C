@@ -23,6 +23,8 @@
 const int verboseLevel =   1;
 const double mz = 91.1876;
 const double lumi = 17.6;
+const double separation = 10;
+
 void Signal() {
   
   TString bgdInputFile    = "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root";
@@ -45,7 +47,7 @@ void Signal() {
   
   //Prepare output
   char output[200];
-  sprintf(output,"signal_study.root");     
+  sprintf(output,"rootfiles/signal_study.root");     
   TFile* outFileNjets = new TFile(output,"recreate");
   
   //Histograms 
@@ -62,6 +64,7 @@ void Signal() {
   TH1D* sig_dphiljj = new TH1D("sig_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* sig_njets = new TH1D("sig_njets", "Number of jets", 30, -0.5, 29.5);
   TH1D* sig_nfakes = new TH1D("sig_fakes", "Number of fakes", 30, -0.5, 29.5);
+  TH2D* sig_mh_mll = new TH2D("sig_mh_mll", "", 200, 0, 400, 200, 0, 400);
 
   sig_cuts->Sumw2();
   sig_met->Sumw2();
@@ -84,6 +87,7 @@ void Signal() {
   TH1D* bck_dphiljj = new TH1D("bck_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* bck_njets = new TH1D("bck_njets", "Number of jets", 30, -0.5, 29.5);
   TH1D* bck_nfakes = new TH1D("bck_fakes", "Number of fakes", 30, -0.5, 29.5);
+  TH2D* bck_mh_mll = new TH2D("bck_mh_mll", "", 200, 0, 400, 200, 0, 400);
 
   bck_cuts->Sumw2();
   bck_met->Sumw2();
@@ -102,7 +106,9 @@ void Signal() {
   double weight = 1;
   //Signal ZH -> 3l2j1nu
   double eventsPassSig = 0;
-
+  double eventsZH = 0;
+  int eventstouse = 0;
+ 
   int nSig=signal.tree_->GetEntries();
   for (int i=0; i<nSig; ++i) {
     
@@ -113,7 +119,7 @@ void Signal() {
     weight = 1;
     weight = lumi*signal.scale1fb_*signal.sfWeightPU_*signal.sfWeightEff_*signal.sfWeightTrig_;    
     
-    //if(signal.processId_!=24) continue;
+   //if(signal.processId_ != 24) continue;
     
     //Fill histos that are general
     sig_njets->Fill(signal.njets_, weight);
@@ -178,9 +184,10 @@ void Signal() {
     pairjet = signal.jet1_+ signal.jet2_;
     LorentzVector metvector(signal.met_*cos(signal.metPhi_), signal.met_*sin(signal.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + signal.jet1_+ signal.jet2_;
+ 
     
-    //Kinematic cuts
-    if (pair.M() < 80 || pair.M() > 100) continue; 
+     //Kinematic cuts
+    if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
     sig_cuts->Fill(3., weight);
     
     if (signal.met_ < 25) continue;
@@ -192,9 +199,7 @@ void Signal() {
     if (pairjet.M() < 65 || pairjet.M() > 95) continue;
     sig_cuts->Fill(6., weight);
     
-    eventsPassSig += weight;
-    
-    //Fill histos
+     //Fill histos
     sig_met->Fill(signal.met_, weight);
     sig_mllz->Fill(pair.M(), weight);
     sig_mt->Fill(mt, weight);
@@ -202,12 +207,18 @@ void Signal() {
     sig_mH->Fill(higgsSystem.M(), weight);
     sig_mjj->Fill(pairjet.M(), weight);
     sig_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    sig_mh_mll->Fill(higgsSystem.M(), pair.M(), weight);
+    eventstouse++;
     
-
+    eventsPassSig += weight;
+    if(signal.processId_ == 24) eventsZH+= weight;
+    
+   
   }
   
   cout << endl;
   cout << eventsPassSig << " signal events in " << lumi << " fb" << endl; 
+  cout << eventstouse << " raw events" << endl;
   cout << endl;
 
   //Backgrounds
@@ -318,10 +329,11 @@ void Signal() {
     pairjet = background.jet1_+ background.jet2_;
     LorentzVector metvector(background.met_*cos(background.metPhi_), background.met_*sin(background.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + background.jet1_+ background.jet2_;
+   
     
     //Kinematic cuts
-    if (pair.M() < 80 || pair.M() > 100) continue; 
-    bck_cuts->Fill(3., weight);
+    if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
+    bck_cuts->Fill(3., weight); 
     
     if (background.met_ < 25) continue;
     bck_cuts->Fill(4., weight);
@@ -331,13 +343,8 @@ void Signal() {
  
     if (pairjet.M() < 65 || pairjet.M() > 95) continue;
     bck_cuts->Fill(6., weight);
-
-    eventsPassBck += weight;
-        
-    bckType[(int)nsel] += weight;
-    weiType[(int)nsel] += weight*weight;
-		
-    //Fill histos
+    
+     //Fill histos
     types->Fill(background.dstype_);
     bck_met->Fill(background.met_, weight);
     bck_mllz->Fill(pair.M(), weight);
@@ -346,6 +353,14 @@ void Signal() {
     bck_mH->Fill(higgsSystem.M(), weight);
     bck_mjj->Fill(pairjet.M(), weight);
     bck_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    bck_mh_mll->Fill(higgsSystem.M(), pair.M(), weight);
+    
+    eventsPassBck += weight;
+        
+    bckType[(int)nsel] += weight;
+    weiType[(int)nsel] += weight*weight;
+		
+   
 
   }
   
@@ -414,8 +429,8 @@ void Signal() {
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  data.mt2_; tlepton = data.lep2_;} 
     pairjet = data.jet1_+ data.jet2_;
 
-    //Kinematic cuts
-    if (pair.M() < 80 || pair.M() > 100) continue; 
+     //Kinematic cuts
+    if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
     data_cuts->Fill(3., weight);
     
     if (data.met_ < 25) continue;
@@ -426,6 +441,7 @@ void Signal() {
  
     if (pairjet.M() < 65 || pairjet.M() > 95) continue;
     data_cuts->Fill(6., weight);
+    
     
     eventsPassData += weight;
     
@@ -441,19 +457,22 @@ void Signal() {
     cout << "------------------------------------------" << endl;
     cout << "[Signal HWW 125 GeV:] " << endl;
     cout << "------------------------------------------" << endl;  
-    for (int i = 2; i < 9; i++){
-      if (i == 2) cout << " 3 lep:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
+    for (int i = 1; i < 9; i++){
+      if (i == 1) cout << " 3 lep:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
+      if (i == 2) cout << " OSSF:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
       if (i == 3) cout << " 2 jet:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
       if (i == 4) cout << " mll:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
       if (i == 5) cout << " met:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
       if (i == 6) cout << " mt:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
       if (i == 7) cout << " mjj:\t\t" <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i)  << endl;
     }
+    cout << "(from which " << eventsZH << " are genuine ZH events)" << endl;
     cout << "------------------------------------------" << endl;  
     cout << "[Backgrounds (All mixed):] " << endl;
     cout << "------------------------------------------" << endl;  
-    for (int i = 2; i < 9; i++){
-      if (i == 2) cout << " 3 lep:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
+    for (int i = 1; i < 9; i++){
+      if (i == 1) cout << " 3 lep:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
+      if (i == 2) cout << " OSSF:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
       if (i == 3) cout << " 2 jet:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
       if (i == 4) cout << " mll:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
       if (i == 5) cout << " met:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
@@ -469,8 +488,9 @@ void Signal() {
     cout << "------------------------------------------" << endl; 
     cout << "[Data:] " << endl;
     cout << "------------------------------------------" << endl;  
-    for (int i = 2; i < 9; i++){
-      if (i == 2) cout << " 3 lep:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
+    for (int i = 1; i < 9; i++){
+      if (i == 1) cout << " 3 lep:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
+      if (i == 2) cout << " OSSF:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
       if (i == 3) cout << " 2 jet:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
       if (i == 4) cout << " mll:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
       if (i == 5) cout << " met:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
