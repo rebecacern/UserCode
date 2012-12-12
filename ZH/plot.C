@@ -51,7 +51,7 @@ void plot(){
     leg ->SetBorderSize(1);
     leg->AddEntry( h0[iPlot], "m_{H} = 125", "l");
     
-     for (int iProcess = 0; iProcess < nProcess; iProcess++){
+    for (int iProcess = 0; iProcess < nProcess; iProcess++){
       h[iPlot][iProcess] = (TH1D*) _file0->Get("bck_" + cutLabel[iPlot]+ "_" + processName[iProcess]);
       h[iPlot][iProcess]->Rebin(rebinHisto[iPlot]);
       h[iPlot][iProcess]->SetFillColor(color[iProcess]);
@@ -61,8 +61,8 @@ void plot(){
       h[iPlot][iProcess]->Draw();
     }
     
-     hStack[iPlot] = new THStack(cutLabel[iPlot],cutLabel[iPlot]);
-     for (int iProcess = nProcess-1; iProcess > -1; iProcess--){
+    hStack[iPlot] = new THStack(cutLabel[iPlot],cutLabel[iPlot]);
+    for (int iProcess = nProcess-1; iProcess > -1; iProcess--){
       hStack[iPlot]->Add(h[iPlot][iProcess]);
     }
  

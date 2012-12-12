@@ -80,7 +80,7 @@ void Test() {
   TH1D* sig_dphill = new TH1D("sig_dphill", "#Delta#phi_{ll}", 200, 0, 3.5);
   sig_dphill->Sumw2();
 
- TH2D* sig_mll_mh  = new TH2D("sig_mll_mh", " ",100, 40, 120, 100, 0, 200);
+  TH2D* sig_mll_mh  = new TH2D("sig_mll_mh", " ",100, 40, 120, 100, 0, 200);
   
 
   double lumi = 12.1;
@@ -94,7 +94,7 @@ void Test() {
     background.tree_->GetEntry(i);
     if (background.njets_ <2 )continue;
     if (!((background.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection 
-       && (background.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ) continue;
+	  && (background.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ) continue;
   
     weight = 1;
     
@@ -107,9 +107,9 @@ void Test() {
     if(((background.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
     if (nFake !=0) continue; 
     
-      if (nFake > 1) continue; 
-      if (nFake == 1) weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_*background.sfWeightFR_ ;
-      else weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;
+    if (nFake > 1) continue; 
+    if (nFake == 1) weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_*background.sfWeightFR_ ;
+    else weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;
     //weight = lumi*background.scale1fb_*background.sfWeightPU_*background.sfWeightEff_*background.sfWeightTrig_;
   
     if (background.lid3_ == background.lid2_ && background.lid3_ == background.lid1_) continue;
@@ -146,9 +146,9 @@ void Test() {
     pairjet = background.jet1_+ background.jet2_;
     
     if (mt < 40 || background.met_ < 25) continue;
-   //     if (mt < 40 ) continue;
+    //     if (mt < 40 ) continue;
 
-   // if (pairjet.M() < 65 || pairjet.M() > 95) continue;
+    // if (pairjet.M() < 65 || pairjet.M() > 95) continue;
   
     types->Fill(background.dstype_);
     bckg_met->Fill(background.met_, weight);
@@ -160,7 +160,7 @@ void Test() {
     bckg_mH->Fill(higgsSystem.M(), weight);
     bckg_mjj->Fill(pairjet.M(), weight);
     bckg_dphill->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
-      bckg_mll_mh->Fill(pair.M(),higgsSystem.M(), weight); 
+    bckg_mll_mh->Fill(pair.M(),higgsSystem.M(), weight); 
     eventsPass += weight;
  
   }
@@ -177,13 +177,13 @@ void Test() {
       printf("--- reading event %5d of %5d\n",i,nSig);
     signal.tree_->GetEntry(i);
     
-     nTotal++;
-     if(signal.processId_==24)  nZH++;
+    nTotal++;
+    if(signal.processId_==24)  nZH++;
     
     if (signal.njets_ < 2 )continue;
 
     if(!((signal.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection 
-       &&(signal.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection)) continue;
+	 &&(signal.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection)) continue;
      
     
      
@@ -220,8 +220,8 @@ void Test() {
       m[2] = pair3.M();
     }
     
- if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
- //   if ( (m[0] < 40 || m[0] > 120) &&  (m[1] < 40 || m[1] > 120) &&  (m[2] < 40 || m[2] > 120)) continue;
+    if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
+    //   if ( (m[0] < 40 || m[0] > 120) &&  (m[1] < 40 || m[1] > 120) &&  (m[2] < 40 || m[2] > 120)) continue;
         
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
     
@@ -247,14 +247,14 @@ void Test() {
     sig_mH->Fill(higgsSystem.M(), weight);
     sig_mjj->Fill(pairjet.M(), weight);
     sig_dphill->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
-         sig_mll_mh->Fill(pair.M(),higgsSystem.M(), weight); 
+    sig_mll_mh->Fill(pair.M(),higgsSystem.M(), weight); 
     //    cout << signal.njets_ << " - " ;
     eventsPassSig += weight;
   }
   cout << endl;
   
   cout << eventsPassSig << " signal events in " << lumi << " fb" << endl; 
-cout << nTotal << "events, from which " << nZH << "are ZH" << endl;
+  cout << nTotal << "events, from which " << nZH << "are ZH" << endl;
   int nData=data.tree_->GetEntries();
   double eventsPassData = 0;
   for (int i=0; i<nData; ++i) {
@@ -265,7 +265,7 @@ cout << nTotal << "events, from which " << nZH << "are ZH" << endl;
     if (data.njets_ < 2 )continue;
 
     if(!((data.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection 
-      && (data.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection)) continue;
+	 && (data.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection)) continue;
 
     
     weight = 1;
@@ -299,8 +299,8 @@ cout << nTotal << "events, from which " << nZH << "are ZH" << endl;
       m[2] = pair3.M();
     }
     
- if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
- //   if ( (m[0] < 40 || m[0] > 120) &&  (m[1] < 40 || m[1] > 120) &&  (m[2] < 40 || m[2] > 120)) continue;    
+    if ( (m[0] < 80 || m[0] > 100) &&  (m[1] < 80 || m[1] > 100) &&  (m[2] < 80 || m[2] > 100)) continue;
+    //   if ( (m[0] < 40 || m[0] > 120) &&  (m[1] < 40 || m[1] > 120) &&  (m[2] < 40 || m[2] > 120)) continue;    
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
     
     LorentzVector pair, tlepton, pairjet;
@@ -311,9 +311,9 @@ cout << nTotal << "events, from which " << nZH << "are ZH" << endl;
     pairjet = data.jet1_+ data.jet2_;
         
     
-   if (mt < 40 || data.met_ < 25) continue;
-  //   if (mt < 40 ) continue;
-  //  if (pairjet.M() < 65 || pairjet.M() > 95) continue;
+    if (mt < 40 || data.met_ < 25) continue;
+    //   if (mt < 40 ) continue;
+    //  if (pairjet.M() < 65 || pairjet.M() > 95) continue;
 
     eventsPassData += weight;
   }

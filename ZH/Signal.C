@@ -174,7 +174,7 @@ void Signal() {
     weight = 1;
     weight = lumi*signal.scale1fb_*signal.sfWeightPU_*signal.sfWeightEff_*signal.sfWeightTrig_;    
     
-   //if(signal.processId_ != 24) continue;
+    //if(signal.processId_ != 24) continue;
     
     //Fill histos that are general
     sig_njets->Fill(signal.njets_, weight);
@@ -244,7 +244,7 @@ void Signal() {
     LorentzVector higgsSystem = tlepton + metvector + signal.jet1_+ signal.jet2_;
  
     
-     //Kinematic cuts
+    //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     sig_cuts->Fill(3., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(3., weight);
@@ -261,7 +261,7 @@ void Signal() {
     sig_cuts->Fill(6., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(6., weight);
     
-     //Fill histos
+    //Fill histos
     sig_met->Fill(signal.met_, weight);
     sig_mllz->Fill(pair.M(), weight);
     sig_mt->Fill(mt, weight);
@@ -451,7 +451,7 @@ void Signal() {
     else if (nsel == 50) bck_cuts_zz->Fill(6., weight);
     else if (nsel == 61) bck_cuts_fakes->Fill(6., weight);
     
-     //Fill histos
+    //Fill histos
     types->Fill(background.dstype_);
     bck_met->Fill(background.met_, weight);
     bck_mllz->Fill(pair.M(), weight);
@@ -463,24 +463,24 @@ void Signal() {
     bck_mh_mll->Fill(higgsSystem.M(), pair.M(), weight);
     
     if (nsel == 49){
-     bck_mH_wz->Fill(higgsSystem.M(), weight);
-     bck_dphiljj_wz->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_mH_wz->Fill(higgsSystem.M(), weight);
+      bck_dphiljj_wz->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
     } else if (nsel == 59){
-     bck_mH_www->Fill(higgsSystem.M(), weight);
-     bck_dphiljj_www->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_mH_www->Fill(higgsSystem.M(), weight);
+      bck_dphiljj_www->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
     } else if (nsel == 0){
-     bck_mH_data->Fill(higgsSystem.M(), weight);
-     bck_dphiljj_data->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_mH_data->Fill(higgsSystem.M(), weight);
+      bck_dphiljj_data->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
     } else if (nsel == 50){
-     bck_mH_zz->Fill(higgsSystem.M(), weight);
-     bck_dphiljj_zz->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_mH_zz->Fill(higgsSystem.M(), weight);
+      bck_dphiljj_zz->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
     } else if (nsel == 43){
-     bck_mH_tt->Fill(higgsSystem.M(), weight);
-     bck_dphiljj_tt->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_mH_tt->Fill(higgsSystem.M(), weight);
+      bck_dphiljj_tt->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
     } 
     else if (nsel == 61) {
-     bck_mH_fakes->Fill(higgsSystem.M(), weight);
-     bck_dphiljj_fakes->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_mH_fakes->Fill(higgsSystem.M(), weight);
+      bck_dphiljj_fakes->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
     } 
   
  
@@ -558,7 +558,7 @@ void Signal() {
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  data.mt2_; tlepton = data.lep2_;} 
     pairjet = data.jet1_+ data.jet2_;
 
-     //Kinematic cuts
+    //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     data_cuts->Fill(3., weight);
     

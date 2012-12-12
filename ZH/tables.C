@@ -74,13 +74,13 @@ void tables(){
     
 
       if (h[iProcess]->GetBinContent(i) && iProcess != 2){
-       output << " & " << std::setiosflags(std::ios::fixed) << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinContent(i) ; 
-       output << " $\\pm $"  << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinError(i);
+	output << " & " << std::setiosflags(std::ios::fixed) << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinContent(i) ; 
+	output << " $\\pm $"  << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinError(i);
        
       } else if (h[iProcess]->GetBinContent(i))
-         output << " & " << std::setiosflags(std::ios::fixed) << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinContent(i) ; 
-       else if (i > 1) { if (h[iProcess]->GetBinContent(i-1) )
-         output << " & $\\leq$ " << setprecision(h[iProcess]->GetBinError(i-1)) << 2*h[iProcess]->GetBinError(i-1);}
+	output << " & " << std::setiosflags(std::ios::fixed) << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinContent(i) ; 
+      else if (i > 1) { if (h[iProcess]->GetBinContent(i-1) )
+	  output << " & $\\leq$ " << setprecision(h[iProcess]->GetBinError(i-1)) << 2*h[iProcess]->GetBinError(i-1);}
       else  output << " & - " ;
      
     }
