@@ -42,7 +42,7 @@ void compare(){
     h[1][iPlot]->SetFillColor(kBlue);
     h[1][iPlot]->SetFillStyle(3001);
     h[1][iPlot]->SetLineWidth(2);
-    //h[1][iPlot]->SetNormFactor(1);
+    h[1][iPlot]->SetNormFactor(1);
     h[1][iPlot]->Rebin(rebinHisto[iPlot]);
     
     leg = new TLegend(0.70,0.80,0.99,0.99);
@@ -54,16 +54,14 @@ void compare(){
     
     double max = TMath::Max(h[0][iPlot]->GetMaximum(), h[1][iPlot]->GetMaximum());
     TCanvas *c1 = new TCanvas();
-    h[1][iPlot]->Draw("histo");
-    h[1][iPlot]->SetMaximum(0.2);
-    h[0][iPlot]->SetMinimum(1);
-    h[0][iPlot]->Draw("histo,sames");
+    h[0][iPlot]->Draw("histo");
     h[1][iPlot]->Draw("histo,sames");
-    h[1][iPlot]->GetYaxis()->SetTitle("Normalized to 1");
-    h[1][iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
-    h[1][iPlot]->GetYaxis()->SetLimits(0,0.5);
-    h[1][iPlot]->GetYaxis()->CenterTitle(); 
-    h[1][iPlot]->GetYaxis()->SetTitleOffset(1.5);
+    h[0][iPlot]->Draw("histo,sames");
+    h[0][iPlot]->GetYaxis()->SetTitle("Normalized to 1");
+    h[0][iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
+    h[0][iPlot]->GetYaxis()->SetLimits(0,0.5);
+    h[0][iPlot]->GetYaxis()->CenterTitle(); 
+    h[0][iPlot]->GetYaxis()->SetTitleOffset(1.5);
     leg->Draw();
     
     c1->SaveAs("plots/norm_"+cutLabel[iPlot]+".png");

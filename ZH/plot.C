@@ -23,10 +23,10 @@ void plot(){
   
   TFile *_file0 = TFile::Open(myRootFile);
   
-  const int nProcess = 5;
-  TString processName[nProcess] =  { "wz", "www", "data","zz", "tt"};
-  TString processTitle[nProcess] = { "WZ", "WWW", "data", "ZZ", "t#bar{t}"};
-  Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kYellow-10, kMagenta+3};
+  const int nProcess = 4;
+  TString processName[nProcess] =  { "wz", "www", "fakes","zz"};
+  TString processTitle[nProcess] = { "WZ", "WWW", "fakes", "ZZ"};
+  Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kYellow-10};
  
   const int nPlots = 2;
   TString cutLabel[nPlots] =     { "mH", "dphiljj"};

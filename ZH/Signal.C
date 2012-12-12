@@ -22,8 +22,8 @@
 
 const int verboseLevel =   1;
 const double mz = 91.1876;
-const double lumi = 17.6;
-const double separation = 10;
+const double lumi = 18.8;
+const double separation = 15;
 const double metcut = 25;
 const double mtcut = 30;
 const double lowpair = 65;
@@ -88,6 +88,7 @@ void Signal() {
   TH1D* bck_cuts_www = new TH1D("bck_cuts_www", "cuts", 10, 0, 10);
   TH1D* bck_cuts_data = new TH1D("bck_cuts_data", "cuts", 10, 0, 10);
   TH1D* bck_cuts_zz = new TH1D("bck_cuts_zz", "cuts", 10, 0, 10);
+  TH1D* bck_cuts_fakes = new TH1D("bck_cuts_fakes", "cuts", 10, 0, 10);
   
   TH1D* bck_met = new TH1D("bck_met", "MET", 200, 0, 200);
   TH1D* bck_mllz = new TH1D("bck_mllz", "m_{ll}", 200, 0, 200);
@@ -105,6 +106,7 @@ void Signal() {
   bck_cuts_www->Sumw2();
   bck_cuts_data->Sumw2();
   bck_cuts_zz->Sumw2();
+  bck_cuts_fakes->Sumw2();
   
   bck_met->Sumw2();
   bck_mllz->Sumw2();
@@ -123,24 +125,28 @@ void Signal() {
   TH1D* bck_mH_data = new TH1D("bck_mH_data", "m_H", 200, 0, 400);
   TH1D* bck_mH_zz = new TH1D("bck_mH_zz", "m_H", 200, 0, 400);
   TH1D* bck_mH_tt = new TH1D("bck_mH_tt", "m_H", 200, 0, 400);
+  TH1D* bck_mH_fakes = new TH1D("bck_mH_fakes", "m_H", 200, 0, 400);
   
   bck_mH_wz->Sumw2();
   bck_mH_www->Sumw2();
   bck_mH_data->Sumw2(); 
   bck_mH_zz->Sumw2();
   bck_mH_tt->Sumw2();
+  bck_mH_fakes->Sumw2();
   
   TH1D* bck_dphiljj_wz = new TH1D("bck_dphiljj_wz", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* bck_dphiljj_www = new TH1D("bck_dphiljj_www", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* bck_dphiljj_data = new TH1D("bck_dphiljj_data", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* bck_dphiljj_zz = new TH1D("bck_dphiljj_zz", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* bck_dphiljj_tt = new TH1D("bck_dphiljj_tt", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  TH1D* bck_dphiljj_fakes = new TH1D("bck_dphiljj_fakes", "#Delta#phi_{ljj}", 200, 0, 3.5);
  
   bck_dphiljj_wz->Sumw2();
   bck_dphiljj_www->Sumw2();
   bck_dphiljj_data->Sumw2(); 
   bck_dphiljj_zz->Sumw2();
   bck_dphiljj_tt->Sumw2();
+  bck_dphiljj_fakes->Sumw2();
   
   
   TH1D* data_cuts = new TH1D("data_cuts", "cuts", 10, 0, 10);
@@ -239,7 +245,7 @@ void Signal() {
  
     
      //Kinematic cuts
-    if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
+    if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     sig_cuts->Fill(3., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(3., weight);
 
@@ -278,20 +284,20 @@ void Signal() {
   cout << endl;
 
   //Backgrounds
-  double bckType[60] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+  double bckType[62] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
 			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
 			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
 
-  double weiType[60] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+  double weiType[62] = {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
 			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
 			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+			0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
   
-  TString bckName[60] = {"null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
+  TString bckName[62] = {"null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
                          "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
                          "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null",
-                         "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null"};
+                         "null","null","null","null","null","null","null","null","null","null","null","null","null","null","null", "null", "fakes"};
   
   bckName[0] = "data";
   bckName[1] = "qqww";
@@ -339,7 +345,10 @@ void Signal() {
     if(((background.cuts_ & SmurfTree::Lep1LooseEleV4) == SmurfTree::Lep1LooseEleV4) && (background.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
     if(((background.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (background.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
     if(((background.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
-    if (nFake) weight*= background.sfWeightFR_*0.5;
+    if (nFake){ 
+      nsel = 61;
+      weight*= background.sfWeightFR_;
+    }
     bck_nfakes->Fill(nFake);
     
     bck_cuts->Fill(0., weight);
@@ -348,6 +357,7 @@ void Signal() {
     else if (nsel == 59) bck_cuts_www->Fill(0., weight);
     else if (nsel == 0) bck_cuts_data->Fill(0., weight);
     else if (nsel == 50) bck_cuts_zz->Fill(0., weight);
+    else if (nsel == 61) bck_cuts_fakes->Fill(0., weight);
     
     //2 same flavor, oppposite sign leptons + extra one
     if (background.lid3_ == background.lid2_ && background.lid3_ == background.lid1_) continue;
@@ -361,6 +371,7 @@ void Signal() {
     else if (nsel == 59) bck_cuts_www->Fill(1., weight);
     else if (nsel == 0) bck_cuts_data->Fill(1., weight);
     else if (nsel == 50) bck_cuts_zz->Fill(1., weight);
+    else if (nsel == 61) bck_cuts_fakes->Fill(1., weight);
     
     //At least 2 jets
     if (background.njets_ < 2) continue; 
@@ -370,7 +381,7 @@ void Signal() {
     else if (nsel == 59) bck_cuts_www->Fill(2., weight);
     else if (nsel == 0) bck_cuts_data->Fill(2., weight);
     else if (nsel == 50) bck_cuts_zz->Fill(2., weight);
-    
+    else if (nsel == 61) bck_cuts_fakes->Fill(2., weight);
     
     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
@@ -403,13 +414,14 @@ void Signal() {
    
     
     //Kinematic cuts
-    if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
+    if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     bck_cuts->Fill(3., weight); 
        
     if (nsel == 49) bck_cuts_wz->Fill(3., weight);
     else if (nsel == 59) bck_cuts_www->Fill(3., weight);
     else if (nsel == 0) bck_cuts_data->Fill(3., weight);
     else if (nsel == 50) bck_cuts_zz->Fill(3., weight);
+    else if (nsel == 61) bck_cuts_fakes->Fill(3., weight);
     
     if (background.met_ < metcut) continue;
     bck_cuts->Fill(4., weight);
@@ -418,6 +430,7 @@ void Signal() {
     else if (nsel == 59) bck_cuts_www->Fill(4., weight);
     else if (nsel == 0) bck_cuts_data->Fill(4., weight);
     else if (nsel == 50) bck_cuts_zz->Fill(4., weight);
+    else if (nsel == 61) bck_cuts_fakes->Fill(4., weight);
     
     
     if (mt < mtcut) continue;
@@ -427,6 +440,7 @@ void Signal() {
     else if (nsel == 59) bck_cuts_www->Fill(5., weight);
     else if (nsel == 0) bck_cuts_data->Fill(5., weight);
     else if (nsel == 50) bck_cuts_zz->Fill(5., weight);
+    else if (nsel == 61) bck_cuts_fakes->Fill(5., weight);
     
     if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
     bck_cuts->Fill(6., weight);
@@ -435,6 +449,7 @@ void Signal() {
     else if (nsel == 59) bck_cuts_www->Fill(6., weight);
     else if (nsel == 0) bck_cuts_data->Fill(6., weight);
     else if (nsel == 50) bck_cuts_zz->Fill(6., weight);
+    else if (nsel == 61) bck_cuts_fakes->Fill(6., weight);
     
      //Fill histos
     types->Fill(background.dstype_);
@@ -462,7 +477,11 @@ void Signal() {
     } else if (nsel == 43){
      bck_mH_tt->Fill(higgsSystem.M(), weight);
      bck_dphiljj_tt->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
-    }
+    } 
+    else if (nsel == 61) {
+     bck_mH_fakes->Fill(higgsSystem.M(), weight);
+     bck_dphiljj_fakes->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    } 
   
  
     eventsPassBck += weight;
@@ -540,7 +559,7 @@ void Signal() {
     pairjet = data.jet1_+ data.jet2_;
 
      //Kinematic cuts
-    if (pair.M() < (mz - separation) || pair.M() > (mz + separation)) continue; 
+    if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     data_cuts->Fill(3., weight);
     
     if (data.met_ < metcut) continue;
@@ -596,7 +615,7 @@ void Signal() {
     }
     cout << endl;
     cout << "[Breakdown:] " << endl;
-    for(int i=0; i<60; i++){
+    for(int i=0; i<62; i++){
       if(bckType[i] != 0 )
 	cout << i <<"\t" << bckName[i] << ":\t\t" << bckType[i] << "+-" << sqrt(weiType[i]) <<endl;
     }
