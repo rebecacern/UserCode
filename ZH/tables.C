@@ -1,6 +1,6 @@
 // rebeca@cern.ch
-// Basic plotter - comparing quantities
-// November 2012
+// Basic latex table
+// December 2012
 #include "TH1.h"
 #include "TH2.h"
 #include "TKey.h"
