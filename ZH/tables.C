@@ -41,8 +41,8 @@ void tables(){
   TString processName[nProcess] =  { "sig_cuts", "sig_cuts_zh", "data_cuts", "bck_cuts", "bck_cuts_wz", "bck_cuts_fakes", "bck_cuts_www","bck_cuts_zz"};
   TString processTitle[nProcess] = { "HWW", "(ZH)", "data", "background", "WZ", "fakes", "tri-bosons", "ZZ"};
  
-  const int nCuts = 7;
-  TString cutLabel[nCuts] = { "3 lep", "OSSF", "2 jets", "$m_{ll}$", "$E_{T}^{miss}$", "$m_{T}$", "$m_{jj}$"};
+  const int nCuts = 8;
+  TString cutLabel[nCuts] = { "3 lep", "OSSF", "2 jets", "$m_{ll}$", "$E_{T}^{miss}$", "$m_{T}$", "$m_{jj}$", "$\Delta\Phi_{jj-l}$"};
  
    
   TH1F*  h [nProcess];
@@ -73,11 +73,11 @@ void tables(){
     for (int iProcess = 0; iProcess < nProcess; iProcess++){
     
 
-      if (h[iProcess]->GetBinContent(i) && iProcess != 2){
+      if (h[iProcess]->GetBinContent(i)!=0 && iProcess != 2){
 	output << " & " << std::setiosflags(std::ios::fixed) << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinContent(i) ; 
 	output << " $\\pm $"  << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinError(i);
        
-      } else if (h[iProcess]->GetBinContent(i))
+      } else if (h[iProcess]->GetBinContent(i) !=0)
 	output << " & " << std::setiosflags(std::ios::fixed) << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinContent(i) ; 
       else if (i > 1) { if (h[iProcess]->GetBinContent(i-1) )
 	  output << " & $\\leq$ " << setprecision(h[iProcess]->GetBinError(i-1)) << 2*h[iProcess]->GetBinError(i-1);}

@@ -24,15 +24,17 @@ const int verboseLevel =   1;
 const double mz = 91.1876;
 const double lumi = 18.8;
 const double separation = 15;
-const double metcut = 25;
-const double mtcut = 30;
-const double lowpair = 65;
-const double highpair = 95;
+const double metcut = -25;
+const double mtcut = -30;
+const double lowpair = -55;
+const double highpair = 105000000000;
+const double phicut = 2.5;
 
 void Signal() {
   
   TString bgdInputFile    = "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root";
-  TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww125.root";
+  //TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww125.root";
+  TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root";
   TString dataInputFile   = "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/data_3l.root";
   
   //Load datasets
@@ -261,6 +263,11 @@ void Signal() {
     sig_cuts->Fill(6., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(6., weight);
     
+    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    if (deltaPhi > phicut) continue;
+    sig_cuts->Fill(7., weight);
+    if(signal.processId_ == 24)sig_cuts_zh->Fill(7., weight);
+    
     //Fill histos
     sig_met->Fill(signal.met_, weight);
     sig_mllz->Fill(pair.M(), weight);
@@ -268,7 +275,7 @@ void Signal() {
     sig_ptjet->Fill(signal.jet1_.Pt(), weight);  
     sig_mH->Fill(higgsSystem.M(), weight);
     sig_mjj->Fill(pairjet.M(), weight);
-    sig_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    sig_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     sig_mh_mll->Fill(higgsSystem.M(), pair.M(), weight);
     eventstouse++;
     
@@ -451,6 +458,16 @@ void Signal() {
     else if (nsel == 50) bck_cuts_zz->Fill(6., weight);
     else if (nsel == 61) bck_cuts_fakes->Fill(6., weight);
     
+     
+    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    if (deltaPhi > phicut) continue;
+     bck_cuts->Fill(7., weight);
+    if (nsel == 49) bck_cuts_wz->Fill(7., weight);
+    else if (nsel == 59) bck_cuts_www->Fill(7., weight);
+    else if (nsel == 0) bck_cuts_data->Fill(7., weight);
+    else if (nsel == 50) bck_cuts_zz->Fill(7., weight);
+    else if (nsel == 61) bck_cuts_fakes->Fill(7., weight);
+    
     //Fill histos
     types->Fill(background.dstype_);
     bck_met->Fill(background.met_, weight);
@@ -459,28 +476,28 @@ void Signal() {
     bck_ptjet->Fill(background.jet1_.Pt(), weight);  
     bck_mH->Fill(higgsSystem.M(), weight);
     bck_mjj->Fill(pairjet.M(), weight);
-    bck_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    bck_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     bck_mh_mll->Fill(higgsSystem.M(), pair.M(), weight);
     
     if (nsel == 49){
       bck_mH_wz->Fill(higgsSystem.M(), weight);
-      bck_dphiljj_wz->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_dphiljj_wz->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     } else if (nsel == 59){
       bck_mH_www->Fill(higgsSystem.M(), weight);
-      bck_dphiljj_www->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_dphiljj_www->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     } else if (nsel == 0){
       bck_mH_data->Fill(higgsSystem.M(), weight);
-      bck_dphiljj_data->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_dphiljj_data->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     } else if (nsel == 50){
       bck_mH_zz->Fill(higgsSystem.M(), weight);
-      bck_dphiljj_zz->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_dphiljj_zz->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     } else if (nsel == 43){
       bck_mH_tt->Fill(higgsSystem.M(), weight);
-      bck_dphiljj_tt->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_dphiljj_tt->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     } 
     else if (nsel == 61) {
       bck_mH_fakes->Fill(higgsSystem.M(), weight);
-      bck_dphiljj_fakes->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+      bck_dphiljj_fakes->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     } 
   
  
@@ -570,13 +587,16 @@ void Signal() {
  
     if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
     data_cuts->Fill(6., weight);
-    
+      
+    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    if (deltaPhi > phicut) continue;
+     data_cuts->Fill(7., weight);
   
     LorentzVector metvector(data.met_*cos(data.metPhi_), data.met_*sin(data.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + data.jet1_+ data.jet2_;
    
     data_mH->Fill(higgsSystem.M(), weight);
-    data_dphiljj->Fill(DeltaPhi(pairjet.Phi(),tlepton.Phi()), weight);
+    data_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     eventsPassData += weight;
     
   
@@ -598,7 +618,9 @@ void Signal() {
       if (i == 4) cout << " mll:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
       if (i == 5) cout << " met:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
       if (i == 6) cout << " mt:\t\t"    <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
-      if (i == 7) cout << " mjj:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+      if (i == 7) cout << " mjj:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;  if (i == 7) cout << " mjj:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+      if (i == 8) cout << " phi:\t\t"   <<  sig_cuts->GetBinContent(i) << " +/-  " <<  sig_cuts->GetBinError(i) << " (" << sig_cuts_zh->GetBinContent(i)<< " +/-  " <<  sig_cuts->GetBinError(i) << ")" << endl;
+  
     }
     cout << "(from which " << eventsZH << " are genuine ZH events)" << endl;
     cout << "------------------------------------------" << endl;  
@@ -612,6 +634,7 @@ void Signal() {
       if (i == 5) cout << " met:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
       if (i == 6) cout << " mt:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
       if (i == 7) cout << " mjj:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
+      if (i == 8) cout << " phi:\t\t" <<  bck_cuts->GetBinContent(i) << " +/-  " <<  bck_cuts->GetBinError(i)  << endl;
     }
     cout << endl;
     cout << "[Breakdown:] " << endl;
@@ -630,6 +653,7 @@ void Signal() {
       if (i == 5) cout << " met:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
       if (i == 6) cout << " mt:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
       if (i == 7) cout << " mjj:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
+      if (i == 8) cout << " phi:\t\t" <<  data_cuts->GetBinContent(i) << " +/-  " <<  data_cuts->GetBinError(i)  << endl;
     }
     cout << "------------------------------------------" << endl; 
   }

@@ -26,7 +26,7 @@ void plot(){
   const int nProcess = 4;
   TString processName[nProcess] =  { "wz", "www", "fakes","zz"};
   TString processTitle[nProcess] = { "WZ", "WWW", "fakes", "ZZ"};
-  Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kYellow-10};
+  Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kGray+2};
  
   const int nPlots = 2;
   TString cutLabel[nPlots] =     { "mH", "dphiljj"};
@@ -49,7 +49,7 @@ void plot(){
     leg ->SetFillStyle(1001);
     leg ->SetFillColor(kWhite);
     leg ->SetBorderSize(1);
-    leg->AddEntry( h0[iPlot], "m_{H} = 125", "l");
+    leg->AddEntry( h0[iPlot], "(ZH) m_{H} = 125", "l");
     
     for (int iProcess = 0; iProcess < nProcess; iProcess++){
       h[iPlot][iProcess] = (TH1D*) _file0->Get("bck_" + cutLabel[iPlot]+ "_" + processName[iProcess]);
@@ -72,11 +72,11 @@ void plot(){
     hStack[iPlot]->SetMaximum(max*1.25);
     hStack[iPlot]->SetMinimum(0.01);
     h0[iPlot]->Draw("histo,sames");
-    hStack[iPlot]->GetYaxis()->SetTitle("events / 17.6fb^{-1}");
+    hStack[iPlot]->GetYaxis()->SetTitle("events / 18.8fb^{-1}");
     hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
     hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
     hStack[iPlot]->GetYaxis()->CenterTitle(); 
-    hStack[iPlot]->GetYaxis()->SetTitleOffset(1.5);
+    hStack[iPlot]->GetYaxis()->SetTitleOffset(1.3);
     if (iPlot == 1) hStack[iPlot]->GetXaxis()->SetRangeUser(0.0, 3.1415);
     leg->Draw();
     
@@ -100,11 +100,11 @@ void plot(){
     hStack[iPlot]->SetMinimum(0.01);
     h0[iPlot]->Draw("histo,sames");
     h1[iPlot]->Draw("e,sames");
-    hStack[iPlot]->GetYaxis()->SetTitle("events / 17.6fb^{-1}");
+    hStack[iPlot]->GetYaxis()->SetTitle("events / 18.8fb^{-1}");
     hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
     hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
     hStack[iPlot]->GetYaxis()->CenterTitle(); 
-    hStack[iPlot]->GetYaxis()->SetTitleOffset(1.5);
+    hStack[iPlot]->GetYaxis()->SetTitleOffset(1.3);
     leg->Draw();
     
     c1->SaveAs("plots/data_"+cutLabel[iPlot]+".png");
