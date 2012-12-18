@@ -72,7 +72,7 @@ void plot(){
     hStack[iPlot]->SetMaximum(max*1.25);
     hStack[iPlot]->SetMinimum(0.01);
     h0[iPlot]->Draw("histo,sames");
-    hStack[iPlot]->GetYaxis()->SetTitle("events / 18.8fb^{-1}");
+    hStack[iPlot]->GetYaxis()->SetTitle("events / 19.46fb^{-1}");
     hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
     hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
     hStack[iPlot]->GetYaxis()->CenterTitle(); 
@@ -100,7 +100,7 @@ void plot(){
     hStack[iPlot]->SetMinimum(0.01);
     h0[iPlot]->Draw("histo,sames");
     h1[iPlot]->Draw("e,sames");
-    hStack[iPlot]->GetYaxis()->SetTitle("events / 18.8fb^{-1}");
+    hStack[iPlot]->GetYaxis()->SetTitle("events / 19.46 fb^{-1}");
     hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
     hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
     hStack[iPlot]->GetYaxis()->CenterTitle(); 

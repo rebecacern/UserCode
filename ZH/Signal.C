@@ -22,13 +22,13 @@
 
 const int verboseLevel =   1;
 const double mz = 91.1876;
-const double lumi = 18.8;
+const double lumi = 19.467;
 const double separation = 15;
 const double metcut = -25;
 const double mtcut = -30;
 const double lowpair = -55;
 const double highpair = 105000000000;
-const double phicut = 2.5;
+const double phicut = 22.5;
 
 void Signal() {
   
