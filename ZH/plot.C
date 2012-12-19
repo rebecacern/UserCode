@@ -28,10 +28,11 @@ void plot(){
   TString processTitle[nProcess] = { "WZ", "WWW", "fakes", "ZZ"};
   Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kGray+2};
  
-  const int nPlots = 2;
-  TString cutLabel[nPlots] =     { "mH", "dphiljj"};
-  int rebinHisto[nPlots] =       { 10, 10};
-  TString cutTitle[nPlots] =     { "Reconstructed mass m_{H}", "#Delta#Phi_{jjl}"}; 
+  const int nPlots = 12;
+  TString cutLabel[nPlots] =     { "mH", "dphiljj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll"};
+  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10};
+  TString cutTitle[nPlots] =     { "Reconstructed mass m_{H}", "#Delta#Phi_{jjl}", "MET", "m_{ll} Z", "m_{T}", "P_{T} of the leading jet",
+                                   "m_{jj}", "#DeltaR_{ll}", "tracker MET", "min(MET, tracker MET)", "# of jets", "|m_{jj} - m{Z}|"  }; 
  
   TH1D*  h [nPlots][nProcess];
   TH1D*  h0 [nPlots];
@@ -66,24 +67,7 @@ void plot(){
       hStack[iPlot]->Add(h[iPlot][iProcess]);
     }
  
-    double max = TMath::Max(h0[iPlot]->GetMaximum(), hStack[iPlot]->GetMaximum());
-    TCanvas *c1 = new TCanvas();
-    hStack[iPlot]->Draw("histo");
-    hStack[iPlot]->SetMaximum(max*1.25);
-    hStack[iPlot]->SetMinimum(0.01);
-    h0[iPlot]->Draw("histo,sames");
-    hStack[iPlot]->GetYaxis()->SetTitle("events / 19.46fb^{-1}");
-    hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
-    hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
-    hStack[iPlot]->GetYaxis()->CenterTitle(); 
-    hStack[iPlot]->GetYaxis()->SetTitleOffset(1.3);
-    if (iPlot == 1) hStack[iPlot]->GetXaxis()->SetRangeUser(0.0, 3.1415);
-    leg->Draw();
-    
-    c1->SaveAs("plots/"+cutLabel[iPlot]+".png");
-    c1->SetLogy();
-    c1->SaveAs("plots/"+cutLabel[iPlot]+"_log.png");
-    
+   
     h1[iPlot] = (TH1D*) _file0->Get("data_" + cutLabel[iPlot]);
     h1[iPlot]->Rebin(rebinHisto[iPlot]);
     h1[iPlot]->SetMarkerStyle(20);
@@ -93,7 +77,7 @@ void plot(){
     h1[iPlot]->SetLineColor(kBlack);
     leg->AddEntry( h1[iPlot], "data", "p");
     
-    max = TMath::Max(h1[iPlot]->GetMaximum(), hStack[iPlot]->GetMaximum());
+    double max = TMath::Max(h1[iPlot]->GetMaximum(), hStack[iPlot]->GetMaximum());
     TCanvas *c1 = new TCanvas();
     hStack[iPlot]->Draw("histo");
     hStack[iPlot]->SetMaximum(max*1.5);
