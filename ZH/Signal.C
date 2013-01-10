@@ -31,7 +31,7 @@ const double metcut = -25;
 const double mtcut = -30;
 const double lowpair = -55;
 const double highpair = 105000000000;
-const double phicut = 2.3;
+const double phicut = 20000; //2.3;
 
 void Signal() {
   
@@ -73,6 +73,7 @@ void Signal() {
   TH1D* sig_mH = new TH1D("sig_mH", "m_H", 200, 0, 400);
   TH1D* sig_mjj = new TH1D("sig_mjj", "m_jj", 200, 0, 400);
   TH1D* sig_dphiljj = new TH1D("sig_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  TH1D* sig_dphilmjj = new TH1D("sig_dphilmjj", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
   TH1D* sig_njets = new TH1D("sig_njets", "Number of jets", 30, -0.5, 29.5);
   TH1D* sig_dRll = new TH1D("sig_dRll", "#DeltaR_{ll}", 200, 0, 3.5);
   TH1D* sig_tmet = new TH1D("sig_tmet", "tracker MET", 200, 0, 200);
@@ -89,6 +90,7 @@ void Signal() {
   sig_mH->Sumw2();
   sig_mjj->Sumw2();  
   sig_dphiljj->Sumw2();
+  sig_dphilmjj->Sumw2();
   sig_njets->Sumw2();
   sig_dRll->Sumw2();
   sig_tmet->Sumw2();
@@ -117,6 +119,7 @@ void Signal() {
   TH1D* bck_mH = new TH1D("bck_mH", "m_H", 200, 0, 400);
   TH1D* bck_mjj = new TH1D("bck_mjj", "m_jj", 200, 0, 400);
   TH1D* bck_dphiljj = new TH1D("bck_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  TH1D* bck_dphilmjj = new TH1D("bck_dphilmjj", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
   TH1D* bck_njets = new TH1D("bck_njets", "Number of jets", 30, -0.5, 29.5);
   TH1D* bck_dRll = new TH1D("bck_dRll", "#DeltaR_{ll}", 200, 0, 3.5);
   TH1D* bck_tmet = new TH1D("bck_tmet", "tracker MET", 200, 0, 200);
@@ -130,6 +133,7 @@ void Signal() {
   bck_mH->Sumw2();
   bck_mjj->Sumw2();  
   bck_dphiljj->Sumw2();
+  bck_dphilmjj->Sumw2();
   bck_njets->Sumw2();
   bck_dRll->Sumw2();
   bck_tmet->Sumw2();
@@ -238,6 +242,20 @@ void Signal() {
   bck_dphiljj_tt->Sumw2();
   bck_dphiljj_fakes->Sumw2();
   
+  TH1D* bck_dphilmjj_wz = new TH1D("bck_dphilmjj_wz", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
+  TH1D* bck_dphilmjj_www = new TH1D("bck_dphilmjj_www", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
+  TH1D* bck_dphilmjj_data = new TH1D("bck_dphilmjj_data", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
+  TH1D* bck_dphilmjj_zz = new TH1D("bck_dphilmjj_zz", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
+  TH1D* bck_dphilmjj_tt = new TH1D("bck_dphilmjj_tt", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
+  TH1D* bck_dphilmjj_fakes = new TH1D("bck_dphilmjj_fakes", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
+ 
+  bck_dphilmjj_wz->Sumw2();
+  bck_dphilmjj_www->Sumw2();
+  bck_dphilmjj_data->Sumw2(); 
+  bck_dphilmjj_zz->Sumw2();
+  bck_dphilmjj_tt->Sumw2();
+  bck_dphilmjj_fakes->Sumw2();
+  
   TH1D* bck_njets_wz = new TH1D("bck_njets_wz", "Number of jets", 30, -0.5, 29.5);
   TH1D* bck_njets_www = new TH1D("bck_njets_www", "Number of jets", 30, -0.5, 29.5);
   TH1D* bck_njets_data = new TH1D("bck_njets_data", "Number of jets", 30, -0.5, 29.5);
@@ -318,6 +336,7 @@ void Signal() {
   TH1D* data_mH = new TH1D("data_mH", "m_H", 200, 0, 400);
   TH1D* data_mjj = new TH1D("data_mjj", "m_jj", 200, 0, 400);
   TH1D* data_dphiljj = new TH1D("data_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
+  TH1D* data_dphilmjj = new TH1D("data_dphilmjj", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
   TH1D* data_njets = new TH1D("data_njets", "Number of jets", 30, -0.5, 29.5);
   TH1D* data_dRll = new TH1D("data_dRll", "#DeltaR_{ll}", 200, 0, 3.5);
   TH1D* data_tmet = new TH1D("data_tmet", "tracker MET", 200, 0, 200);
@@ -332,6 +351,7 @@ void Signal() {
   data_mH->Sumw2();
   data_mjj->Sumw2();  
   data_dphiljj->Sumw2();
+  data_dphilmjj->Sumw2();
   data_njets->Sumw2();
   data_dRll->Sumw2();
   data_tmet->Sumw2();
@@ -418,6 +438,7 @@ void Signal() {
     pairjet = signal.jet1_+ signal.jet2_;
     LorentzVector metvector(signal.met_*cos(signal.metPhi_), signal.met_*sin(signal.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + signal.jet1_+ signal.jet2_;
+    LorentzVector lm = tlepton + metvector;
  
     
     //Kinematic cuts
@@ -451,6 +472,7 @@ void Signal() {
     sig_mH->Fill(higgsSystem.M(), weight);
     sig_mjj->Fill(pairjet.M(), weight);
     sig_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
+    sig_dphilmjj->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
     sig_dRll->Fill(dR);
     sig_tmet->Fill(signal.trackMet_, weight);
     sig_minmet->Fill(TMath::Min(signal.met_, signal.trackMet_), weight);
@@ -529,7 +551,9 @@ void Signal() {
     if(((background.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (background.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
     if (nFake){ 
       nsel = 61;
-      weight*= background.sfWeightFR_;
+      double factor = 1;
+      weight*= background.sfWeightFR_*factor;
+      if (background.dstype_ != SmurfTree::data) weight *=-1;
     }
     
     bck_cuts->Fill(0., weight);
@@ -593,6 +617,7 @@ void Signal() {
     pairjet = background.jet1_+ background.jet2_;
     LorentzVector metvector(background.met_*cos(background.metPhi_), background.met_*sin(background.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + background.jet1_+ background.jet2_;
+    LorentzVector lm = tlepton + metvector;
    
     
     //Kinematic cuts
@@ -653,6 +678,7 @@ void Signal() {
     bck_mH->Fill(higgsSystem.M(), weight);
     bck_mjj->Fill(pairjet.M(), weight);
     bck_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
+    bck_dphilmjj->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
     bck_dRll->Fill(dR);
     bck_tmet->Fill(background.trackMet_, weight);
     bck_minmet->Fill(TMath::Min(background.met_, background.trackMet_), weight);
@@ -668,6 +694,7 @@ void Signal() {
       bck_mH_wz->Fill(higgsSystem.M(), weight);
       bck_mjj_wz->Fill(pairjet.M(), weight);
       bck_dphiljj_wz->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
+      bck_dphilmjj_wz->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
       bck_dRll_wz->Fill(dR);
       bck_tmet_wz->Fill(background.trackMet_, weight);
       bck_minmet_wz->Fill(TMath::Min(background.met_, background.trackMet_), weight);
@@ -681,6 +708,7 @@ void Signal() {
       bck_mH_www->Fill(higgsSystem.M(), weight);
       bck_mjj_www->Fill(pairjet.M(), weight);
       bck_dphiljj_www->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
+      bck_dphilmjj_www->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
       bck_dRll_www->Fill(dR);
       bck_tmet_www->Fill(background.trackMet_, weight);
       bck_minmet_www->Fill(TMath::Min(background.met_, background.trackMet_), weight);
@@ -707,6 +735,7 @@ void Signal() {
       bck_mH_zz->Fill(higgsSystem.M(), weight);
       bck_mjj_zz->Fill(pairjet.M(), weight);
       bck_dphiljj_zz->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
+      bck_dphilmjj_zz->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
       bck_dRll_zz->Fill(dR);
       bck_tmet_zz->Fill(background.trackMet_, weight);
       bck_minmet_zz->Fill(TMath::Min(background.met_, background.trackMet_), weight);
@@ -720,6 +749,7 @@ void Signal() {
       bck_mH_tt->Fill(higgsSystem.M(), weight);
       bck_mjj_tt->Fill(pairjet.M(), weight);
       bck_dphiljj_tt->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
+      bck_dphilmjj_tt->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
       bck_dRll_tt->Fill(dR);
       bck_tmet_tt->Fill(background.trackMet_, weight);
       bck_minmet_tt->Fill(TMath::Min(background.met_, background.trackMet_), weight);
@@ -734,6 +764,7 @@ void Signal() {
       bck_mH_fakes->Fill(higgsSystem.M(), weight);
       bck_mjj_fakes->Fill(pairjet.M(), weight);
       bck_dphiljj_fakes->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
+      bck_dphilmjj_fakes->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
       bck_dRll_fakes->Fill(dR);
       bck_tmet_fakes->Fill(background.trackMet_, weight);
       bck_minmet_fakes->Fill(TMath::Min(background.met_, background.trackMet_), weight);
@@ -835,6 +866,7 @@ void Signal() {
   
     LorentzVector metvector(data.met_*cos(data.metPhi_), data.met_*sin(data.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + data.jet1_+ data.jet2_;
+    LorentzVector lm = tlepton + metvector;
     
     //Fill histos
     data_njets->Fill(data.njets_, weight);
@@ -845,6 +877,7 @@ void Signal() {
     data_mH->Fill(higgsSystem.M(), weight);
     data_mjj->Fill(pairjet.M(), weight);
     data_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
+    data_dphilmjj->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
     data_dRll->Fill(dR, weight);
     data_tmet->Fill(data.trackMet_, weight);
     data_minmet->Fill(TMath::Min(data.met_, data.trackMet_), weight);

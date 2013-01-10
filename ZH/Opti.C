@@ -115,7 +115,10 @@ void Opti() {
     pairjet = signal.jet1_+ signal.jet2_;
     LorentzVector metvector(signal.met_*cos(signal.metPhi_), signal.met_*sin(signal.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + signal.jet1_+ signal.jet2_;
- 
+    LorentzVector lm = tlepton + metvector;
+   // double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
+
     
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
@@ -127,7 +130,6 @@ void Opti() {
    
     if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
     
-    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
     if (deltaPhi > phicut) continue;
     
  
@@ -205,7 +207,10 @@ void Opti() {
     pairjet = background.jet1_+ background.jet2_;
     LorentzVector metvector(background.met_*cos(background.metPhi_), background.met_*sin(background.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + background.jet1_+ background.jet2_;
-   
+     LorentzVector lm = tlepton + metvector;
+   // double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
+
     
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
@@ -216,7 +221,6 @@ void Opti() {
     
     if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
      
-    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
     if (deltaPhi > phicut) continue;
     
     for (int j=0; j < 10; j++){

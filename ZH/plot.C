@@ -28,10 +28,10 @@ void plot(){
   TString processTitle[nProcess] = { "WZ", "WWW", "fakes", "ZZ"};
   Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kGray+2};
  
-  const int nPlots = 12;
-  TString cutLabel[nPlots] =     { "mH", "dphiljj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll"};
-  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10};
-  TString cutTitle[nPlots] =     { "Reconstructed mass m_{H}", "#Delta#Phi_{jjl}", "MET", "m_{ll} Z", "m_{T}", "P_{T} of the leading jet",
+  const int nPlots = 13;
+  TString cutLabel[nPlots] =     { "mH", "dphiljj", "dphilmjj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll"};
+  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10};
+  TString cutTitle[nPlots] =     { "Reconstructed mass m_{H}", "#Delta#Phi_{jjl}", "#Delta#Phi_{jjlMET}", "MET", "m_{ll} Z", "m_{T}", "P_{T} of the leading jet",
                                    "m_{jj}", "#DeltaR_{ll}", "tracker MET", "min(MET, tracker MET)", "# of jets", "|m_{jj} - m{Z}|"  }; 
  
   TH1D*  h [nPlots][nProcess];
