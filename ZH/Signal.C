@@ -553,7 +553,7 @@ void Signal() {
       nsel = 61;
       double factor = 1;
       weight*= background.sfWeightFR_*factor;
-      if (background.dstype_ != SmurfTree::data) weight *=-1;
+      //if (background.dstype_ != SmurfTree::data) weight *=-1;
     }
     
     bck_cuts->Fill(0., weight);
