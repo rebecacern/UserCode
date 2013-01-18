@@ -23,7 +23,8 @@
 
 const int verboseLevel =   1;
 const double mz = 91.1876;
-
+const double mw = 80.4;
+const double mmu = 0.105;
 const double lumi = 19.467;
 
 const double separation = 15;
@@ -31,7 +32,7 @@ const double metcut = -25;
 const double mtcut = -30;
 const double lowpair = -55;
 const double highpair = 105000000000;
-const double phicut = 20000; //2.3;
+const double phicut = 1.8; //2.3;
 
 void Signal() {
   
@@ -439,8 +440,44 @@ void Signal() {
     LorentzVector metvector(signal.met_*cos(signal.metPhi_), signal.met_*sin(signal.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + signal.jet1_+ signal.jet2_;
     LorentzVector lm = tlepton + metvector;
- 
     
+    double hp[5];
+    hp[0] = tlepton.Px() + signal.jet1_.Px()+ signal.jet2_.Px()+ metvector.Px();
+    hp[1] = tlepton.Py() + signal.jet1_.Py()+ signal.jet2_.Py()+ metvector.Py();
+    hp[2] = tlepton.Pz() + signal.jet1_.Pz()+ signal.jet2_.Pz()+ metvector.Pz();
+    
+    double metp = 0;
+    double otherSol = 0;
+    double alpha=(mw*mw-mmu*mmu)/2/tlepton.P()+(tlepton.Px()*signal.met_*cos(signal.metPhi_)+tlepton.Py()*signal.met_*sin(signal.metPhi_))/tlepton.P();
+    double A=tlepton.Pz()*tlepton.Pz()/tlepton.P()/tlepton.P()-1;
+    double B=2*alpha*tlepton.Pz()/tlepton.P();
+    double C=alpha*alpha-(signal.met_*cos(signal.metPhi_)*signal.met_*cos(signal.metPhi_) + signal.met_*sin(signal.metPhi_)*signal.met_*sin(signal.metPhi_));
+    bool isComplex = false;
+    double tmproot = B*B - 4.0*A*C;
+      if (tmproot<0) { 
+        isComplex= true;
+        metp = - B/(2*A); 
+	otherSol = metp;
+      } else {
+        isComplex = false;
+	double tmpsol1 = (-B + TMath::Sqrt(tmproot))/(2.0*A);
+	double tmpsol2 = (-B - TMath::Sqrt(tmproot))/(2.0*A);
+	if (TMath::Abs(tmpsol1)<TMath::Abs(tmpsol2) ) {
+	  metp = tmpsol1; otherSol = tmpsol2; 
+	} else { metp = tmpsol2; otherSol = tmpsol1; }
+     }
+   
+    
+   // hp[3] = tlepton.P() + signal.jet1_.P()+ signal.jet2_.P()+ metvector.P();
+    hp[3] = tlepton.P() + signal.jet1_.P()+ signal.jet2_.P()+ metp;
+    hp[4] = tlepton.Pt() + signal.jet1_.Pt()+ signal.jet2_.Pt()+ signal.met_;
+    
+    double recomh  = hp[3]*hp[3]-hp[0]*hp[0]-hp[1]*hp[1]-hp[2]*hp[2]; if(recomh  > 0) recomh  = sqrt(recomh);else recomh   = 0.0;
+    double recomth = hp[4]*hp[4]-hp[0]*hp[0]-hp[1]*hp[1]; if(recomth > 0) recomth = sqrt(recomth); else recomth  = 0.0;
+    
+   
+    cout << recomh << " - " << recomth <<  " - " << higgsSystem.M() << endl;
+   
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     sig_cuts->Fill(3., weight);
@@ -458,7 +495,8 @@ void Signal() {
     sig_cuts->Fill(6., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(6., weight);
     
-    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
     if (deltaPhi > phicut) continue;
     sig_cuts->Fill(7., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(7., weight);
@@ -659,7 +697,8 @@ void Signal() {
     else if (nsel == 61) bck_cuts_fakes->Fill(6., weight);
     
      
-    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+   //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
     if (deltaPhi > phicut) continue;
     bck_cuts->Fill(7., weight);
     if (nsel == 49) bck_cuts_wz->Fill(7., weight);
@@ -847,6 +886,10 @@ void Signal() {
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  data.mt2_; tlepton = data.lep2_; dR = fabs(ROOT::Math::VectorUtil::DeltaR(data.lep1_ ,data.lep3_));} 
     pairjet = data.jet1_+ data.jet2_;
 
+    LorentzVector metvector(data.met_*cos(data.metPhi_), data.met_*sin(data.metPhi_), 0, 0);
+    LorentzVector higgsSystem = tlepton + metvector + data.jet1_+ data.jet2_;
+    LorentzVector lm = tlepton + metvector;
+    
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     data_cuts->Fill(3., weight);
@@ -860,13 +903,10 @@ void Signal() {
     if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
     data_cuts->Fill(6., weight);
       
-    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
     if (deltaPhi > phicut) continue;
     data_cuts->Fill(7., weight);
-  
-    LorentzVector metvector(data.met_*cos(data.metPhi_), data.met_*sin(data.metPhi_), 0, 0);
-    LorentzVector higgsSystem = tlepton + metvector + data.jet1_+ data.jet2_;
-    LorentzVector lm = tlepton + metvector;
     
     //Fill histos
     data_njets->Fill(data.njets_, weight);
@@ -948,3 +988,4 @@ void Signal() {
   outFileNjets->Close();
   
 }
+
