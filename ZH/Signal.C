@@ -446,6 +446,7 @@ void Signal() {
     hp[1] = tlepton.Py() + signal.jet1_.Py()+ signal.jet2_.Py()+ metvector.Py();
     hp[2] = tlepton.Pz() + signal.jet1_.Pz()+ signal.jet2_.Pz()+ metvector.Pz();
     
+    //Calculate p of the neutrino using Maria's code
     double metp = 0;
     double otherSol = 0;
     double alpha=(mw*mw-mmu*mmu)/2/tlepton.P()+(tlepton.Px()*signal.met_*cos(signal.metPhi_)+tlepton.Py()*signal.met_*sin(signal.metPhi_))/tlepton.P();
@@ -468,7 +469,7 @@ void Signal() {
      }
    
     
-   // hp[3] = tlepton.P() + signal.jet1_.P()+ signal.jet2_.P()+ metvector.P();
+   // hp[3] = tlepton.P() + signal.jet1_.P()+ signal.jet2_.P()+ metvector.P(); //crappy solution
     hp[3] = tlepton.P() + signal.jet1_.P()+ signal.jet2_.P()+ metp;
     hp[4] = tlepton.Pt() + signal.jet1_.Pt()+ signal.jet2_.Pt()+ signal.met_;
     
