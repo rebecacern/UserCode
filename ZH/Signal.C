@@ -28,7 +28,7 @@ const double mmu = 0.105;
 const double lumi = 19.467;
 
 const double separation = 15; //15 is the chosen cut
-const double metcut = -25;
+const double metcut = 10; //10 is the proposed
 const double mtcut = -30;
 const double lowpair = -55;
 const double highpair = 105000000000;

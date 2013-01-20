@@ -23,7 +23,7 @@
 const int verboseLevel =   1;
 const double mz = 91.1876;
 const double lumi = 19.467;
-const double separation = 15000000;
+const double separation = 15;
 const double metcut = -25;
 const double mtcut = -30;
 const double lowpair = -55;
@@ -48,7 +48,7 @@ void Opti() {
   
   double weight = 1;
   //Signal ZH -> 3l2j1nu
-  double cut[10] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+  double cut[20] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
  
   int nSig=signal.tree_->GetEntries();
   for (int i=0; i<nSig; ++i) {
@@ -133,14 +133,14 @@ void Opti() {
     if (deltaPhi > phicut) continue;
     
  
-    for (int j=0; j < 10; j++){
-       if (pair.M() > (mz - (2.5 + j*2.5)) && pair.M() < (mz + (2.5 + j*2.5))) cut[j]+=weight;
+    for (int j=0; j < 20; j++){
+       if (deltaPhi <= j*0.2) cut[j]+=weight;
     }
     
    
   }
   
-   double cutb[10] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+   double cutb[20] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
   int nBck=background.tree_->GetEntries();
   for (int i=0; i<nBck; ++i) {
   
@@ -223,16 +223,19 @@ void Opti() {
      
     if (deltaPhi > phicut) continue;
     
-    for (int j=0; j < 10; j++){
-       if (pair.M() > (mz - (2.5 + j*2.5)) && pair.M() < (mz + (2.5 + j*2.5))) cutb[j]+=weight;
+    
+    
+    for (int j=0; j < 20; j++){
+       if (deltaPhi <= j*0.2) cutb[j]+=weight;
     }
 
   }
   cout << " Cut optimization " << endl;
-  cout << "mz separation [GeV] <" << endl;
-  for (int i=0; i < 10; i++){
+  cout << endl;
+  cout << "Phi <  " << endl;
+  for (int i=1; i < 20; i++){
   
-  cout << 2.5 + i*2.5 << "\tS: " << cut[i] << "\tB: " << cutb[i] << "\tS/B:" << cut[i]/cutb[i] << "\tS/sqrt(B):" << cut[i]/sqrt(cutb[i]) <<endl; 
+  cout << i*0.2 << "\tS: " << cut[i] << "\tB: " << cutb[i] << "\tS/B:" << cut[i]/cutb[i] << "\tS/sqrt(B):" << cut[i]/sqrt(cutb[i]) <<endl; 
   }
   cout << endl;
   

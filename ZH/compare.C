@@ -23,11 +23,12 @@ void compare(){
   
   TFile *_file0 = TFile::Open(myRootFile);
   
-  const int nPlots = 10;
-  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphiljj", "dphilmjj", "mH_3d", "mH_2d"};
-  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
+  const int nPlots = 11;
+  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphiljj", "dphilmjj", "mH_3d", "mH_2d", "minmet"};
+  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
   TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet",
-  				   "Reconstructed mass m_{H}",  "M_{jj}", "#Delta#Phi_{jjl}", "#Delta#Phi_{jjlMET}", "Reconstructed mass m_{H}", "Reconstructed mass m_{H}"};
+  				   "Reconstructed mass m_{H}",  "M_{jj}", "#Delta#Phi_{jjl}", "#Delta#Phi_{jjlMET}", "Reconstructed mass m_{H}",
+				   "Reconstructed mass m_{H}", "Min(MET, Tracker MET)"};
   TH1F*  h [2][nPlots];
   
   for (const int iPlot = 0; iPlot < nPlots; iPlot++){

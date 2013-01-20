@@ -95,11 +95,12 @@ void plot(){
     hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
     hStack[iPlot]->GetYaxis()->CenterTitle(); 
     hStack[iPlot]->GetYaxis()->SetTitleOffset(1.3);
+    if (iPlot == 1 || iPlot == 2) hStack[iPlot]->GetXaxis()->SetRangeUser(0.0, 3.14);
     leg->Draw();
     
-    c1->SaveAs("plots/mllZ_"+cutLabel[iPlot]+".png");
+    c1->SaveAs("plots/phi_"+cutLabel[iPlot]+".png");
     c1->SetLogy();
-    c1->SaveAs("plots/mllZ_"+cutLabel[iPlot]+"_log.png");
+    c1->SaveAs("plots/phi_"+cutLabel[iPlot]+"_log.png");
     
     
     
