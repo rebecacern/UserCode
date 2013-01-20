@@ -28,11 +28,11 @@ void plot(){
   TString processTitle[nProcess] = { "WZ", "WWW", "fakes", "ZZ"};
   Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kGray+2};
  
-  const int nPlots = 13;
-  TString cutLabel[nPlots] =     { "mH", "dphiljj", "dphilmjj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll"};
-  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10};
+  const int nPlots = 14;
+  TString cutLabel[nPlots] =     { "mH_2d", "dphiljj", "dphilmjj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll", "id"};
+  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10, 1};
   TString cutTitle[nPlots] =     { "Reconstructed mass m_{H}", "#Delta#Phi_{jjl}", "#Delta#Phi_{jjlMET}", "MET", "m_{ll} Z", "m_{T}", "P_{T} of the leading jet",
-                                   "m_{jj}", "#DeltaR_{ll}", "tracker MET", "min(MET, tracker MET)", "# of jets", "|m_{jj} - m{Z}|"  }; 
+                                   "m_{jj}", "#DeltaR_{ll}", "tracker MET", "min(MET, tracker MET)", "# of jets", "|m_{jj} - m{Z}|", "lepton content"  }; 
  
   TH1D*  h [nPlots][nProcess];
   TH1D*  h0 [nPlots];
@@ -66,8 +66,7 @@ void plot(){
     for (int iProcess = nProcess-1; iProcess > -1; iProcess--){
       hStack[iPlot]->Add(h[iPlot][iProcess]);
     }
- 
-   
+  
     h1[iPlot] = (TH1D*) _file0->Get("data_" + cutLabel[iPlot]);
     h1[iPlot]->Rebin(rebinHisto[iPlot]);
     h1[iPlot]->SetMarkerStyle(20);
@@ -85,15 +84,22 @@ void plot(){
     h0[iPlot]->Draw("histo,sames");
     h1[iPlot]->Draw("e,sames");
     hStack[iPlot]->GetYaxis()->SetTitle("events / 19.46 fb^{-1}");
-    hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
+   
+    if (cutLabel[iPlot] == "id") {
+      hStack[iPlot]->GetXaxis()->SetBinLabel(1,"eee");
+      hStack[iPlot]->GetXaxis()->SetBinLabel(2,"ee#mu");
+      hStack[iPlot]->GetXaxis()->SetBinLabel(3,"#mu#mue");
+      hStack[iPlot]->GetXaxis()->SetBinLabel(4,"#mu#mu#mu");
+  
+    } else  hStack[iPlot]->GetXaxis()->SetTitle(cutTitle[iPlot]);
     hStack[iPlot]->GetYaxis()->SetLimits(0,0.5);
     hStack[iPlot]->GetYaxis()->CenterTitle(); 
     hStack[iPlot]->GetYaxis()->SetTitleOffset(1.3);
     leg->Draw();
     
-    c1->SaveAs("plots/data_"+cutLabel[iPlot]+".png");
+    c1->SaveAs("plots/mllZ_"+cutLabel[iPlot]+".png");
     c1->SetLogy();
-    c1->SaveAs("plots/data_"+cutLabel[iPlot]+"_log.png");
+    c1->SaveAs("plots/mllZ_"+cutLabel[iPlot]+"_log.png");
     
     
     

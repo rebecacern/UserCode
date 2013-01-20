@@ -23,7 +23,7 @@
 const int verboseLevel =   1;
 const double mz = 91.1876;
 const double lumi = 19.467;
-const double separation = 15;
+const double separation = 15000000;
 const double metcut = -25;
 const double mtcut = -30;
 const double lowpair = -55;
@@ -134,7 +134,7 @@ void Opti() {
     
  
     for (int j=0; j < 10; j++){
-     if (deltaPhi < 1+j*0.2) cut[j]+=weight;
+       if (pair.M() > (mz - (2.5 + j*2.5)) && pair.M() < (mz + (2.5 + j*2.5))) cut[j]+=weight;
     }
     
    
@@ -224,15 +224,16 @@ void Opti() {
     if (deltaPhi > phicut) continue;
     
     for (int j=0; j < 10; j++){
-       if (deltaPhi < 1+j*0.2) cutb[j]+=weight;
+       if (pair.M() > (mz - (2.5 + j*2.5)) && pair.M() < (mz + (2.5 + j*2.5))) cutb[j]+=weight;
     }
 
   }
-  
-  cout << "phi <" << endl;
+  cout << " Cut optimization " << endl;
+  cout << "mz separation [GeV] <" << endl;
   for (int i=0; i < 10; i++){
   
-  cout << 1+i*0.2 << "\tS: " << cut[i] << ",B: " << cutb[i] << "\tS/B:" << cut[i]/cutb[i] << "\tS/sqrt(B):" << cut[i]/sqrt(cutb[i]) <<endl; 
+  cout << 2.5 + i*2.5 << "\tS: " << cut[i] << "\tB: " << cutb[i] << "\tS/B:" << cut[i]/cutb[i] << "\tS/sqrt(B):" << cut[i]/sqrt(cutb[i]) <<endl; 
   }
+  cout << endl;
   
 }

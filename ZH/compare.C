@@ -23,23 +23,23 @@ void compare(){
   
   TFile *_file0 = TFile::Open(myRootFile);
   
-  const int nPlots = 8;
-  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphiljj", "dphilmjj"};
-  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10};
+  const int nPlots = 10;
+  TString cutLabel[nPlots] =     { "met", "mllz", "mt", "ptjet", "mH", "mjj", "dphiljj", "dphilmjj", "mH_3d", "mH_2d"};
+  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
   TString cutTitle[nPlots] =     { "Missing E_{T}", "Invariant Mass", "Transverse mass (W)", "P_{T} of the leading jet",
-  				   "Reconstructed mass m_{H}",  "M_{jj}", "#Delta#Phi_{jjl}", "#Delta#Phi_{jjlMET}"};
+  				   "Reconstructed mass m_{H}",  "M_{jj}", "#Delta#Phi_{jjl}", "#Delta#Phi_{jjlMET}", "Reconstructed mass m_{H}", "Reconstructed mass m_{H}"};
   TH1F*  h [2][nPlots];
   
   for (const int iPlot = 0; iPlot < nPlots; iPlot++){
     h[0][iPlot] = (TH1F*) _file0->Get("sig_" + cutLabel[iPlot]);
     h[1][iPlot] = (TH1F*) _file0->Get("bck_" + cutLabel[iPlot]);
     
-    h[0][iPlot]->SetLineColor(kMagenta-4);
+    h[0][iPlot]->SetLineColor(kRed);
     h[0][iPlot]->SetLineWidth(2);
     h[0][iPlot]->SetNormFactor(1);
     h[0][iPlot]->Rebin(rebinHisto[iPlot]);
     
-    h[1][iPlot]->SetFillColor(kBlue);
+    h[1][iPlot]->SetFillColor(39);
     h[1][iPlot]->SetFillStyle(3001);
     h[1][iPlot]->SetLineWidth(2);
     h[1][iPlot]->SetNormFactor(1);

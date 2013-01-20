@@ -27,17 +27,17 @@ const double mw = 80.4;
 const double mmu = 0.105;
 const double lumi = 19.467;
 
-const double separation = 15;
+const double separation = 15; //15 is the chosen cut
 const double metcut = -25;
 const double mtcut = -30;
 const double lowpair = -55;
 const double highpair = 105000000000;
-const double phicut = 1.8; //2.3;
+const double phicut = 1800; // 1.8, 2.3;
 
 void Signal() {
   
   TString bgdInputFile    = "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root";
-  //TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww125.root";
+ // TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww125.root";
   TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root";
   TString dataInputFile   = "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/data_3l.root";
   
@@ -72,6 +72,9 @@ void Signal() {
   TH1D* sig_mt = new TH1D("sig_mt", "m_t", 200, 0, 200);
   TH1D* sig_ptjet = new TH1D("sig_ptjet", "P_t of leading jet", 200, 0, 200);
   TH1D* sig_mH = new TH1D("sig_mH", "m_H", 200, 0, 400);
+  TH1D* sig_mH_v2 = new TH1D("sig_mH_v2", "m_H", 200, 0, 400);
+  TH1D* sig_mH_3d = new TH1D("sig_mH_3d", "m_H", 200, 0, 400);
+  TH1D* sig_mH_2d = new TH1D("sig_mH_2d", "m_H", 200, 0, 400);
   TH1D* sig_mjj = new TH1D("sig_mjj", "m_jj", 200, 0, 400);
   TH1D* sig_dphiljj = new TH1D("sig_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* sig_dphilmjj = new TH1D("sig_dphilmjj", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
@@ -80,6 +83,7 @@ void Signal() {
   TH1D* sig_tmet = new TH1D("sig_tmet", "tracker MET", 200, 0, 200);
   TH1D* sig_minmet = new TH1D("sig_minmet", "min(MET, tracker MET)", 200, 0, 200);
   TH1D* sig_minmll = new TH1D("sig_minmll", "|m_{ll} - m_{Z}|", 200, 0, 100);
+  TH1D* sig_id = new TH1D("sig_id", "lepton content", 4, 0, 4);
 
   sig_cuts->Sumw2();
   sig_cuts_zh->Sumw2();
@@ -89,6 +93,9 @@ void Signal() {
   sig_mt->Sumw2();
   sig_ptjet->Sumw2();
   sig_mH->Sumw2();
+  sig_mH_v2->Sumw2();
+  sig_mH_3d->Sumw2();
+  sig_mH_2d->Sumw2();
   sig_mjj->Sumw2();  
   sig_dphiljj->Sumw2();
   sig_dphilmjj->Sumw2();
@@ -97,6 +104,7 @@ void Signal() {
   sig_tmet->Sumw2();
   sig_minmet->Sumw2();
   sig_minmll->Sumw2();
+  sig_id->Sumw2();
   
   //Backgrounds
   TH1D* bck_cuts = new TH1D("bck_cuts", "cuts", 10, 0, 10);
@@ -118,6 +126,9 @@ void Signal() {
   TH1D* bck_mt = new TH1D("bck_mt", "m_t", 200, 0, 200);
   TH1D* bck_ptjet = new TH1D("bck_ptjet", "P_t of leading jet", 200, 0, 200);
   TH1D* bck_mH = new TH1D("bck_mH", "m_H", 200, 0, 400);
+  TH1D* bck_mH_v2 = new TH1D("bck_mH_v2", "m_H", 200, 0, 400);
+  TH1D* bck_mH_3d = new TH1D("bck_mH_3d", "m_H", 200, 0, 400);
+  TH1D* bck_mH_2d = new TH1D("bck_mH_2d", "m_H", 200, 0, 400);
   TH1D* bck_mjj = new TH1D("bck_mjj", "m_jj", 200, 0, 400);
   TH1D* bck_dphiljj = new TH1D("bck_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* bck_dphilmjj = new TH1D("bck_dphilmjj", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
@@ -126,12 +137,16 @@ void Signal() {
   TH1D* bck_tmet = new TH1D("bck_tmet", "tracker MET", 200, 0, 200);
   TH1D* bck_minmet = new TH1D("bck_minmet", "min(MET, tracker MET)", 200, 0, 200);
   TH1D* bck_minmll = new TH1D("bck_minmll", "|m_{ll} - m_{Z}|", 200, 0, 100);
+  TH1D* bck_id = new TH1D("bck_id", "lepton content", 4, 0, 4);
 
   bck_met->Sumw2();
   bck_mllz->Sumw2();
   bck_mt->Sumw2();
   bck_ptjet->Sumw2();
   bck_mH->Sumw2();
+  bck_mH_v2->Sumw2();
+  bck_mH_3d->Sumw2();
+  bck_mH_2d->Sumw2();
   bck_mjj->Sumw2();  
   bck_dphiljj->Sumw2();
   bck_dphilmjj->Sumw2();
@@ -140,7 +155,7 @@ void Signal() {
   bck_tmet->Sumw2();
   bck_minmet->Sumw2();
   bck_minmll->Sumw2();
-
+  bck_id->Sumw2();
   
   //Variables separated
   TH1D* bck_met_wz =  new TH1D("bck_met_wz", "MET", 200, 0, 200);
@@ -214,6 +229,47 @@ void Signal() {
   bck_mH_tt->Sumw2();
   bck_mH_fakes->Sumw2();
   
+  TH1D* bck_mH_v2_wz = new TH1D("bck_mH_v2_wz", "m_H", 200, 0, 400);
+  TH1D* bck_mH_v2_www = new TH1D("bck_mH_v2_www", "m_H", 200, 0, 400);
+  TH1D* bck_mH_v2_data = new TH1D("bck_mH_v2_data", "m_H", 200, 0, 400);
+  TH1D* bck_mH_v2_zz = new TH1D("bck_mH_v2_zz", "m_H", 200, 0, 400);
+  TH1D* bck_mH_v2_tt = new TH1D("bck_mH_v2_tt", "m_H", 200, 0, 400);
+  TH1D* bck_mH_v2_fakes = new TH1D("bck_mH_v2_fakes", "m_H", 200, 0, 400);
+  
+  bck_mH_v2_wz->Sumw2();
+  bck_mH_v2_www->Sumw2();
+  bck_mH_v2_data->Sumw2(); 
+  bck_mH_v2_zz->Sumw2();
+  bck_mH_v2_tt->Sumw2();
+  bck_mH_v2_fakes->Sumw2();
+  
+  TH1D* bck_mH_3d_wz = new TH1D("bck_mH_3d_wz", "m_H", 200, 0, 400);
+  TH1D* bck_mH_3d_www = new TH1D("bck_mH_3d_www", "m_H", 200, 0, 400);
+  TH1D* bck_mH_3d_data = new TH1D("bck_mH_3d_data", "m_H", 200, 0, 400);
+  TH1D* bck_mH_3d_zz = new TH1D("bck_mH_3d_zz", "m_H", 200, 0, 400);
+  TH1D* bck_mH_3d_tt = new TH1D("bck_mH_3d_tt", "m_H", 200, 0, 400);
+  TH1D* bck_mH_3d_fakes = new TH1D("bck_mH_3d_fakes", "m_H", 200, 0, 400);
+  
+  bck_mH_3d_wz->Sumw2();
+  bck_mH_3d_www->Sumw2();
+  bck_mH_3d_data->Sumw2(); 
+  bck_mH_3d_zz->Sumw2();
+  bck_mH_3d_tt->Sumw2();
+  bck_mH_3d_fakes->Sumw2();
+  
+  TH1D* bck_mH_2d_wz = new TH1D("bck_mH_2d_wz", "m_H", 200, 0, 400);
+  TH1D* bck_mH_2d_www = new TH1D("bck_mH_2d_www", "m_H", 200, 0, 400);
+  TH1D* bck_mH_2d_data = new TH1D("bck_mH_2d_data", "m_H", 200, 0, 400);
+  TH1D* bck_mH_2d_zz = new TH1D("bck_mH_2d_zz", "m_H", 200, 0, 400);
+  TH1D* bck_mH_2d_tt = new TH1D("bck_mH_2d_tt", "m_H", 200, 0, 400);
+  TH1D* bck_mH_2d_fakes = new TH1D("bck_mH_2d_fakes", "m_H", 200, 0, 400);
+  
+  bck_mH_2d_wz->Sumw2();
+  bck_mH_2d_www->Sumw2();
+  bck_mH_2d_data->Sumw2(); 
+  bck_mH_2d_zz->Sumw2();
+  bck_mH_2d_tt->Sumw2();
+  bck_mH_2d_fakes->Sumw2();
   
   TH1D* bck_mjj_wz = new TH1D("bck_mjj_wz", "m_{jj}", 200, 0, 400);
   TH1D* bck_mjj_www = new TH1D("bck_mjj_www", "m_{jj}", 200, 0, 400);
@@ -328,6 +384,21 @@ void Signal() {
   bck_minmll_fakes->Sumw2(); 
   
   
+  TH1D* bck_id_wz = new TH1D("bck_id_wz", "lepton content", 4, 0, 4);
+  TH1D* bck_id_www = new TH1D("bck_id_www", "lepton content", 4, 0, 4);
+  TH1D* bck_id_data = new TH1D("bck_id_data", "lepton content", 4, 0, 4);
+  TH1D* bck_id_zz = new TH1D("bck_id_zz", "lepton content", 4, 0, 4);
+  TH1D* bck_id_tt = new TH1D("bck_id_tt", "lepton content", 4, 0, 4);
+  TH1D* bck_id_fakes = new TH1D("bck_id_fakes", "lepton content", 4, 0, 4);
+
+  bck_id_wz->Sumw2(); 
+  bck_id_www->Sumw2();
+  bck_id_data->Sumw2();
+  bck_id_zz->Sumw2();  
+  bck_id_tt->Sumw2(); 
+  bck_id_fakes->Sumw2(); 
+  
+  
   //data
   TH1D* data_cuts = new TH1D("data_cuts", "cuts", 10, 0, 10);
   TH1D* data_met = new TH1D("data_met", "MET", 200, 0, 200);
@@ -335,6 +406,9 @@ void Signal() {
   TH1D* data_mt = new TH1D("data_mt", "m_t", 200, 0, 200);
   TH1D* data_ptjet = new TH1D("data_ptjet", "P_t of leading jet", 200, 0, 200);
   TH1D* data_mH = new TH1D("data_mH", "m_H", 200, 0, 400);
+  TH1D* data_mH_v2 = new TH1D("data_mH_v2", "m_H", 200, 0, 400);
+  TH1D* data_mH_3d = new TH1D("data_mH_3d", "m_H", 200, 0, 400);
+  TH1D* data_mH_2d = new TH1D("data_mH_2d", "m_H", 200, 0, 400);
   TH1D* data_mjj = new TH1D("data_mjj", "m_jj", 200, 0, 400);
   TH1D* data_dphiljj = new TH1D("data_dphiljj", "#Delta#phi_{ljj}", 200, 0, 3.5);
   TH1D* data_dphilmjj = new TH1D("data_dphilmjj", "#Delta#phi_{lMETjj}", 200, 0, 3.5);
@@ -343,6 +417,7 @@ void Signal() {
   TH1D* data_tmet = new TH1D("data_tmet", "tracker MET", 200, 0, 200);
   TH1D* data_minmet = new TH1D("data_minmet", "min(MET, tracker MET)", 200, 0, 200);
   TH1D* data_minmll =  new TH1D("data_minmll", "|m_{ll} - m_{Z}|", 200, 0, 100);
+  TH1D* data_id = new TH1D("data_id", "lepton content", 4, 0, 4);
 
   data_cuts->Sumw2();
   data_met->Sumw2();
@@ -350,6 +425,9 @@ void Signal() {
   data_mt->Sumw2();
   data_ptjet->Sumw2();
   data_mH->Sumw2();
+  data_mH_v2->Sumw2();
+  data_mH_3d->Sumw2();
+  data_mH_2d->Sumw2();
   data_mjj->Sumw2();  
   data_dphiljj->Sumw2();
   data_dphilmjj->Sumw2();
@@ -358,6 +436,7 @@ void Signal() {
   data_tmet->Sumw2();
   data_minmet->Sumw2();
   data_minmll->Sumw2();
+  data_id->Sumw2();
   
   double weight = 1;
   //Signal ZH -> 3l2j1nu
@@ -409,6 +488,16 @@ void Signal() {
     sig_cuts->Fill(2., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(2., weight);
 
+    //Select the different things: Z pair, extra lepton, Higgs system
+    int idcat = 20; // 0 = eee, 1 = eemu, 2 = mumue, 3 = mumumu
+    if (fabs(signal.lid1_) == 11 && fabs(signal.lid2_) == 11 && fabs(signal.lid3_) == 11) idcat = 0;
+    else if ((fabs(signal.lid1_) == 11 && fabs(signal.lid2_) == 11 && fabs(signal.lid3_) == 13) 
+          || (fabs(signal.lid1_) == 11 && fabs(signal.lid2_) == 13 && fabs(signal.lid3_) == 11) 
+	  || (fabs(signal.lid1_) == 13 && fabs(signal.lid2_) == 11 && fabs(signal.lid3_) == 11)) idcat = 1;
+    else if ((fabs(signal.lid1_) == 11 && fabs(signal.lid2_) == 13 && fabs(signal.lid3_) == 13) 
+          || (fabs(signal.lid1_) == 13 && fabs(signal.lid2_) == 13 && fabs(signal.lid3_) == 11) 
+	  || (fabs(signal.lid1_) == 13 && fabs(signal.lid2_) == 11 && fabs(signal.lid3_) == 13)) idcat = 2;
+    else  if (fabs(signal.lid1_) == 13 && fabs(signal.lid2_) == 13 && fabs(signal.lid3_) == 13)  idcat = 3;
     
     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
@@ -429,7 +518,7 @@ void Signal() {
     //Get the closest to the Z mass
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
     
-    //Select the different things: Z pair, extra lepton, Higgs system
+    
     LorentzVector pair, tlepton, pairjet;
     double mt = 0;
     double dR = 0;
@@ -448,24 +537,24 @@ void Signal() {
     
     //Calculate p of the neutrino using Maria's code
     double metp = 0;
-    double otherSol = 0;
+   // double otherSol = 0;
     double alpha=(mw*mw-mmu*mmu)/2/tlepton.P()+(tlepton.Px()*signal.met_*cos(signal.metPhi_)+tlepton.Py()*signal.met_*sin(signal.metPhi_))/tlepton.P();
     double A=tlepton.Pz()*tlepton.Pz()/tlepton.P()/tlepton.P()-1;
     double B=2*alpha*tlepton.Pz()/tlepton.P();
     double C=alpha*alpha-(signal.met_*cos(signal.metPhi_)*signal.met_*cos(signal.metPhi_) + signal.met_*sin(signal.metPhi_)*signal.met_*sin(signal.metPhi_));
-    bool isComplex = false;
     double tmproot = B*B - 4.0*A*C;
       if (tmproot<0) { 
-        isComplex= true;
+       // isComplex= true;
         metp = - B/(2*A); 
-	otherSol = metp;
+	//otherSol = metp;
       } else {
-        isComplex = false;
+       // isComplex = false;
 	double tmpsol1 = (-B + TMath::Sqrt(tmproot))/(2.0*A);
 	double tmpsol2 = (-B - TMath::Sqrt(tmproot))/(2.0*A);
 	if (TMath::Abs(tmpsol1)<TMath::Abs(tmpsol2) ) {
-	  metp = tmpsol1; otherSol = tmpsol2; 
-	} else { metp = tmpsol2; otherSol = tmpsol1; }
+	  metp = tmpsol1; //otherSol = tmpsol2; 
+	} else { metp = tmpsol2; //otherSol = tmpsol1; 
+	}
      }
    
     
@@ -475,9 +564,7 @@ void Signal() {
     
     double recomh  = hp[3]*hp[3]-hp[0]*hp[0]-hp[1]*hp[1]-hp[2]*hp[2]; if(recomh  > 0) recomh  = sqrt(recomh);else recomh   = 0.0;
     double recomth = hp[4]*hp[4]-hp[0]*hp[0]-hp[1]*hp[1]; if(recomth > 0) recomth = sqrt(recomth); else recomth  = 0.0;
-    
    
-    cout << recomh << " - " << recomth <<  " - " << higgsSystem.M() << endl;
    
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
@@ -508,7 +595,11 @@ void Signal() {
     sig_mllz->Fill(pair.M(), weight);
     sig_mt->Fill(mt, weight);
     sig_ptjet->Fill(signal.jet1_.Pt(), weight);  
+    if (higgsSystem.M() > 0) sig_mH_v2->Fill(higgsSystem.M(), weight); 
+    else sig_mH_v2->Fill(0.0, weight);
     sig_mH->Fill(higgsSystem.M(), weight);
+    sig_mH_3d->Fill(recomh, weight);
+    sig_mH_2d->Fill(recomth, weight);
     sig_mjj->Fill(pairjet.M(), weight);
     sig_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     sig_dphilmjj->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
@@ -516,6 +607,7 @@ void Signal() {
     sig_tmet->Fill(signal.trackMet_, weight);
     sig_minmet->Fill(TMath::Min(signal.met_, signal.trackMet_), weight);
     sig_minmll->Fill(fabs(mz - pair.M()), weight);
+    sig_id->Fill(idcat, weight);
     
     eventstouse++;
     
@@ -608,7 +700,18 @@ void Signal() {
     if (background.lid3_ == background.lid2_ && fabs(background.lid3_) != fabs(background.lid1_)) continue;
     if (background.lid3_ == background.lid1_ && fabs(background.lid3_) != fabs(background.lid2_)) continue;
     if (background.lid2_ == background.lid1_ && fabs(background.lid2_) != fabs(background.lid3_)) continue;
-   
+    
+    //Select the different things: Z pair, extra lepton, Higgs system
+    int idcat = 20; // 0 = eee, 1 = eemu, 2 = mumue, 3 = mumumu
+    if (fabs(background.lid1_) == 11 && fabs(background.lid2_) == 11 && fabs(background.lid3_) == 11) idcat = 0;
+    else if ((fabs(background.lid1_) == 11 && fabs(background.lid2_) == 11 && fabs(background.lid3_) == 13) 
+          || (fabs(background.lid1_) == 11 && fabs(background.lid2_) == 13 && fabs(background.lid3_) == 11) 
+	  || (fabs(background.lid1_) == 13 && fabs(background.lid2_) == 11 && fabs(background.lid3_) == 11)) idcat = 1;
+    else if ((fabs(background.lid1_) == 11 && fabs(background.lid2_) == 13 && fabs(background.lid3_) == 13) 
+          || (fabs(background.lid1_) == 13 && fabs(background.lid2_) == 13 && fabs(background.lid3_) == 11) 
+	  || (fabs(background.lid1_) == 13 && fabs(background.lid2_) == 11 && fabs(background.lid3_) == 13)) idcat = 2;
+    else  if (fabs(background.lid1_) == 13 && fabs(background.lid2_) == 13 && fabs(background.lid3_) == 13)  idcat = 3;
+    
     bck_cuts->Fill(1., weight);
        
     if (nsel == 49) bck_cuts_wz->Fill(1., weight);
@@ -658,7 +761,43 @@ void Signal() {
     LorentzVector higgsSystem = tlepton + metvector + background.jet1_+ background.jet2_;
     LorentzVector lm = tlepton + metvector;
    
+      
+    double hp[5];
+    hp[0] = tlepton.Px() + background.jet1_.Px()+ background.jet2_.Px()+ metvector.Px();
+    hp[1] = tlepton.Py() + background.jet1_.Py()+ background.jet2_.Py()+ metvector.Py();
+    hp[2] = tlepton.Pz() + background.jet1_.Pz()+ background.jet2_.Pz()+ metvector.Pz();
     
+    //Calculate p of the neutrino using Maria's code
+    double metp = 0;
+    double otherSol = 0;
+    double alpha=(mw*mw-mmu*mmu)/2/tlepton.P()+(tlepton.Px()*background.met_*cos(background.metPhi_)+tlepton.Py()*background.met_*sin(background.metPhi_))/tlepton.P();
+    double A=tlepton.Pz()*tlepton.Pz()/tlepton.P()/tlepton.P()-1;
+    double B=2*alpha*tlepton.Pz()/tlepton.P();
+    double C=alpha*alpha-(background.met_*cos(background.metPhi_)*background.met_*cos(background.metPhi_) + background.met_*sin(background.metPhi_)*background.met_*sin(background.metPhi_));
+    bool isComplex = false;
+    double tmproot = B*B - 4.0*A*C;
+      if (tmproot<0) { 
+        isComplex= true;
+        metp = - B/(2*A); 
+	otherSol = metp;
+      } else {
+        isComplex = false;
+	double tmpsol1 = (-B + TMath::Sqrt(tmproot))/(2.0*A);
+	double tmpsol2 = (-B - TMath::Sqrt(tmproot))/(2.0*A);
+	if (TMath::Abs(tmpsol1)<TMath::Abs(tmpsol2) ) {
+	  metp = tmpsol1; otherSol = tmpsol2; 
+	} else { metp = tmpsol2; otherSol = tmpsol1; }
+     }
+   
+    
+   // hp[3] = tlepton.P() + background.jet1_.P()+ background.jet2_.P()+ metvector.P(); //crappy solution
+    hp[3] = tlepton.P() + background.jet1_.P()+ background.jet2_.P()+ metp;
+    hp[4] = tlepton.Pt() + background.jet1_.Pt()+ background.jet2_.Pt()+ background.met_;
+    
+    double recomh  = hp[3]*hp[3]-hp[0]*hp[0]-hp[1]*hp[1]-hp[2]*hp[2]; if(recomh  > 0) recomh  = sqrt(recomh);else recomh   = 0.0;
+    double recomth = hp[4]*hp[4]-hp[0]*hp[0]-hp[1]*hp[1]; if(recomth > 0) recomth = sqrt(recomth); else recomth  = 0.0;
+    
+ 
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     bck_cuts->Fill(3., weight); 
@@ -715,7 +854,11 @@ void Signal() {
     bck_mllz->Fill(pair.M(), weight);
     bck_mt->Fill(mt, weight);
     bck_ptjet->Fill(background.jet1_.Pt(), weight);  
-    bck_mH->Fill(higgsSystem.M(), weight);
+    if (higgsSystem.M() > 0) bck_mH_v2->Fill(higgsSystem.M(), weight); 
+    else bck_mH_v2->Fill(0.0, weight);
+    bck_mH->Fill(higgsSystem.M(), weight); 
+    bck_mH_3d->Fill(recomh, weight);
+    bck_mH_2d->Fill(recomth, weight);
     bck_mjj->Fill(pairjet.M(), weight);
     bck_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     bck_dphilmjj->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
@@ -723,7 +866,7 @@ void Signal() {
     bck_tmet->Fill(background.trackMet_, weight);
     bck_minmet->Fill(TMath::Min(background.met_, background.trackMet_), weight);
     bck_minmll->Fill(fabs(mz - pair.M()), weight);
-    
+    bck_id->Fill(idcat, weight);
     
     if (nsel == 49){
       bck_njets_wz->Fill(background.njets_, weight);
@@ -731,7 +874,11 @@ void Signal() {
       bck_mllz_wz->Fill(pair.M(), weight);
       bck_mt_wz->Fill(mt, weight);
       bck_ptjet_wz->Fill(background.jet1_.Pt(), weight);  
-      bck_mH_wz->Fill(higgsSystem.M(), weight);
+      if (higgsSystem.M() > 0) bck_mH_v2_wz->Fill(higgsSystem.M(), weight); 
+      else bck_mH_v2_wz->Fill(0.0, weight);
+      bck_mH_wz->Fill(higgsSystem.M(), weight); 
+      bck_mH_3d_wz->Fill(recomh, weight);
+      bck_mH_2d_wz->Fill(recomth, weight);
       bck_mjj_wz->Fill(pairjet.M(), weight);
       bck_dphiljj_wz->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
       bck_dphilmjj_wz->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
@@ -739,13 +886,18 @@ void Signal() {
       bck_tmet_wz->Fill(background.trackMet_, weight);
       bck_minmet_wz->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_wz->Fill(fabs(mz - pair.M()), weight);
+      bck_id_wz->Fill(idcat, weight);
     } else if (nsel == 59){
       bck_njets_www->Fill(background.njets_, weight);
       bck_met_www->Fill(background.met_, weight);
       bck_mllz_www->Fill(pair.M(), weight);
       bck_mt_www->Fill(mt, weight);
-      bck_ptjet_www->Fill(background.jet1_.Pt(), weight);  
-      bck_mH_www->Fill(higgsSystem.M(), weight);
+      bck_ptjet_www->Fill(background.jet1_.Pt(), weight); 
+      if (higgsSystem.M() > 0) bck_mH_v2_www->Fill(higgsSystem.M(), weight); 
+      else bck_mH_v2_www->Fill(0.0, weight);
+      bck_mH_www->Fill(higgsSystem.M(), weight); 
+      bck_mH_3d_www->Fill(recomh, weight);
+      bck_mH_2d_www->Fill(recomth, weight);
       bck_mjj_www->Fill(pairjet.M(), weight);
       bck_dphiljj_www->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
       bck_dphilmjj_www->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
@@ -753,26 +905,36 @@ void Signal() {
       bck_tmet_www->Fill(background.trackMet_, weight);
       bck_minmet_www->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_www->Fill(fabs(mz - pair.M()), weight);
+      bck_id_www->Fill(idcat, weight);
     } else if (nsel == 0){
       bck_njets_data->Fill(background.njets_, weight);
       bck_met_data->Fill(background.met_, weight);
       bck_mllz_data->Fill(pair.M(), weight);
       bck_mt_data->Fill(mt, weight);
-      bck_ptjet_data->Fill(background.jet1_.Pt(), weight);  
-      bck_mH_data->Fill(higgsSystem.M(), weight);
+      bck_ptjet_data->Fill(background.jet1_.Pt(), weight); 
+      if (higgsSystem.M() > 0) bck_mH_v2_data->Fill(higgsSystem.M(), weight); 
+      else bck_mH_v2_data->Fill(0.0, weight);
+      bck_mH_data->Fill(higgsSystem.M(), weight); 
+      bck_mH_3d_data->Fill(recomh, weight);
+      bck_mH_2d_data->Fill(recomth, weight);
       bck_mjj_data->Fill(pairjet.M(), weight);
       bck_dphiljj_data->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
       bck_dRll_data->Fill(dR);
       bck_tmet_data->Fill(background.trackMet_, weight);
       bck_minmet_data->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_data->Fill(fabs(mz - pair.M()), weight);
+      bck_id_data->Fill(idcat, weight);
     } else if (nsel == 50){
       bck_njets_zz->Fill(background.njets_, weight);
       bck_met_zz->Fill(background.met_, weight);
       bck_mllz_zz->Fill(pair.M(), weight);
       bck_mt_zz->Fill(mt, weight);
       bck_ptjet_zz->Fill(background.jet1_.Pt(), weight);  
-      bck_mH_zz->Fill(higgsSystem.M(), weight);
+      if (higgsSystem.M() > 0) bck_mH_v2_zz->Fill(higgsSystem.M(), weight); 
+      else bck_mH_v2_zz->Fill(0.0, weight);
+      bck_mH_zz->Fill(higgsSystem.M(), weight); 
+      bck_mH_3d_zz->Fill(recomh, weight);
+      bck_mH_2d_zz->Fill(recomth, weight);
       bck_mjj_zz->Fill(pairjet.M(), weight);
       bck_dphiljj_zz->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
       bck_dphilmjj_zz->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
@@ -780,13 +942,18 @@ void Signal() {
       bck_tmet_zz->Fill(background.trackMet_, weight);
       bck_minmet_zz->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_zz->Fill(fabs(mz - pair.M()), weight);
+      bck_id_zz->Fill(idcat, weight);
     } else if (nsel == 43){
       bck_njets_tt->Fill(background.njets_, weight);
       bck_met_tt->Fill(background.met_, weight);
       bck_mllz_tt->Fill(pair.M(), weight);
       bck_mt_tt->Fill(mt, weight);
-      bck_ptjet_tt->Fill(background.jet1_.Pt(), weight);  
-      bck_mH_tt->Fill(higgsSystem.M(), weight);
+      bck_ptjet_tt->Fill(background.jet1_.Pt(), weight);
+      if (higgsSystem.M() > 0) bck_mH_v2_tt->Fill(higgsSystem.M(), weight); 
+      else bck_mH_v2_tt->Fill(0.0, weight);
+      bck_mH_tt->Fill(higgsSystem.M(), weight); 
+      bck_mH_3d_tt->Fill(recomh, weight);
+      bck_mH_2d_tt->Fill(recomth, weight);
       bck_mjj_tt->Fill(pairjet.M(), weight);
       bck_dphiljj_tt->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
       bck_dphilmjj_tt->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
@@ -794,6 +961,7 @@ void Signal() {
       bck_tmet_tt->Fill(background.trackMet_, weight);
       bck_minmet_tt->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_tt->Fill(fabs(mz - pair.M()), weight);
+      bck_id_tt->Fill(idcat, weight);
     } 
     else if (nsel == 61) {
       bck_njets_fakes->Fill(background.njets_, weight);
@@ -801,7 +969,11 @@ void Signal() {
       bck_mllz_fakes->Fill(pair.M(), weight);
       bck_mt_fakes->Fill(mt, weight);
       bck_ptjet_fakes->Fill(background.jet1_.Pt(), weight);  
-      bck_mH_fakes->Fill(higgsSystem.M(), weight);
+      if (higgsSystem.M() > 0) bck_mH_v2_fakes->Fill(higgsSystem.M(), weight); 
+      else bck_mH_v2_fakes->Fill(0.0, weight);
+      bck_mH_fakes->Fill(higgsSystem.M(), weight); 
+      bck_mH_3d_fakes->Fill(recomh, weight);
+      bck_mH_2d_fakes->Fill(recomth, weight);
       bck_mjj_fakes->Fill(pairjet.M(), weight);
       bck_dphiljj_fakes->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
       bck_dphilmjj_fakes->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
@@ -809,6 +981,7 @@ void Signal() {
       bck_tmet_fakes->Fill(background.trackMet_, weight);
       bck_minmet_fakes->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_fakes->Fill(fabs(mz - pair.M()), weight);
+      bck_id_fakes->Fill(idcat, weight);
     } 
   
  
@@ -852,6 +1025,18 @@ void Signal() {
     if (data.lid3_ == data.lid2_ && fabs(data.lid3_) != fabs(data.lid1_)) continue;
     if (data.lid3_ == data.lid1_ && fabs(data.lid3_) != fabs(data.lid2_)) continue;
     if (data.lid2_ == data.lid1_ && fabs(data.lid2_) != fabs(data.lid3_)) continue;
+    
+    //Select the different things: Z pair, extra lepton, Higgs system
+    int idcat = 20; // 0 = eee, 1 = eemu, 2 = mumue, 3 = mumumu
+    if (fabs(data.lid1_) == 11 && fabs(data.lid2_) == 11 && fabs(data.lid3_) == 11) idcat = 0;
+    else if ((fabs(data.lid1_) == 11 && fabs(data.lid2_) == 11 && fabs(data.lid3_) == 13) 
+          || (fabs(data.lid1_) == 11 && fabs(data.lid2_) == 13 && fabs(data.lid3_) == 11) 
+	  || (fabs(data.lid1_) == 13 && fabs(data.lid2_) == 11 && fabs(data.lid3_) == 11)) idcat = 1;
+    else if ((fabs(data.lid1_) == 11 && fabs(data.lid2_) == 13 && fabs(data.lid3_) == 13) 
+          || (fabs(data.lid1_) == 13 && fabs(data.lid2_) == 13 && fabs(data.lid3_) == 11) 
+	  || (fabs(data.lid1_) == 13 && fabs(data.lid2_) == 11 && fabs(data.lid3_) == 13)) idcat = 2;
+    else  if (fabs(data.lid1_) == 13 && fabs(data.lid2_) == 13 && fabs(data.lid3_) == 13)  idcat = 3;
+    
     data_cuts->Fill(1., weight);
     
     //At least 2 jets
@@ -891,6 +1076,43 @@ void Signal() {
     LorentzVector higgsSystem = tlepton + metvector + data.jet1_+ data.jet2_;
     LorentzVector lm = tlepton + metvector;
     
+    double hp[5];
+    hp[0] = tlepton.Px() + data.jet1_.Px()+ data.jet2_.Px()+ metvector.Px();
+    hp[1] = tlepton.Py() + data.jet1_.Py()+ data.jet2_.Py()+ metvector.Py();
+    hp[2] = tlepton.Pz() + data.jet1_.Pz()+ data.jet2_.Pz()+ metvector.Pz();
+    
+    //Calculate p of the neutrino using Maria's code
+    double metp = 0;
+    double otherSol = 0;
+    double alpha=(mw*mw-mmu*mmu)/2/tlepton.P()+(tlepton.Px()*data.met_*cos(data.metPhi_)+tlepton.Py()*data.met_*sin(data.metPhi_))/tlepton.P();
+    double A=tlepton.Pz()*tlepton.Pz()/tlepton.P()/tlepton.P()-1;
+    double B=2*alpha*tlepton.Pz()/tlepton.P();
+    double C=alpha*alpha-(data.met_*cos(data.metPhi_)*data.met_*cos(data.metPhi_) + data.met_*sin(data.metPhi_)*data.met_*sin(data.metPhi_));
+    bool isComplex = false;
+    double tmproot = B*B - 4.0*A*C;
+      if (tmproot<0) { 
+        isComplex= true;
+        metp = - B/(2*A); 
+	otherSol = metp;
+      } else {
+        isComplex = false;
+	double tmpsol1 = (-B + TMath::Sqrt(tmproot))/(2.0*A);
+	double tmpsol2 = (-B - TMath::Sqrt(tmproot))/(2.0*A);
+	if (TMath::Abs(tmpsol1)<TMath::Abs(tmpsol2) ) {
+	  metp = tmpsol1; otherSol = tmpsol2; 
+	} else { metp = tmpsol2; otherSol = tmpsol1; }
+     }
+   
+    
+   // hp[3] = tlepton.P() + data.jet1_.P()+ data.jet2_.P()+ metvector.P(); //crappy solution
+    hp[3] = tlepton.P() + data.jet1_.P()+ data.jet2_.P()+ metp;
+    hp[4] = tlepton.Pt() + data.jet1_.Pt()+ data.jet2_.Pt()+ data.met_;
+    
+    double recomh  = hp[3]*hp[3]-hp[0]*hp[0]-hp[1]*hp[1]-hp[2]*hp[2]; if(recomh  > 0) recomh  = sqrt(recomh);else recomh   = 0.0;
+    double recomth = hp[4]*hp[4]-hp[0]*hp[0]-hp[1]*hp[1]; if(recomth > 0) recomth = sqrt(recomth); else recomth  = 0.0;
+    
+ 
+    
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     data_cuts->Fill(3., weight);
@@ -915,7 +1137,11 @@ void Signal() {
     data_mllz->Fill(pair.M(), weight);
     data_mt->Fill(mt, weight);
     data_ptjet->Fill(data.jet1_.Pt(), weight);  
+    if (higgsSystem.M() > 0) data_mH_v2->Fill(higgsSystem.M(), weight); 
+    else data_mH_v2->Fill(0.0, weight);
     data_mH->Fill(higgsSystem.M(), weight);
+    data_mH_3d->Fill(recomh, weight);
+    data_mH_2d->Fill(recomth, weight);
     data_mjj->Fill(pairjet.M(), weight);
     data_dphiljj->Fill(fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi())), weight);
     data_dphilmjj->Fill(fabs(DeltaPhi(pairjet.Phi(),lm.Phi())), weight);
@@ -923,6 +1149,7 @@ void Signal() {
     data_tmet->Fill(data.trackMet_, weight);
     data_minmet->Fill(TMath::Min(data.met_, data.trackMet_), weight);
     data_minmll->Fill(fabs(mz - pair.M()), weight);
+    data_id->Fill(idcat, weight);
     
     eventsPassData += weight;
     

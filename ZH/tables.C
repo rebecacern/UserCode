@@ -37,9 +37,9 @@ void tables(){
   sprintf(myTexFile,"tables/table_%dpb.tex", lumi);
   ofstream output(myTexFile); 
   
-  const int nProcess = 8;
-  TString processName[nProcess] =  { "sig_cuts", "sig_cuts_zh", "data_cuts", "bck_cuts", "bck_cuts_wz", "bck_cuts_fakes", "bck_cuts_www","bck_cuts_zz"};
-  TString processTitle[nProcess] = { "HWW", "(ZH)", "data", "background", "WZ", "fakes", "tri-bosons", "ZZ"};
+  const int nProcess = 7;
+  TString processName[nProcess] =  { "sig_cuts_zh", "data_cuts", "bck_cuts", "bck_cuts_wz", "bck_cuts_fakes", "bck_cuts_www","bck_cuts_zz"};
+  TString processTitle[nProcess] = { "ZH, HWW", "data", "background", "WZ", "fakes", "tri-bosons", "ZZ"};
  
   const int nCuts = 8;
   TString cutLabel[nCuts] = { "3 lep", "OSSF", "2 jets", "$m_{ll}$", "$E_{T}^{miss}$", "$m_{T}$", "$m_{jj}$", "$\Delta\Phi_{jj-l}$"};
@@ -73,7 +73,7 @@ void tables(){
     for (int iProcess = 0; iProcess < nProcess; iProcess++){
     
 
-      if (h[iProcess]->GetBinContent(i)!=0 && iProcess != 2){
+      if (h[iProcess]->GetBinContent(i)!=0 && iProcess != 1){
 	output << " & " << std::setiosflags(std::ios::fixed) << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinContent(i) ; 
 	output << " $\\pm $"  << setprecision(precision(h[iProcess]->GetBinError(i))) << h[iProcess]->GetBinError(i);
        
