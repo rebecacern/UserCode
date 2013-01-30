@@ -42,7 +42,7 @@ void tables(){
   TString processTitle[nProcess] = { "ZH, HWW", "data", "background", "WZ", "fakes", "tri-bosons", "ZZ"};
  
   const int nCuts = 8;
-  TString cutLabel[nCuts] = { "3 lep", "OSSF", "2 jets", "$m_{ll}$", "$E_{T}^{miss}$", "$m_{T}$", "$m_{jj}$", "$\Delta\Phi_{jj-l}$"};
+  TString cutLabel[nCuts] = { "3 lep", "OSSF", "2 jets", "$m_{ll}$", "$E_{T}^{miss}$", "$m_{T}$", "$m_{jj}$", "$\\Delta\\Phi_{jj-l\\nu}$"};
  
    
   TH1F*  h [nProcess];

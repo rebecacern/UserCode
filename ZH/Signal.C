@@ -28,11 +28,10 @@ const double mmu = 0.105;
 const double lumi = 19.467;
 
 const double separation = 15; //15 is the chosen cut
-const double metcut = 10; //10 is the proposed
-const double mtcut = -30;
-const double lowpair = -55;
-const double highpair = 105000000000;
-const double phicut = 1800; // 1.8, 2.3;
+const double metcut = -10; //10 is the proposed
+const double mtcut = 85;
+const double separationjj = 60; //60
+const double phicut = 1.8; // 1.8
 
 void Signal() {
   
@@ -575,11 +574,11 @@ void Signal() {
     sig_cuts->Fill(4., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(4., weight);
     
-    if (mt < mtcut) continue;
+    if (mt > mtcut) continue;
     sig_cuts->Fill(5., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(5., weight);
    
-    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
+    if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
     sig_cuts->Fill(6., weight);
     if(signal.processId_ == 24)sig_cuts_zh->Fill(6., weight);
     
@@ -818,7 +817,7 @@ void Signal() {
     else if (nsel == 61) bck_cuts_fakes->Fill(4., weight);
     
     
-    if (mt < mtcut) continue;
+    if (mt > mtcut) continue;
     bck_cuts->Fill(5., weight);
     
     if (nsel == 49) bck_cuts_wz->Fill(5., weight);
@@ -827,7 +826,7 @@ void Signal() {
     else if (nsel == 50) bck_cuts_zz->Fill(5., weight);
     else if (nsel == 61) bck_cuts_fakes->Fill(5., weight);
     
-    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
+    if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
     bck_cuts->Fill(6., weight);
        
     if (nsel == 49) bck_cuts_wz->Fill(6., weight);
@@ -1120,10 +1119,10 @@ void Signal() {
     if (data.met_ < metcut) continue;
     data_cuts->Fill(4., weight);
     
-    if (mt < mtcut) continue;
+    if (mt > mtcut) continue;
     data_cuts->Fill(5., weight);
  
-    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
+    if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
     data_cuts->Fill(6., weight);
       
     //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));

@@ -22,13 +22,13 @@
 
 const int verboseLevel =   1;
 const double mz = 91.1876;
+const double mw = 80.4;
 const double lumi = 19.467;
 const double separation = 15;
 const double metcut = -25;
-const double mtcut = -30;
-const double lowpair = -55;
-const double highpair = 105000000000;
-const double phicut = 22.5;
+const double mtcut = 85;//85
+const double separationjj = 60000000; //60
+const double phicut = 1800000000; //1.8
 
 void Opti() {
   
@@ -126,15 +126,15 @@ void Opti() {
 
     if (signal.met_ < metcut) continue;
     
-    if (mt < mtcut) continue;
+    if (mt > mtcut) continue;
    
-    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
+    if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
     
     if (deltaPhi > phicut) continue;
     
  
     for (int j=0; j < 20; j++){
-       if (deltaPhi <= j*0.2) cut[j]+=weight;
+       if (pairjet.M() >= (mw - j*5) && pairjet.M() <= (mw + j*5)) cut[j]+=weight;
     }
     
    
@@ -217,25 +217,25 @@ void Opti() {
     
     if (background.met_ < metcut) continue;
     
-    if (mt < mtcut) continue;
+    if (mt > mtcut) continue;
     
-    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
+    if (pairjet.M() < (mw - separationjj)  || pairjet.M() > (mw + separationjj)) continue;
      
     if (deltaPhi > phicut) continue;
     
     
     
     for (int j=0; j < 20; j++){
-       if (deltaPhi <= j*0.2) cutb[j]+=weight;
+        if (pairjet.M() >= (mw - j*5) && pairjet.M() <= (mw + j*5))  cutb[j]+=weight;
     }
 
   }
   cout << " Cut optimization " << endl;
   cout << endl;
-  cout << "Phi <  " << endl;
+  cout << "separation mw   " << endl;
   for (int i=1; i < 20; i++){
   
-  cout << i*0.2 << "\tS: " << cut[i] << "\tB: " << cutb[i] << "\tS/B:" << cut[i]/cutb[i] << "\tS/sqrt(B):" << cut[i]/sqrt(cutb[i]) <<endl; 
+  cout <<  i*5 << "\tS: " << cut[i] << "\tB: " << cutb[i] << "\tS/B:" << cut[i]/cutb[i] << "\tS/sqrt(B):" << cut[i]/sqrt(cutb[i]) <<endl; 
   }
   cout << endl;
   

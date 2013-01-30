@@ -25,7 +25,7 @@ void plot(){
   
   const int nProcess = 4;
   TString processName[nProcess] =  { "wz", "www", "fakes","zz"};
-  TString processTitle[nProcess] = { "WZ", "WWW", "fakes", "ZZ"};
+  TString processTitle[nProcess] = { "WZ", "tri-boson", "fakes", "ZZ"};
   Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kGray+2};
  
   const int nPlots = 14;
@@ -98,9 +98,9 @@ void plot(){
     if (iPlot == 1 || iPlot == 2) hStack[iPlot]->GetXaxis()->SetRangeUser(0.0, 3.14);
     leg->Draw();
     
-    c1->SaveAs("plots/phi_"+cutLabel[iPlot]+".png");
+    c1->SaveAs("plots/final_"+cutLabel[iPlot]+".png");
     c1->SetLogy();
-    c1->SaveAs("plots/phi_"+cutLabel[iPlot]+"_log.png");
+    c1->SaveAs("plots/final_"+cutLabel[iPlot]+"_log.png");
     
     
     
