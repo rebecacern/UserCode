@@ -28,11 +28,10 @@ const double mmu = 0.105;
 const double lumi = 19.467;
 
 const double separation = 15; //15 is the chosen cut
-const double metcut = 10; //10 is the proposed
-const double mtcut = -30;
-const double lowpair = -55;
-const double highpair = 105000000000;
-const double phicut = 1800; // 1.8, 2.3;
+const double metcut = -10; 
+const double mtcut = 85;
+const double separationjj = 60; //60
+const double phicut = 1.8; // 1.8
 
 void finalSelection() {
   
@@ -174,9 +173,9 @@ void finalSelection() {
    
     if (signal.met_ < metcut) continue;
    
-    if (mt < mtcut) continue;
+    if (mt > mtcut) continue;
    
-    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
+    if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
     
     //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
     double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
@@ -336,9 +335,9 @@ void finalSelection() {
     
     if (background.met_ < metcut) continue;
   
-    if (mt < mtcut) continue;
+    if (mt > mtcut) continue;
   
-    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
+    if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
    
    //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
     double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
@@ -456,9 +455,9 @@ void finalSelection() {
     
     if (data.met_ < metcut) continue;
    
-    if (mt < mtcut) continue;
+    if (mt > mtcut) continue;
     
-    if (pairjet.M() < lowpair || pairjet.M() > highpair) continue;
+    if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
       
     //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
     double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
