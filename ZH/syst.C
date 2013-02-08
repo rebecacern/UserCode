@@ -32,15 +32,14 @@ const double separationjj = 60; //60
 const double phicut = 1.8; // 1.8
 
 
-void chain(int nsel = 0, int mh = 125){
+void syst(int nsel = 1, int mh = 125, int syst = 0){
 
   char plotName[300];
   sprintf(plotName,"test");
   bool isBackground = true;
   bool isData = false;
   
-  if (nsel == 0)                	{sprintf(plotName,"Data");	isBackground = false;	isData = true;}
-  else if (nsel == 1)   		{sprintf(plotName,"ZH");	isBackground = false;}
+  if (nsel == 1)   			{sprintf(plotName,"ZH");	isBackground = false;}
   else if (nsel == 2)   		{sprintf(plotName,"WZ");}
   else if (nsel == 3)   		{sprintf(plotName,"ZZ");}
   else if (nsel == 4)   		{sprintf(plotName,"VVV");}
@@ -70,10 +69,30 @@ void chain(int nsel = 0, int mh = 125){
   double nbinlow = 0;
   double nbinhigh = 200;
   
-  sprintf(title,"histo_%s",plotName);
-  TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
-  histo->Sumw2();
+  //Systematics?
+  if (nsel == 0){
+    cout << "[Info:] Wrong combination, no systematics for data. Removing condition. " << endl;
+    nsel = 1;
+  }
+  
+  
+  char systName[300];
+  sprintf(systName,"test");
+  if (syst == 1) sprintf(systName,"Stat");
+  
+  cout << "[Info:] Systematic calculation of " << systName << endl;
+  // Bounding up
+  sprintf(title,"histo_%s_%sBoundUp",plotName, systName );
+  TH1F* histo_up = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
+  histo_up->Sumw2();
+  
+  //Bounding Down
+  sprintf(title,"histo_%s_%sBoundDown",plotName, systName );
+  TH1F* histo_down = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
+  histo_down->Sumw2();
 
+  
+  
   //Prepare useful things
   double weight = 1;
   double eventsPass = 0;
@@ -215,7 +234,8 @@ void chain(int nsel = 0, int mh = 125){
     if (nsel == 5 && ntype != 61) continue; //fakes
     if (nsel == 0 && ntype != 0)  continue; //data
     
-    histo->Fill(recomth, weight);
+    histo_up->Fill(recomth, weight);
+    histo_down->Fill(recomth, weight);
     eventsPass+= weight;
      
   
@@ -223,6 +243,18 @@ void chain(int nsel = 0, int mh = 125){
   
    cout << "[Info:] (" << plotName << ") " <<  eventsPass << " events pass " << endl;
   
+   if (syst == 1){
+   
+       for (int i = 1; i < nbins+1; i ++){
+         double content[2] = {0, 0};
+	 content[0] = histo_up->GetBinContent(i) + histo_up->GetBinError(i);
+	 content[1] = histo_up->GetBinContent(i) - histo_up->GetBinError(i);
+         histo_up->SetBinContent(i,content[0]);
+         histo_down->SetBinContent(i,content[1]);
+       }
+    }
+ 
+ 
   
     f_root.Write();
     f_root.Close();
