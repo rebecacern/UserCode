@@ -32,7 +32,7 @@ const double separationjj = 60; //60
 const double phicut = 1.8; // 1.8
 
 
-void syst(int nsel = 1, int mh = 125, int syst = 0){
+void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
 
   char plotName[300];
   sprintf(plotName,"test");
@@ -44,7 +44,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0){
   else if (nsel == 3)   		{sprintf(plotName,"ZZ");}
   else if (nsel == 4)   		{sprintf(plotName,"VVV");}
   else if (nsel == 5)			{sprintf(plotName,"Wjets");}
-  else if (nsel == 6) 			{sprintf(plotName, "all");}
+  
   
   char myRootFile[300];
   if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
@@ -70,28 +70,31 @@ void syst(int nsel = 1, int mh = 125, int syst = 0){
   double nbinhigh = 200;
   
   //Systematics?
-  if (nsel == 0){
+  if (nsel == 0 || (nsel==5 && syst == 2)|| (nsel==5 && syst == 3)){
     cout << "[Info:] Wrong combination, no systematics for data. Removing condition. " << endl;
     nsel = 1;
   }
   
-  
-  char systName[300];
+
+  char systName[300], direction[300];
   sprintf(systName,"test");
-  if (syst == 1) sprintf(systName,"Stat");
+  bool isJES = false;
+  bool isPU = false;
+  if (syst == 1) 		sprintf(systName,"Stat");
+  else if (syst == 2) { 	sprintf(systName,"JES");  	isJES = true;}
+  else if (syst == 3) { 	sprintf(systName,"PU");  	isPU = true;}
   
   cout << "[Info:] Systematic calculation of " << systName << endl;
-  // Bounding up
-  sprintf(title,"histo_%s_%sBoundUp",plotName, systName );
-  TH1F* histo_up = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
-  histo_up->Sumw2();
+  if (isUp) sprintf(direction,"Up");
+  else sprintf(direction,"Down");
   
-  //Bounding Down
-  sprintf(title,"histo_%s_%sBoundDown",plotName, systName );
-  TH1F* histo_down = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
-  histo_down->Sumw2();
+  cout << "[Info:] Systematic "<< direction << endl;
+  
+  
+  sprintf(title,"histo_%s_%sBound%s",plotName, systName, direction);
+  TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
+  histo->Sumw2();
 
-  
   
   //Prepare useful things
   double weight = 1;
@@ -105,8 +108,19 @@ void syst(int nsel = 1, int mh = 125, int syst = 0){
     sample.tree_->GetEntry(i);
     
     weight = 1;
-    if (!isData && sample.dstype_ != SmurfTree::data) weight = lumi*sample.scale1fb_*sample.sfWeightPU_*sample.sfWeightEff_*sample.sfWeightTrig_;    
-   
+    double puweight = sample.sfWeightPU_;
+    
+    //PU syst
+    if (!isData && sample.dstype_ != SmurfTree::data && isPU){
+      double corrPU = 0;
+      if (isUp) corrPU = sample.sfWeightPU_*0.01;
+      else corrPU = -sample.sfWeightPU_*0.01;
+      puweight = puweight + corrPU;
+    }
+    
+    if (!isData && sample.dstype_ != SmurfTree::data) weight = lumi*sample.scale1fb_*puweight*sample.sfWeightEff_*sample.sfWeightTrig_;    
+    
+    
    //Three real leptons MC level
     if (!isData){
       bool isRealLepton = false;
@@ -144,6 +158,14 @@ void syst(int nsel = 1, int mh = 125, int syst = 0){
     
     // At least 2 jets 
     if (sample.njets_ < 2) continue; 
+    
+    double jet1pt = sample.jet1_.Pt();
+    double jet2pt = sample.jet2_.Pt();
+    
+    ///JER -> to be checked!
+    double JESerr = 0.10; // 0.05 also
+    if (isJES && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) { jet1pt = jet1pt + jet1pt*JESerr; jet2pt = jet2pt + jet2pt*JESerr;}
+    if (isJES && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) { jet1pt = jet1pt - jet1pt*JESerr; jet2pt = jet2pt - jet2pt*JESerr;}
     
      //Make z-compatible pairs
     double m[3] = {0, 0, 0};
@@ -211,7 +233,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0){
     
    // hp[3] = tlepton.P() + sample.jet1_.P()+ sample.jet2_.P()+ metvector.P(); //crappy solution
     hp[3] = tlepton.P() + sample.jet1_.P()+ sample.jet2_.P()+ metp;
-    hp[4] = tlepton.Pt() + sample.jet1_.Pt()+ sample.jet2_.Pt()+ sample.met_;
+    hp[4] = tlepton.Pt() + jet1pt+ jet2pt+ sample.met_;
     
     double recomh  = hp[3]*hp[3]-hp[0]*hp[0]-hp[1]*hp[1]-hp[2]*hp[2]; if(recomh  > 0) recomh  = sqrt(recomh);else recomh   = 0.0;
     double recomth = hp[4]*hp[4]-hp[0]*hp[0]-hp[1]*hp[1]; if(recomth > 0) recomth = sqrt(recomth); else recomth  = 0.0;
@@ -234,8 +256,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0){
     if (nsel == 5 && ntype != 61) continue; //fakes
     if (nsel == 0 && ntype != 0)  continue; //data
     
-    histo_up->Fill(recomth, weight);
-    histo_down->Fill(recomth, weight);
+    histo->Fill(recomth, weight);
     eventsPass+= weight;
      
   
@@ -244,13 +265,11 @@ void syst(int nsel = 1, int mh = 125, int syst = 0){
    cout << "[Info:] (" << plotName << ") " <<  eventsPass << " events pass " << endl;
   
    if (syst == 1){
-   
        for (int i = 1; i < nbins+1; i ++){
-         double content[2] = {0, 0};
-	 content[0] = histo_up->GetBinContent(i) + histo_up->GetBinError(i);
-	 content[1] = histo_up->GetBinContent(i) - histo_up->GetBinError(i);
-         histo_up->SetBinContent(i,content[0]);
-         histo_down->SetBinContent(i,content[1]);
+         double content = 0;
+	 if (isUp) content = histo->GetBinContent(i) + histo->GetBinError(i);
+	 else content = histo->GetBinContent(i) - histo->GetBinError(i);
+         histo->SetBinContent(i,content);
        }
     }
  
