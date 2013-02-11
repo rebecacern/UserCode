@@ -26,6 +26,7 @@ const double mmu = 0.105;
 const double lumi = 19.467;
 
 //kinamtic cuts
+const double ptleadingcut = 30; //leading jet
 const double separation = 15; //15 is the chosen cut
 const double metcut = -10; 
 const double mtcut = 85;

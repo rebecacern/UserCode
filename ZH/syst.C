@@ -138,6 +138,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     ///JER -> to be checked!
     if (isJES && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) jescorr = 1 + JESerr;
     if (isJES && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) jescorr = 1 - JESerr;
+    if (sample.jet1_.Pt()*jescorr < ptleadingcut) continue; 
     
     //MET 
     double metcorr = 1;
