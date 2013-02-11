@@ -1,36 +1,6 @@
 // rebeca@cern.ch
 // Attempt to optimize the work
-#include "../Smurf/Core/SmurfTree.h"
-#include "../Smurf/Analysis/HWWlvlv/factors.h"
-#include "../Smurf/Core/LeptonScaleLookup.h"
-#include "Math/VectorUtil.h"
-#include <TROOT.h>
-#include <TFile.h>
-#include <TTree.h>
-#include <TChain.h>
-#include <iostream>
-#include <fstream>
-#include "TLegend.h"
-#include "TPaveText.h"
-#include "TRandom.h"
-#include "TH1D.h"
-#include "TH2D.h"
-#include "TMath.h"
-#include "TCanvas.h"
-#include "TSystem.h"
-
-const int verboseLevel =   1;
-const double mz = 91.1876;
-const double mw = 80.4;
-const double mmu = 0.105;
-const double lumi = 19.467;
-
-const double separation = 15; //15 is the chosen cut
-const double metcut = -10; 
-const double mtcut = 85;
-const double separationjj = 60; //60
-const double phicut = 1.8; // 1.8
-
+#include "inputs.h"
 
 void chain(int nsel = 0, int mh = 125){
 
@@ -111,7 +81,6 @@ void chain(int nsel = 0, int mh = 125){
     if (nFake !=0 && !isBackground) continue; 
     if (nFake !=0){ 
       ntype = 61;
-      double factor = 1;
       weight*= sample.sfWeightFR_*factor;
       //if (sample.dstype_ != SmurfTree::data) weight *=-1;
     }

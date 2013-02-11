@@ -1,35 +1,6 @@
 // rebeca@cern.ch
 // Attempt to optimize the work
-#include "../Smurf/Core/SmurfTree.h"
-#include "../Smurf/Analysis/HWWlvlv/factors.h"
-#include "../Smurf/Core/LeptonScaleLookup.h"
-#include "Math/VectorUtil.h"
-#include <TROOT.h>
-#include <TFile.h>
-#include <TTree.h>
-#include <TChain.h>
-#include <iostream>
-#include <fstream>
-#include "TLegend.h"
-#include "TPaveText.h"
-#include "TRandom.h"
-#include "TH1D.h"
-#include "TH2D.h"
-#include "TMath.h"
-#include "TCanvas.h"
-#include "TSystem.h"
-
-const int verboseLevel =   1;
-const double mz = 91.1876;
-const double mw = 80.4;
-const double mmu = 0.105;
-const double lumi = 19.467;
-
-const double separation = 15; //15 is the chosen cut
-const double metcut = -10; 
-const double mtcut = 85;
-const double separationjj = 60; //60
-const double phicut = 1.8; // 1.8
+#include "inputs.h"
 
 
 void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
@@ -80,9 +51,11 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   sprintf(systName,"test");
   bool isJES = false;
   bool isPU = false;
+  bool isMET = false;
   if (syst == 1) 		sprintf(systName,"Stat");
   else if (syst == 2) { 	sprintf(systName,"JES");  	isJES = true;}
   else if (syst == 3) { 	sprintf(systName,"PU");  	isPU = true;}
+  else if (syst == 4) { 	sprintf(systName,"MET");  	isMET = true;}
   
   cout << "[Info:] Systematic calculation of " << systName << endl;
   if (isUp) sprintf(direction,"Up");
@@ -144,7 +117,6 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     if (nFake !=0 && !isBackground) continue; 
     if (nFake !=0){ 
       ntype = 61;
-      double factor = 1;
       weight*= sample.sfWeightFR_*factor;
       //if (sample.dstype_ != SmurfTree::data) weight *=-1;
     }
@@ -163,9 +135,14 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     double jet2pt = sample.jet2_.Pt();
     
     ///JER -> to be checked!
-    double JESerr = 0.10; // 0.05 also
     if (isJES && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) { jet1pt = jet1pt + jet1pt*JESerr; jet2pt = jet2pt + jet2pt*JESerr;}
     if (isJES && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) { jet1pt = jet1pt - jet1pt*JESerr; jet2pt = jet2pt - jet2pt*JESerr;}
+    
+    //MET 
+    double eventmet = sample.met_;
+    if (isMET && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) { eventmet = eventmet + eventmet*0.10;}
+    if (isMET && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) { eventmet = eventmet - eventmet*0.10;}
+    
     
      //Make z-compatible pairs
     double m[3] = {0, 0, 0};
@@ -194,7 +171,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  sample.mt1_; tlepton = sample.lep1_;} 
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  sample.mt2_; tlepton = sample.lep2_;} 
     pairjet = sample.jet1_+ sample.jet2_;
-    LorentzVector metvector(sample.met_*cos(sample.metPhi_), sample.met_*sin(sample.metPhi_), 0, 0);
+    LorentzVector metvector(eventmet*cos(sample.metPhi_), eventmet*sin(sample.metPhi_), 0, 0);
    // LorentzVector higgsSystem = tlepton + metvector + sample.jet1_+ sample.jet2_;
     LorentzVector lm = tlepton + metvector;
    
@@ -207,10 +184,10 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     //Calculate p of the neutrino using Maria's code
     double metp = 0;
    // double otherSol = 0;
-    double alpha=(mw*mw-mmu*mmu)/2/tlepton.P()+(tlepton.Px()*sample.met_*cos(sample.metPhi_)+tlepton.Py()*sample.met_*sin(sample.metPhi_))/tlepton.P();
+    double alpha=(mw*mw-mmu*mmu)/2/tlepton.P()+(tlepton.Px()*eventmet*cos(sample.metPhi_)+tlepton.Py()*eventmet*sin(sample.metPhi_))/tlepton.P();
     double A=tlepton.Pz()*tlepton.Pz()/tlepton.P()/tlepton.P()-1;
     double B=2*alpha*tlepton.Pz()/tlepton.P();
-    double C=alpha*alpha-(sample.met_*cos(sample.metPhi_)*sample.met_*cos(sample.metPhi_) + sample.met_*sin(sample.metPhi_)*sample.met_*sin(sample.metPhi_));
+    double C=alpha*alpha-(eventmet*cos(sample.metPhi_)*eventmet*cos(sample.metPhi_) + eventmet*sin(sample.metPhi_)*eventmet*sin(sample.metPhi_));
    // bool isComplex = false;
     double tmproot = B*B - 4.0*A*C;
       if (tmproot<0) { 
@@ -233,7 +210,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     
    // hp[3] = tlepton.P() + sample.jet1_.P()+ sample.jet2_.P()+ metvector.P(); //crappy solution
     hp[3] = tlepton.P() + sample.jet1_.P()+ sample.jet2_.P()+ metp;
-    hp[4] = tlepton.Pt() + jet1pt+ jet2pt+ sample.met_;
+    hp[4] = tlepton.Pt() + jet1pt+ jet2pt+ eventmet;
     
     double recomh  = hp[3]*hp[3]-hp[0]*hp[0]-hp[1]*hp[1]-hp[2]*hp[2]; if(recomh  > 0) recomh  = sqrt(recomh);else recomh   = 0.0;
     double recomth = hp[4]*hp[4]-hp[0]*hp[0]-hp[1]*hp[1]; if(recomth > 0) recomth = sqrt(recomth); else recomth  = 0.0;
@@ -241,7 +218,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
    
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
-    if (sample.met_ < metcut) continue;
+    if (eventmet < metcut) continue;
     if (mt > mtcut) continue;
     if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
     
