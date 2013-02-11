@@ -47,3 +47,14 @@ root.exe -b -l -q syst.C+\(1\,125\,4\,1\)
 root.exe -b -l -q syst.C+\(2\,125\,4\,1\)
 root.exe -b -l -q syst.C+\(3\,125\,4\,1\)
 root.exe -b -l -q syst.C+\(4\,125\,4\,1\)
+#systematics, Lepton Down
+root.exe -b -l -q syst.C+\(1\,125\,5\,0\)
+root.exe -b -l -q syst.C+\(2\,125\,5\,0\)
+root.exe -b -l -q syst.C+\(3\,125\,5\,0\)
+root.exe -b -l -q syst.C+\(4\,125\,5\,0\)
+#Lepton Up
+root.exe -b -l -q syst.C+\(1\,125\,5\,1\)
+root.exe -b -l -q syst.C+\(2\,125\,5\,1\)
+root.exe -b -l -q syst.C+\(3\,125\,5\,1\)
+root.exe -b -l -q syst.C+\(4\,125\,5\,1\)
+

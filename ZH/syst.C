@@ -4,7 +4,7 @@
 
 
 void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
-
+  
   char plotName[300];
   sprintf(plotName,"test");
   bool isBackground = true;
@@ -41,21 +41,23 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   double nbinhigh = 200;
   
   //Systematics?
-  if (nsel == 0 || (nsel==5 && syst == 2)|| (nsel==5 && syst == 3)){
+  if (nsel == 0 || ( nsel==5 && syst == 2) || (nsel==5 && syst == 3) || (nsel ==5 && syst == 4)){
     cout << "[Info:] Wrong combination, no systematics for data. Removing condition. " << endl;
     nsel = 1;
   }
   
-
+  
   char systName[300], direction[300];
   sprintf(systName,"test");
   bool isJES = false;
   bool isPU = false;
   bool isMET = false;
+  bool isLep = false;
   if (syst == 1) 		sprintf(systName,"Stat");
   else if (syst == 2) { 	sprintf(systName,"JES");  	isJES = true;}
   else if (syst == 3) { 	sprintf(systName,"PU");  	isPU = true;}
-  else if (syst == 4) { 	sprintf(systName,"MET");  	isMET = true;}
+  else if (syst == 4) { 	sprintf(systName,"METRes");  	isMET = true;}
+  else if (syst == 5) { 	sprintf(systName,"LepRes");  	isLep = true;}
   
   cout << "[Info:] Systematic calculation of " << systName << endl;
   if (isUp) sprintf(direction,"Up");
@@ -67,19 +69,19 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   sprintf(title,"histo_%s_%sBound%s",plotName, systName, direction);
   TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
   histo->Sumw2();
-
+  
   
   //Prepare useful things
   double weight = 1;
   double eventsPass = 0;
   
   int nSample=sample.tree_->GetEntries();
-   for (int i=0; i<nSample; ++i) {
+  for (int i=0; i<nSample; ++i) {
     
     if (i%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",i,nSample);
     sample.tree_->GetEntry(i);
-    
+     
     weight = 1;
     double puweight = sample.sfWeightPU_;
     
@@ -94,7 +96,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     if (!isData && sample.dstype_ != SmurfTree::data) weight = lumi*sample.scale1fb_*puweight*sample.sfWeightEff_*sample.sfWeightTrig_;    
     
     
-   //Three real leptons MC level
+    //Three real leptons MC level
     if (!isData){
       bool isRealLepton = false;
       if((TMath::Abs(sample.lep1McId_) == 11 || TMath::Abs(sample.lep1McId_) == 13) &&
@@ -131,101 +133,157 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     // At least 2 jets 
     if (sample.njets_ < 2) continue; 
     
-    double jet1pt = sample.jet1_.Pt();
-    double jet2pt = sample.jet2_.Pt();
+    double jescorr = 1;
     
     ///JER -> to be checked!
-    if (isJES && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) { jet1pt = jet1pt + jet1pt*JESerr; jet2pt = jet2pt + jet2pt*JESerr;}
-    if (isJES && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) { jet1pt = jet1pt - jet1pt*JESerr; jet2pt = jet2pt - jet2pt*JESerr;}
+    if (isJES && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) jescorr = 1 + JESerr;
+    if (isJES && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) jescorr = 1 - JESerr;
     
     //MET 
-    double eventmet = sample.met_;
-    if (isMET && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) { eventmet = eventmet + eventmet*0.10;}
-    if (isMET && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) { eventmet = eventmet - eventmet*0.10;}
+    double metcorr = 1;
+    if (isMET && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) metcorr = 1 + 0.10;
+    if (isMET && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) metcorr = 1 - 0.10;
+    
+    //Lepton Scale
+    double rndMon[12] = {gRandom->Gaus(0.00,0.010),gRandom->Gaus(0.00,0.017),gRandom->Gaus(0.00,0.015),gRandom->Gaus(0.00,0.030),
+			 gRandom->Gaus(0.00,0.010),gRandom->Gaus(0.00,0.017),gRandom->Gaus(0.00,0.015),gRandom->Gaus(0.00,0.030),
+			 gRandom->Gaus(0.00,0.010),gRandom->Gaus(0.00,0.017),gRandom->Gaus(0.00,0.015),gRandom->Gaus(0.00,0.030)};
     
     
-     //Make z-compatible pairs
+    double corr[3] = {1.0, 1.0, 1.0};
+    
+    if (isLep && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+      if (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	corr[0] = 1./0.99920 + rndMon[0];
+      }
+      else if(TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+        corr[0] = 1./0.99934 + rndMon[1];
+      }
+      else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	corr[0] = 1./0.99807 + rndMon[2];
+      }
+      else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	corr[0] = 1./0.99952 + rndMon[3];
+      }
+      if (TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	corr[1] = 1./0.99920 + rndMon[4];
+      }
+      else if(TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	corr[1] = 1./0.99934 + rndMon[5];
+      }
+      else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	corr[1] = 1./0.99807 + rndMon[6];
+      }
+      else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	corr[1] = 1./0.99952 + rndMon[7];
+      }
+      if (TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) <  1.479){
+	corr[2] = 1./0.99920 + rndMon[8];
+      }
+      else if(TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
+	corr[2] = 1./0.99934 + rndMon[9];
+      }
+      else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) <  1.479){
+	corr[2] = 1./0.99807 + rndMon[10];
+      }
+      else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
+	corr[2] = 1./0.99952 + rndMon[11];
+      }    
+      
+    } 
+    
+    if (isLep && !isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+      if (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	corr[0] = 0.99920 - rndMon[0];
+      }
+      else if(TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	corr[0] = 0.99934 - rndMon[1];
+      }
+      else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	corr[0] = 0.99807 - rndMon[2];
+      }
+      else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	corr[0] = 0.99952 - rndMon[3];
+      }
+      if (TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	corr[1] = 0.99920 - rndMon[4];
+      }
+      else if(TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	corr[1] = 0.99934 - rndMon[5];
+      }
+      else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	corr[1] = 0.99807 - rndMon[6];
+      }
+      else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	corr[1] = 0.99952 - rndMon[7];
+      }
+      if (TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) <  1.479){
+	corr[2] = 0.99920 - rndMon[8];
+      }
+      else if(TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
+	corr[2] = 0.99934 - rndMon[9];
+      }
+      else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) <  1.479){
+	corr[2] = 0.99807 - rndMon[10];
+      }
+      else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
+	corr[2] = 0.99952 - rndMon[10];
+      } 
+    }
+    
+    //Make z-compatible pairs
     double m[3] = {0, 0, 0};
     LorentzVector pair1, pair2, pair3;
     if (fabs(sample.lid1_) == fabs(sample.lid2_) && sample.lq1_*sample.lq2_ < 0){
-      pair1 = sample.lep1_ + sample.lep2_ ;
+      pair1 = sample.lep1_*corr[0] + sample.lep2_*corr[1] ;
       m[0] = pair1.M();
     }
     if (fabs(sample.lid2_) == fabs(sample.lid3_) && sample.lq2_*sample.lq3_ < 0){
-      pair2 = sample.lep2_ + sample.lep3_ ;
+      pair2 = sample.lep2_*corr[1] + sample.lep3_*corr[2] ;
       m[1] = pair2.M();
     }
     if (fabs(sample.lid1_) == fabs(sample.lid3_) && sample.lq1_*sample.lq3_ < 0){
-      pair3 = sample.lep1_ + sample.lep3_ ;
+      pair3 = sample.lep1_*corr[0] + sample.lep3_*corr[2];
       m[2] = pair3.M();
     }
     
     //Get the closest to the Z mass
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
-   
+    
     //Select the different things: Z pair, extra lepton, Higgs system
     LorentzVector pair, tlepton, pairjet;
     double mt = 0;
-   // double dR = 0; //dR = fabs(ROOT::Math::VectorUtil::DeltaR(sample.lep1_ ,sample.lep2_)) etc
-    if (min == fabs(mz - m[0])) {  pair = pair1; mt =  sample.mt3_; tlepton = sample.lep3_;} 
-    else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  sample.mt1_; tlepton = sample.lep1_;} 
-    else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  sample.mt2_; tlepton = sample.lep2_;} 
-    pairjet = sample.jet1_+ sample.jet2_;
-    LorentzVector metvector(eventmet*cos(sample.metPhi_), eventmet*sin(sample.metPhi_), 0, 0);
-   // LorentzVector higgsSystem = tlepton + metvector + sample.jet1_+ sample.jet2_;
+    // double dR = 0; //dR = fabs(ROOT::Math::VectorUtil::DeltaR(sample.lep1_ ,sample.lep2_)) etc
+    if (min == fabs(mz - m[0])) {  pair = pair1; mt =  sample.mt3_; tlepton = sample.lep3_*corr[2];} 
+    else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  sample.mt1_; tlepton = sample.lep1_*corr[0];} 
+    else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  sample.mt2_; tlepton = sample.lep2_*corr[1];} 
+    
+    pairjet = sample.jet1_*jescorr+ sample.jet2_*jescorr;
+    
+    LorentzVector metvector(sample.met_*metcorr*cos(sample.metPhi_), sample.met_*metcorr*sin(sample.metPhi_), 0, 0);
+    // LorentzVector higgsSystem = tlepton + metvector + sample.jet1_+ sample.jet2_;
     LorentzVector lm = tlepton + metvector;
-   
-      
+    
+    
     double hp[5];
-    hp[0] = tlepton.Px() + sample.jet1_.Px()+ sample.jet2_.Px()+ metvector.Px();
-    hp[1] = tlepton.Py() + sample.jet1_.Py()+ sample.jet2_.Py()+ metvector.Py();
-    hp[2] = tlepton.Pz() + sample.jet1_.Pz()+ sample.jet2_.Pz()+ metvector.Pz();
+    hp[0] = tlepton.Px() + sample.jet1_.Px()*jescorr+ sample.jet2_.Px()*jescorr+ metvector.Px()*metcorr;
+    hp[1] = tlepton.Py() + sample.jet1_.Py()*jescorr+ sample.jet2_.Py()*jescorr+ metvector.Py()*metcorr;
+    /// calculations not needed
+    hp[4] = tlepton.Pt() + sample.jet1_.Pt()*jescorr+ sample.jet2_.Pt()*jescorr+ sample.met_*metcorr;
     
-    //Calculate p of the neutrino using Maria's code
-    double metp = 0;
-   // double otherSol = 0;
-    double alpha=(mw*mw-mmu*mmu)/2/tlepton.P()+(tlepton.Px()*eventmet*cos(sample.metPhi_)+tlepton.Py()*eventmet*sin(sample.metPhi_))/tlepton.P();
-    double A=tlepton.Pz()*tlepton.Pz()/tlepton.P()/tlepton.P()-1;
-    double B=2*alpha*tlepton.Pz()/tlepton.P();
-    double C=alpha*alpha-(eventmet*cos(sample.metPhi_)*eventmet*cos(sample.metPhi_) + eventmet*sin(sample.metPhi_)*eventmet*sin(sample.metPhi_));
-   // bool isComplex = false;
-    double tmproot = B*B - 4.0*A*C;
-      if (tmproot<0) { 
-        //isComplex= true;
-        metp = - B/(2*A); 
-	//otherSol = metp;
-      } else {
-       // isComplex = false;
-	double tmpsol1 = (-B + TMath::Sqrt(tmproot))/(2.0*A);
-	double tmpsol2 = (-B - TMath::Sqrt(tmproot))/(2.0*A);
-	if (TMath::Abs(tmpsol1)<TMath::Abs(tmpsol2) ) {
-	  metp = tmpsol1; 
-	  //otherSol = tmpsol2; 
-	} else { 
-	  metp = tmpsol2; 
-	  //otherSol = tmpsol1; 
-	}
-     }
-   
-    
-   // hp[3] = tlepton.P() + sample.jet1_.P()+ sample.jet2_.P()+ metvector.P(); //crappy solution
-    hp[3] = tlepton.P() + sample.jet1_.P()+ sample.jet2_.P()+ metp;
-    hp[4] = tlepton.Pt() + jet1pt+ jet2pt+ eventmet;
-    
-    double recomh  = hp[3]*hp[3]-hp[0]*hp[0]-hp[1]*hp[1]-hp[2]*hp[2]; if(recomh  > 0) recomh  = sqrt(recomh);else recomh   = 0.0;
     double recomth = hp[4]*hp[4]-hp[0]*hp[0]-hp[1]*hp[1]; if(recomth > 0) recomth = sqrt(recomth); else recomth  = 0.0;
     
-   
+    
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
-    if (eventmet < metcut) continue;
+    if (sample.met_*metcorr < metcut) continue;
     if (mt > mtcut) continue;
     if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
     
-   //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
+    //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
     double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
     if (deltaPhi > phicut) continue;
-   
+    
     
     if (nsel == 2 && ntype != 49) continue; //WZ
     if (nsel == 3 && ntype != 50) continue; //ZZ
@@ -236,23 +294,23 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     histo->Fill(recomth, weight);
     eventsPass+= weight;
      
-  
+    
   }    
   
-   cout << "[Info:] (" << plotName << ") " <<  eventsPass << " events pass " << endl;
+  cout << "[Info:] (" << plotName << ") " <<  eventsPass << " events pass " << endl;
   
-   if (syst == 1){
-       for (int i = 1; i < nbins+1; i ++){
-         double content = 0;
-	 if (isUp) content = histo->GetBinContent(i) + histo->GetBinError(i);
-	 else content = histo->GetBinContent(i) - histo->GetBinError(i);
-         histo->SetBinContent(i,content);
-       }
+  if (syst == 1){
+    for (int i = 1; i < nbins+1; i ++){
+      double content = 0;
+      if (isUp) content = histo->GetBinContent(i) + histo->GetBinError(i);
+      else content = histo->GetBinContent(i) - histo->GetBinError(i);
+      histo->SetBinContent(i,content);
     }
- 
- 
+  }
   
-    f_root.Write();
-    f_root.Close();
- 
+  
+  
+  f_root.Write();
+  f_root.Close();
+  
 }
