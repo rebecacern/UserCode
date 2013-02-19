@@ -5,6 +5,8 @@ root.exe -b -l -q chain.C+\(2\,125\)
 root.exe -b -l -q chain.C+\(3\,125\)
 root.exe -b -l -q chain.C+\(4\,125\)
 root.exe -b -l -q chain.C+\(5\,125\)
+#do the WZ auxiliar rootfile
+root.exe -b -l -q doWZ.C+\
 #systematics, Stat Down
 root.exe -b -l -q syst.C+\(1\,125\,1\,0\)
 root.exe -b -l -q syst.C+\(2\,125\,1\,0\)
@@ -57,4 +59,6 @@ root.exe -b -l -q syst.C+\(1\,125\,5\,1\)
 root.exe -b -l -q syst.C+\(2\,125\,5\,1\)
 root.exe -b -l -q syst.C+\(3\,125\,5\,1\)
 root.exe -b -l -q syst.C+\(4\,125\,5\,1\)
-
+#WZ Down and Up
+root.exe -b -l -q syst.C+\(2\,125\,7\,0\)
+root.exe -b -l -q syst.C+\(2\,125\,7\,1\)

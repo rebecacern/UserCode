@@ -15,14 +15,38 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   else if (nsel == 3)   		{sprintf(plotName,"ZZ");}
   else if (nsel == 4)   		{sprintf(plotName,"VVV");}
   else if (nsel == 5)			{sprintf(plotName,"Wjets");}
+   
+  char systName[300], direction[300];
+  sprintf(systName,"test");
   
+  if (syst == 1) 		sprintf(systName,"Stat");
+  else if (syst == 2) { 	sprintf(systName,"JES"); 	}
+  else if (syst == 3) { 	sprintf(systName,"PU");  	}
+  else if (syst == 4) { 	sprintf(systName,"METRes");	}
+  else if (syst == 5) { 	sprintf(systName,"LepRes");  	}
+  else if (syst == 6) { 	sprintf(systName,"LepEff");  	}
+  else if (syst == 7) { 	sprintf(systName,"WZ");  	}
+  
+  if (isUp) sprintf(direction,"Up");
+  else sprintf(direction,"Down");
   
   char myRootFile[300];
-  if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
-  else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
-  else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/data_3l.root");
   
+  if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
+  else if (nsel == 2 && syst == 7) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww_syst_3l.root");
+  else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
+
   
+  //Systematics?
+  if (nsel == 0 || ( nsel==5 && syst == 2) || (nsel==5 && syst == 3) || (nsel ==5 && syst == 4) || (nsel == 2 && syst != 7) || nsel > 5){
+    cout << "[Info:] Wrong combination, no systematics for it. Removing condition. " << endl;
+    nsel = 1;
+  }
+  
+  cout << "[Info:] Systematic calculation of " << systName << endl;
+ 
+  cout << "[Info:] Systematic "<< direction << endl;
+   
   //Load datasets
   SmurfTree sample;
   sample.LoadTree(myRootFile,-1);
@@ -39,33 +63,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   int nbins = 20;
   double nbinlow = 0;
   double nbinhigh = 200;
-  
-  //Systematics?
-  if (nsel == 0 || ( nsel==5 && syst == 2) || (nsel==5 && syst == 3) || (nsel ==5 && syst == 4)){
-    cout << "[Info:] Wrong combination, no systematics for data. Removing condition. " << endl;
-    nsel = 1;
-  }
-  
-  
-  char systName[300], direction[300];
-  sprintf(systName,"test");
-  bool isJES = false;
-  bool isPU = false;
-  bool isMET = false;
-  bool isLep = false;
-  if (syst == 1) 		sprintf(systName,"Stat");
-  else if (syst == 2) { 	sprintf(systName,"JES");  	isJES = true;}
-  else if (syst == 3) { 	sprintf(systName,"PU");  	isPU = true;}
-  else if (syst == 4) { 	sprintf(systName,"METRes");  	isMET = true;}
-  else if (syst == 5) { 	sprintf(systName,"LepRes");  	isLep = true;}
-  
-  cout << "[Info:] Systematic calculation of " << systName << endl;
-  if (isUp) sprintf(direction,"Up");
-  else sprintf(direction,"Down");
-  
-  cout << "[Info:] Systematic "<< direction << endl;
-  
-  
+ 
   sprintf(title,"histo_%s_%sBound%s",plotName, systName, direction);
   TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
   histo->Sumw2();
@@ -86,7 +84,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     double puweight = sample.sfWeightPU_;
     
     //PU syst
-    if (!isData && sample.dstype_ != SmurfTree::data && isPU){
+    if (!isData && sample.dstype_ != SmurfTree::data && syst == 3){
       double corrPU = 0;
       if (isUp) corrPU = sample.sfWeightPU_*0.01;
       else corrPU = -sample.sfWeightPU_*0.01;
@@ -136,14 +134,14 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     double jescorr = 1;
     
     ///JER -> to be checked!
-    if (isJES && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) jescorr = 1 + JESerr;
-    if (isJES && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) jescorr = 1 - JESerr;
+    if (syst == 2 && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) jescorr = 1 + JESerr;
+    if (syst == 2 && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) jescorr = 1 - JESerr;
     if (sample.jet1_.Pt()*jescorr < ptleadingcut) continue; 
     
     //MET 
     double metcorr = 1;
-    if (isMET && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) metcorr = 1 + 0.10;
-    if (isMET && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) metcorr = 1 - 0.10;
+    if (syst == 4 && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ) metcorr = 1 + 0.10;
+    if (syst == 4 && !isUp && sample.dstype_ != SmurfTree::data && ntype !=61 ) metcorr = 1 - 0.10;
     
     //Lepton Scale
     double rndMon[12] = {gRandom->Gaus(0.00,0.010),gRandom->Gaus(0.00,0.017),gRandom->Gaus(0.00,0.015),gRandom->Gaus(0.00,0.030),
@@ -153,7 +151,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     
     double corr[3] = {1.0, 1.0, 1.0};
     
-    if (isLep && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+    if (syst == 5 && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
       if (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
 	corr[0] = 1./0.99920 + rndMon[0];
       }
@@ -193,7 +191,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
       
     } 
     
-    if (isLep && !isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+    if (syst == 5 && !isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
       if (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
 	corr[0] = 0.99920 - rndMon[0];
       }
@@ -232,6 +230,17 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
       } 
     }
     
+    // if syst == 6 (lep eff) not yet done
+      
+     
+    // End of syst, to the analysis
+     
+    //check migrations 
+    if (sample.lep1_.Pt()*corr[0] < 10) continue;
+    if (sample.lep2_.Pt()*corr[1] < 10) continue;
+    if (sample.lep2_.Pt()*corr[2] < 10) continue;
+    if (sample.lep1_.Pt()*corr[0] < 20 && sample.lep2_.Pt()*corr[1] < 20 && sample.lep2_.Pt()*corr[2]) continue;
+    
     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
     LorentzVector pair1, pair2, pair3;
@@ -255,9 +264,9 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     LorentzVector pair, tlepton, pairjet;
     double mt = 0;
     // double dR = 0; //dR = fabs(ROOT::Math::VectorUtil::DeltaR(sample.lep1_ ,sample.lep2_)) etc
-    if (min == fabs(mz - m[0])) {  pair = pair1; mt =  sample.mt3_; tlepton = sample.lep3_*corr[2];} 
-    else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  sample.mt1_; tlepton = sample.lep1_*corr[0];} 
-    else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  sample.mt2_; tlepton = sample.lep2_*corr[1];} 
+    if (min == fabs(mz - m[0])) {  pair = pair1; mt =  sample.mt3_*sqrt(corr[2])*sqrt(metcorr); tlepton = sample.lep3_*corr[2];} 
+    else if (min == fabs(mz - m[1])){  pair = pair2;  mt =  sample.mt1_*sqrt(corr[0])*sqrt(metcorr); tlepton = sample.lep1_*corr[0];} 
+    else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  sample.mt2_*sqrt(corr[1])*sqrt(metcorr); tlepton = sample.lep2_*corr[1];} 
     
     pairjet = sample.jet1_*jescorr+ sample.jet2_*jescorr;
     
@@ -309,6 +318,21 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     }
   }
   
+  
+  if (syst == 7 && !isUp){
+  // read the new file
+  
+  TFile *_file0 = TFile::Open("WZ.root");
+  TH1F* h;
+        h = (TH1F*) _file0->Get("histogram");
+   for (int i = 1; i < nbins+1; i ++){
+   
+      double content = 0;
+      content = 2*h->GetBinContent(i) - histo->GetBinContent(i);
+      histo->SetBinContent(i,content);
+  }
+  delete h;
+  }
   
   
   f_root.Write();
