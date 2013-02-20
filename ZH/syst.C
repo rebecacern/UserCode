@@ -26,6 +26,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   else if (syst == 5) { 	sprintf(systName,"LepRes");  	}
   else if (syst == 6) { 	sprintf(systName,"LepEff");  	}
   else if (syst == 7) { 	sprintf(systName,"WZ");  	}
+  else if (syst == 8) { 	sprintf(systName,"fakes");  	}
   
   if (isUp) sprintf(direction,"Up");
   else sprintf(direction,"Down");
@@ -225,7 +226,22 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     
     // if syst == 6 (lep eff) not yet done
       
-     
+    
+    if (syst == 8){
+   //Fake rate systematics
+   TFile *fLeptonFRFileSyst = TFile::Open("/data/smurf/data/Run2012_Summer12_SmurfV9_53X/auxiliar/summary_fakes_Moriond2012.root");
+   TH2D *fhDFRMuSyst = (TH2D*)(fLeptonFRFileSyst->Get("MuonFakeRate_M2_ptThreshold30_PtEta"));
+   TH2D *fhDFRElSyst = (TH2D*)(fLeptonFRFileSyst->Get("ElectronFakeRate_V4_ptThreshold50_PtEta"));
+   assert(fhDFRMuSyst);
+   assert(fhDFRElSyst);
+   fhDFRMuSyst->SetDirectory(0);
+   fhDFRElSyst->SetDirectory(0);
+   fLeptonFRFileSyst->Close();
+   delete fLeptonFRFileSyst; 
+   
+   
+   
+     }
     // End of syst, to the analysis
      
     //check migrations 
@@ -233,6 +249,9 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     if (sample.lep2_.Pt()*corr[1] < 10) continue;
     if (sample.lep2_.Pt()*corr[2] < 10) continue;
     if (sample.lep1_.Pt()*corr[0] < 20 && sample.lep2_.Pt()*corr[1] < 20 && sample.lep2_.Pt()*corr[2]) continue;
+    
+    
+    
     
     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
