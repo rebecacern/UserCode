@@ -36,15 +36,8 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   else if (nsel == 2 && syst == 7) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww_syst_3l.root");
   else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
 
-  
-  //Systematics?
-  if (nsel == 0 || ( nsel==5 && syst == 2) || (nsel==5 && syst == 3) || (nsel ==5 && syst == 4) || (nsel == 2 && syst != 7) || nsel > 5){
-    cout << "[Info:] Wrong combination, no systematics for it. Removing condition. " << endl;
-    nsel = 1;
-  }
-  
+
   cout << "[Info:] Systematic calculation of " << systName << endl;
- 
   cout << "[Info:] Systematic "<< direction << endl;
    
   //Load datasets
@@ -332,6 +325,8 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
       histo->SetBinContent(i,content);
   }
   delete h;
+  _file0->Close();
+  
   }
   
   
