@@ -60,6 +60,16 @@ root.exe -b -l -q syst.C+\(1\,125\,5\,1\)
 root.exe -b -l -q syst.C+\(2\,125\,5\,1\)
 root.exe -b -l -q syst.C+\(3\,125\,5\,1\)
 root.exe -b -l -q syst.C+\(4\,125\,5\,1\)
+#systematics, Lepton Eff Down
+root.exe -b -l -q syst.C+\(1\,125\,6\,0\)
+root.exe -b -l -q syst.C+\(2\,125\,6\,0\)
+root.exe -b -l -q syst.C+\(3\,125\,6\,0\)
+root.exe -b -l -q syst.C+\(4\,125\,6\,0\)
+#Lepton Eff Up
+root.exe -b -l -q syst.C+\(1\,125\,6\,1\)
+root.exe -b -l -q syst.C+\(2\,125\,6\,1\)
+root.exe -b -l -q syst.C+\(3\,125\,6\,1\)
+root.exe -b -l -q syst.C+\(4\,125\,6\,1\)
 #WZ Down and Up
 root.exe -b -l -q syst.C+\(2\,125\,7\,0\)
 root.exe -b -l -q syst.C+\(2\,125\,7\,1\)

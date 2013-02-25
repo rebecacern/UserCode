@@ -15,7 +15,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   else if (nsel == 3)   		{sprintf(plotName,"ZZ");}
   else if (nsel == 4)   		{sprintf(plotName,"VVV");}
   else if (nsel == 5)			{sprintf(plotName,"Wjets");}
-   
+  
   char systName[300], direction[300];
   sprintf(systName,"test");
   
@@ -36,20 +36,20 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
   else if (nsel == 2 && syst == 7) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww_syst_3l.root");
   else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
-
-
+  
+  
   cout << "[Info:] Systematic calculation of " << systName << endl;
   cout << "[Info:] Systematic "<< direction << endl;
-   
+  
   //Load datasets
   SmurfTree sample;
   sample.LoadTree(myRootFile,-1);
   sample.InitTree(0);
-
+  
   // Prepare putput file
   char rootFile[300];
   sprintf(rootFile,"%d/zh3l2j_input_8TeV.root", mh);
-
+  
   TFile f_root(rootFile, "UPDATE");
   
   // Prepare histograms
@@ -57,7 +57,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   int nbins = 20;
   double nbinlow = 0;
   double nbinhigh = 200;
- 
+  
   sprintf(title,"histo_%s_%sBound%s",plotName, systName, direction);
   TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
   histo->Sumw2();
@@ -73,7 +73,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     if (i%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",i,nSample);
     sample.tree_->GetEntry(i);
-     
+    
     weight = 1;
     double puweight = sample.sfWeightPU_;
     
@@ -100,7 +100,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     
     int ntype = sample.dstype_;
     
-     //Check for fakes
+    //Check for fakes
     int nFake = 0;
     if(((sample.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (sample.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
     if(((sample.cuts_ & SmurfTree::Lep2LooseMuV2)  == SmurfTree::Lep2LooseMuV2)  && (sample.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
@@ -224,26 +224,65 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
       } 
     }
     
-    // if syst == 6 (lep eff) not yet done
-      
+    
+    // Eff fixed in 1.5 for muons and 2.0 for electrons (tbc)
+    if (syst == 6 && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+      if (TMath::Abs(sample.lid1_) == 13){
+	corr[0] = 1 + 0.015;
+      } 
+      if (TMath::Abs(sample.lid2_) == 13){
+	corr[1] = 1 + 0.015;
+      } 
+      if (TMath::Abs(sample.lid3_) == 13){
+	corr[2] = 1 + 0.015;
+      } 
+      if (TMath::Abs(sample.lid1_) == 11){
+        corr[0] = 1 + 0.02;
+      }
+      if (TMath::Abs(sample.lid2_) == 11){
+        corr[1] = 1 + 0.02;
+      }
+      if (TMath::Abs(sample.lid3_) == 11){
+        corr[2] = 1 + 0.02;
+      }
+    }
+    if (syst == 6 && !isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+      if (TMath::Abs(sample.lid1_) == 13){
+	corr[0] = 1 - 0.015;
+      } 
+      if (TMath::Abs(sample.lid2_) == 13){
+	corr[1] = 1 - 0.015;
+      } 
+      if (TMath::Abs(sample.lid3_) == 13){
+	corr[2] = 1 - 0.015;
+      } 
+      if (TMath::Abs(sample.lid1_) == 11){
+        corr[0] = 1 - 0.02;
+      }
+      if (TMath::Abs(sample.lid2_) == 11){
+        corr[1] = 1 - 0.02;
+      }
+      if (TMath::Abs(sample.lid3_) == 11){
+        corr[2] = 1 - 0.02;
+      }
+    }
+  
     
     if (syst == 8){
-   //Fake rate systematics
-   TFile *fLeptonFRFileSyst = TFile::Open("/data/smurf/data/Run2012_Summer12_SmurfV9_53X/auxiliar/summary_fakes_Moriond2012.root");
-   TH2D *fhDFRMuSyst = (TH2D*)(fLeptonFRFileSyst->Get("MuonFakeRate_M2_ptThreshold30_PtEta"));
-   TH2D *fhDFRElSyst = (TH2D*)(fLeptonFRFileSyst->Get("ElectronFakeRate_V4_ptThreshold50_PtEta"));
-   assert(fhDFRMuSyst);
-   assert(fhDFRElSyst);
-   fhDFRMuSyst->SetDirectory(0);
-   fhDFRElSyst->SetDirectory(0);
-   fLeptonFRFileSyst->Close();
-   delete fLeptonFRFileSyst; 
-   
-   
-   
-     }
+      //Fake rate systematics
+      TFile *fLeptonFRFileSyst = TFile::Open("/data/smurf/data/Run2012_Summer12_SmurfV9_53X/auxiliar/summary_fakes_Moriond2012.root");
+      TH2D *fhDFRMuSyst = (TH2D*)(fLeptonFRFileSyst->Get("MuonFakeRate_M2_ptThreshold30_PtEta"));
+      TH2D *fhDFRElSyst = (TH2D*)(fLeptonFRFileSyst->Get("ElectronFakeRate_V4_ptThreshold50_PtEta"));
+      assert(fhDFRMuSyst);
+      assert(fhDFRElSyst);
+      fhDFRMuSyst->SetDirectory(0);
+      fhDFRElSyst->SetDirectory(0);
+      fLeptonFRFileSyst->Close();
+      delete fLeptonFRFileSyst;
+      
+    }
     // End of syst, to the analysis
-     
+    
     //check migrations 
     if (sample.lep1_.Pt()*corr[0] < 10) continue;
     if (sample.lep2_.Pt()*corr[1] < 10) continue;
