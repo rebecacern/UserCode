@@ -109,10 +109,51 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     if(((sample.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (sample.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) nFake++;
     if(((sample.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (sample.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) nFake++;
     if (nFake !=0 && !isBackground) continue; 
+    if (nFake !=0) ntype = 61;
+    
+    
+    //Fake Systematic
+    double fakecorr = 1;
+    if (syst == 8 && ntype == 61){
+      //Fake rate systematics
+      TFile *fLeptonFRFileSyst = TFile::Open("/data/smurf/data/Run2012_Summer12_SmurfV9_53X/auxiliar/summary_fakes_Moriond2012.root");
+      TH2D *fhDFRMuSyst = (TH2D*)(fLeptonFRFileSyst->Get("MuonFakeRate_M2_ptThreshold30_PtEta"));
+      TH2D *fhDFRElSyst = (TH2D*)(fLeptonFRFileSyst->Get("ElectronFakeRate_V4_ptThreshold50_PtEta"));
+      assert(fhDFRMuSyst);
+      assert(fhDFRElSyst);
+      fhDFRMuSyst->SetDirectory(0);
+      fhDFRElSyst->SetDirectory(0);
+      
+      if(((sample.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (sample.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection){
+        fakecorr =  fhDFRMuSyst->GetBinContent(fhDFRMuSyst->FindBin(sample.lep1_.Pt(),sample.lep1_.Eta()));
+      }
+      if(((sample.cuts_ & SmurfTree::Lep2LooseMuV2)  == SmurfTree::Lep2LooseMuV2)  && (sample.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection){
+        fakecorr =  fhDFRMuSyst->GetBinContent(fhDFRMuSyst->FindBin(sample.lep2_.Pt(),sample.lep2_.Eta()));
+      }
+      if(((sample.cuts_ & SmurfTree::Lep3LooseMuV2)  == SmurfTree::Lep3LooseMuV2)  && (sample.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection){
+        fakecorr =  fhDFRMuSyst->GetBinContent(fhDFRMuSyst->FindBin(sample.lep3_.Pt(),sample.lep3_.Eta()));
+      }
+      if(((sample.cuts_ & SmurfTree::Lep1LooseEleV4) == SmurfTree::Lep1LooseEleV4) && (sample.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection){
+        fakecorr =  fhDFRElSyst->GetBinContent(fhDFRElSyst->FindBin(sample.lep1_.Pt(),sample.lep1_.Eta()));
+      }
+      if(((sample.cuts_ & SmurfTree::Lep2LooseEleV4) == SmurfTree::Lep2LooseEleV4) && (sample.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection){
+        fakecorr =  fhDFRElSyst->GetBinContent(fhDFRElSyst->FindBin(sample.lep2_.Pt(),sample.lep2_.Eta()));
+      }
+      if(((sample.cuts_ & SmurfTree::Lep3LooseEleV4) == SmurfTree::Lep3LooseEleV4) && (sample.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection) {
+        fakecorr =  fhDFRElSyst->GetBinContent(fhDFRElSyst->FindBin(sample.lep3_.Pt(),sample.lep3_.Eta()));
+      }
+      fLeptonFRFileSyst->Close();
+      delete fLeptonFRFileSyst;
+      
+    }
+    
+    
     if (nFake !=0){ 
-      ntype = 61;
-      weight*= sample.sfWeightFR_*factor;
-      //if (sample.dstype_ != SmurfTree::data) weight *=-1;
+   
+      if (syst == 8 && isUp)   weight*= sample.sfWeightFR_*(1 + fakecorr)*factor;
+      else if  (syst == 8 && !isUp)   weight*= sample.sfWeightFR_*(1 - fakecorr)*factor;
+      else weight*= sample.sfWeightFR_*factor;
+  
     }
     
     
@@ -268,20 +309,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     }
   
     
-    if (syst == 8){
-      //Fake rate systematics
-      TFile *fLeptonFRFileSyst = TFile::Open("/data/smurf/data/Run2012_Summer12_SmurfV9_53X/auxiliar/summary_fakes_Moriond2012.root");
-      TH2D *fhDFRMuSyst = (TH2D*)(fLeptonFRFileSyst->Get("MuonFakeRate_M2_ptThreshold30_PtEta"));
-      TH2D *fhDFRElSyst = (TH2D*)(fLeptonFRFileSyst->Get("ElectronFakeRate_V4_ptThreshold50_PtEta"));
-      assert(fhDFRMuSyst);
-      assert(fhDFRElSyst);
-      fhDFRMuSyst->SetDirectory(0);
-      fhDFRElSyst->SetDirectory(0);
-      fLeptonFRFileSyst->Close();
-      delete fLeptonFRFileSyst;
-      
-    }
-    // End of syst, to the analysis
+    
     
     //check migrations 
     if (sample.lep1_.Pt()*corr[0] < 10) continue;
