@@ -36,9 +36,6 @@ void chain(int nsel = 0, int mh = 125){
   
   // Prepare histograms
   char title[300];
-  int nbins = 20;
-  double nbinlow = 0;
-  double nbinhigh = 200;
   
   sprintf(title,"histo_%s",plotName);
   TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);

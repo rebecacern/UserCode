@@ -38,3 +38,8 @@ const double factor = 1; //Fake factor
 
 //Syst. values 
 double JESerr = 0.10; // 0.05 also
+
+//Histos
+int nbins = 20;
+double nbinlow = 0;
+double nbinhigh = 400;

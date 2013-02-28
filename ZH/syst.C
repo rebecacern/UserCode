@@ -26,7 +26,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   else if (syst == 5) { 	sprintf(systName,"LepRes");  	}
   else if (syst == 6) { 	sprintf(systName,"LepEff");  	}
   else if (syst == 7) { 	sprintf(systName,"WZ");  	}
-  else if (syst == 8) { 	sprintf(systName,"fakes");  	}
+  else if (syst == 8) { 	sprintf(systName,"W");  }
   
   if (isUp) sprintf(direction,"Up");
   else sprintf(direction,"Down");
@@ -36,8 +36,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
   else if (nsel == 2 && syst == 7) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww_syst_3l.root");
   else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
-  
-  
+    
   cout << "[Info:] Systematic calculation of " << systName << endl;
   cout << "[Info:] Systematic "<< direction << endl;
   
@@ -54,14 +53,10 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   
   // Prepare histograms
   char title[300];
-  int nbins = 20;
-  double nbinlow = 0;
-  double nbinhigh = 200;
-  
-  sprintf(title,"histo_%s_%sBound%s",plotName, systName, direction);
+  if (syst == 1) sprintf(title,"histo_%s_CMS_%s%sBound%s",plotName, plotName, systName, direction);
+  else sprintf(title,"histo_%s_CMS_%sBound%s",plotName, systName, direction);
   TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
   histo->Sumw2();
-  
   
   //Prepare useful things
   double weight = 1;
@@ -86,7 +81,6 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     }
     
     if (!isData && sample.dstype_ != SmurfTree::data) weight = lumi*sample.scale1fb_*puweight*sample.sfWeightEff_*sample.sfWeightTrig_;    
-    
     
     //Three real leptons MC level
     if (!isData){
@@ -149,11 +143,8 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     
     
     if (nFake !=0){ 
-   
-      if (syst == 8 && isUp)   weight*= sample.sfWeightFR_*(1 + fakecorr)*factor;
-      else if  (syst == 8 && !isUp)   weight*= sample.sfWeightFR_*(1 - fakecorr)*factor;
-      else weight*= sample.sfWeightFR_*factor;
-  
+      if (syst == 8)   weight*= fakecorr*factor;
+      else weight*= sample.sfWeightFR_*factor; 
     }
     
     
@@ -307,18 +298,12 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
         corr[2] = 1 - 0.02;
       }
     }
-  
-    
-    
-    
+ 
     //check migrations 
     if (sample.lep1_.Pt()*corr[0] < 10) continue;
     if (sample.lep2_.Pt()*corr[1] < 10) continue;
     if (sample.lep2_.Pt()*corr[2] < 10) continue;
     if (sample.lep1_.Pt()*corr[0] < 20 && sample.lep2_.Pt()*corr[1] < 20 && sample.lep2_.Pt()*corr[2]) continue;
-    
-    
-    
     
     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
@@ -382,7 +367,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     
     histo->Fill(recomth, weight);
     eventsPass+= weight;
-     
+    
     
   }    
   
@@ -397,24 +382,44 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     }
   }
   
-  
   if (syst == 7 && !isUp){
-  // read the new file
-  
-  TFile *_file0 = TFile::Open("WZ.root");
-  TH1F* h;
-        h = (TH1F*) _file0->Get("histogram");
-   for (int i = 1; i < nbins+1; i ++){
-   
+    // read the new file
+    TFile *_file0 = TFile::Open("WZ.root");
+    TH1F* h;
+    h = (TH1F*) _file0->Get("histogram");
+    
+    for (int i = 1; i < nbins+1; i ++){
       double content = 0;
       content = 2*h->GetBinContent(i) - histo->GetBinContent(i);
       histo->SetBinContent(i,content);
+    }
+    delete h;
+    _file0->Close();
+    
   }
-  delete h;
-  _file0->Close();
   
+  
+  if (syst == 8){
+    // read the new file
+    TFile *_file0 = TFile::Open("fakesAux.root");
+    TH1F* h;
+    h = (TH1F*) _file0->Get("histogram");
+    
+    if(!isUp){
+      for (int i = 1; i < nbins+1; i ++){
+        double content = 0;
+	content = 2*h->GetBinContent(i) - histo->GetBinContent(i);
+	histo->SetBinContent(i,content);
+      }
+      
+      double scaleHisto = h->Integral(1,nbins)/histo->Integral(1,nbins);
+      histo->Scale(scaleHisto);
+      
+    }
+    delete h;
+    _file0->Close();
+    
   }
-  
   
   f_root.Write();
   f_root.Close();

@@ -1,6 +1,9 @@
 #do the WZ auxiliar rootfile
 root.exe -b -l -q doWZ.C+
 
+#and the WJets
+root.exe -b -l -q doFakes.C+
+
 rm 125/*
 root.exe -b -l -q chain.C+\(0\,125\)
 root.exe -b -l -q chain.C+\(1\,125\)

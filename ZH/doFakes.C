@@ -2,28 +2,30 @@
 // Attempt to optimize the work
 #include "inputs.h"
 
-void doWZ(){
 
+void doFakes(){
+  
   char plotName[300];
   sprintf(plotName,"test");
   
-  sprintf(plotName,"WZ");
+  sprintf(plotName,"Wjets");
   bool isBackground = true;
   bool isData = false;
-  int nsel = 2;
+  int nsel = 5;
   
   char myRootFile[300];
+  
   sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
- 
-  //Load datasets
+  
+   //Load datasets
   SmurfTree sample;
   sample.LoadTree(myRootFile,-1);
   sample.InitTree(0);
-
+  
   // Prepare putput file
   char rootFile[300];
-  sprintf(rootFile,"WZ.root");
-
+  sprintf(rootFile,"fakesAux.root");
+  
   TFile f_root(rootFile, "RECREATE");
   
   // Prepare histograms
@@ -32,7 +34,8 @@ void doWZ(){
   sprintf(title,"histogram");
   TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
   histo->Sumw2();
-
+  
+ 
   //Prepare useful things
   double weight = 1;
   double eventsPass = 0;
@@ -74,7 +77,6 @@ void doWZ(){
       //if (sample.dstype_ != SmurfTree::data) weight *=-1;
     }
     
-    if (nsel == 2 && ntype != 49) continue; //WZ
     
     //2 same flavor, oppposite sign leptons + extra one
     if (sample.lid3_ == sample.lid2_ && sample.lid3_ == sample.lid1_) continue;
@@ -168,6 +170,12 @@ void doWZ(){
     if (deltaPhi > phicut) continue;
    
     
+    if (nsel == 2 && ntype != 49) continue; //WZ
+    if (nsel == 3 && ntype != 50) continue; //ZZ
+    if (nsel == 4 && ntype != 59) continue; //VVV
+    if (nsel == 5 && ntype != 61) continue; //fakes
+    if (nsel == 0 && ntype != 0)  continue; //data
+    
     histo->Fill(recomth, weight);
     eventsPass+= weight;
      
@@ -179,5 +187,5 @@ void doWZ(){
   
     f_root.Write();
     f_root.Close();
- 
+  
 }
