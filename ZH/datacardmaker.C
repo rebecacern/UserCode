@@ -49,7 +49,7 @@ void datacardmaker(int mh = 125){
   for (int i = 0; i < np -1; i++) { datacard << i << " ";} 
   datacard << endl;
   datacard << "rate\t" ;
-  for (int i = 0; i < np -1; i++) { datacard << setprecision(5) << h[i]->Integral(1,nbins) << "\t";}
+  for (int i = 0; i < np -1; i++) { datacard << setprecision(precision(h[i]->Integral(1,nbins))) << h[i]->Integral(1,nbins) << "\t";}
   datacard << endl;
   datacard << "lumi_8TeV\t\t\tlnN\t ";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.045\t"; else datacard << "-\t";}
@@ -112,3 +112,4 @@ void datacardmaker(int mh = 125){
 
   
 }
+

@@ -43,3 +43,17 @@ double JESerr = 0.10; // 0.05 also
 int nbins = 20;
 double nbinlow = 0;
 double nbinhigh = 400;
+
+
+double precision(double value){
+  
+  int precisionValue;
+  if (value == 0) precisionValue = 0;
+  else if (value < 10) precisionValue = 4;
+  else precisionValue = 5;
+  
+  return precisionValue;
+  
+}
+
+
