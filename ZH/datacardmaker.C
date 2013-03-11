@@ -79,13 +79,16 @@ void datacardmaker(int mh = 125){
   datacard << "CMS_WBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
+  datacard << "CMS_FakeRate\t\t\tlnN\t";
+  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "-\t"; else datacard << "1.360\t";}
+  datacard << endl;
 
   datacard << "CMS_WZBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=1) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 
   datacard << "UEPS\t\t\t\tlnN\t";
-  for (int i = 0; i < np -1; i++) { if (i!=0) datacard << "1.030\t"; else datacard << "-\t";}
+  for (int i = 0; i < np -1; i++) { if (i==0) datacard << "1.030\t"; else datacard << "-\t";}
   datacard << endl;
 
   datacard << "CMS_ZHStatBound\t\t\tshape\t";
