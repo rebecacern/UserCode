@@ -37,7 +37,7 @@ const double phicut = 1.8; // 1.8
 const double factor = 1; //Fake factor
 
 //Syst. values 
-double JESerr = 0.10; // 0.05 also
+double JESerr = 0.05; // 0.10 also
 
 //Histos
 int nbins = 20;

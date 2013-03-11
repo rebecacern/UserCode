@@ -411,11 +411,11 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
 	content = 2*h->GetBinContent(i) - histo->GetBinContent(i);
 	histo->SetBinContent(i,content);
       }
-      
-      double scaleHisto = h->Integral(1,nbins)/histo->Integral(1,nbins);
-      histo->Scale(scaleHisto);
-      
     }
+    double scaleHisto = h->Integral(1,nbins)/histo->Integral(1,nbins);
+    histo->Scale(scaleHisto);
+      
+
     delete h;
     _file0->Close();
     
