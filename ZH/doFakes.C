@@ -3,7 +3,7 @@
 #include "inputs.h"
 
 
-void doFakes(){
+void doFakes(int cem = 8){
   
   char plotName[300];
   sprintf(plotName,"test");
@@ -14,8 +14,14 @@ void doFakes(){
   int nsel = 5;
   
   char myRootFile[300];
-  
-  sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
+  if (cem != 7 && cem !=8) cem = 8;
+  double lumi = lumi8;
+  if (cem == 8){
+    sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
+  } else {
+    lumi = lumi7;
+    sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/backgroundA_3l.root");
+  }
   
    //Load datasets
   SmurfTree sample;
@@ -24,7 +30,8 @@ void doFakes(){
   
   // Prepare putput file
   char rootFile[300];
-  sprintf(rootFile,"fakesAux.root");
+  if (cem == 8) sprintf(rootFile,"fakesAux8TeV.root");
+  else sprintf(rootFile,"fakesAux7TeV.root");
   
   TFile f_root(rootFile, "RECREATE");
   

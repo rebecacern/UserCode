@@ -3,7 +3,7 @@
 #include "inputs.h"
 
 
-void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
+void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   
   char plotName[300];
   sprintf(plotName,"test");
@@ -33,10 +33,20 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   
   char myRootFile[300];
   
-  if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
-  else if (nsel == 2 && syst == 7) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww_syst_3l.root");
-  else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
-    
+  if (cem != 7 && cem !=8) cem = 8;
+  double lumi = lumi8;
+  if (cem == 8){
+    if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
+    else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
+    else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/data_3l.root");
+  } else {
+    lumi = lumi7;
+    if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/backgroundA_3l.root");
+    else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/hww124.root");
+    else sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/data_3l.root");
+  }
+  
+   
   cout << "[Info:] Systematic calculation of " << systName << endl;
   cout << "[Info:] Systematic "<< direction << endl;
   
@@ -47,7 +57,7 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   
   // Prepare putput file
   char rootFile[300];
-  sprintf(rootFile,"%d/zh3l2j_input_8TeV.root", mh);
+  sprintf(rootFile,"%d/zh3l2j_input_%dTeV.root", mh, cem);
   
   TFile f_root(rootFile, "UPDATE");
   
@@ -110,7 +120,10 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     double fakecorr = 1;
     if (syst == 8 && ntype == 61){
       //Fake rate systematics
-      TFile *fLeptonFRFileSyst = TFile::Open("/data/smurf/data/Run2012_Summer12_SmurfV9_53X/auxiliar/summary_fakes_Moriond2012.root");
+      char fakepath[300];
+      sprintf(fakepath,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/auxiliar/summary_fakes_Moriond2012.root");
+      if (cem == 7) sprintf(fakepath,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/auxiliar/FakeRates_CutBasedMuon_BDTGWithIPInfoElectron.root");
+      TFile *fLeptonFRFileSyst = TFile::Open(fakepath);
       TH2D *fhDFRMuSyst = (TH2D*)(fLeptonFRFileSyst->Get("MuonFakeRate_M2_ptThreshold30_PtEta"));
       TH2D *fhDFRElSyst = (TH2D*)(fLeptonFRFileSyst->Get("ElectronFakeRate_V4_ptThreshold50_PtEta"));
       assert(fhDFRMuSyst);
@@ -176,84 +189,146 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
     
     
     double corr[3] = {1.0, 1.0, 1.0};
-    
-    if (syst == 5 && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
-      if (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
-	corr[0] = 1./0.99920 + rndMon[0];
-      }
-      else if(TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
-        corr[0] = 1./0.99934 + rndMon[1];
-      }
-      else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) <  1.479){
-	corr[0] = 1./0.99807 + rndMon[2];
-      }
-      else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
-	corr[0] = 1./0.99952 + rndMon[3];
-      }
-      if (TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) <  1.479){
-	corr[1] = 1./0.99920 + rndMon[4];
-      }
-      else if(TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
-	corr[1] = 1./0.99934 + rndMon[5];
-      }
-      else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) <  1.479){
-	corr[1] = 1./0.99807 + rndMon[6];
-      }
-      else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
-	corr[1] = 1./0.99952 + rndMon[7];
-      }
-      if (TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) <  1.479){
-	corr[2] = 1./0.99920 + rndMon[8];
-      }
-      else if(TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
-	corr[2] = 1./0.99934 + rndMon[9];
-      }
-      else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) <  1.479){
-	corr[2] = 1./0.99807 + rndMon[10];
-      }
-      else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
-	corr[2] = 1./0.99952 + rndMon[11];
-      }    
+    if (cem == 8){
+      if (syst == 5 && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+	if (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	  corr[0] = 1./0.99920 + rndMon[0];
+	}
+	else if(TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	  corr[0] = 1./0.99934 + rndMon[1];
+	}
+	else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	  corr[0] = 1./0.99807 + rndMon[2];
+	}
+	else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	  corr[0] = 1./0.99952 + rndMon[3];
+	}
+	if (TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	  corr[1] = 1./0.99920 + rndMon[4];
+	}
+	else if(TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	  corr[1] = 1./0.99934 + rndMon[5];
+	}
+	else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	  corr[1] = 1./0.99807 + rndMon[6];
+	}
+	else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	  corr[1] = 1./0.99952 + rndMon[7];
+	}
+	if (TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) <  1.479){
+	  corr[2] = 1./0.99920 + rndMon[8];
+	}
+	else if(TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
+	  corr[2] = 1./0.99934 + rndMon[9];
+	}
+	else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) <  1.479){
+	  corr[2] = 1./0.99807 + rndMon[10];
+	}
+	else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
+	  corr[2] = 1./0.99952 + rndMon[11];
+	}    
       
-    } 
-    
-    if (syst == 5 && !isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
-      if (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
-	corr[0] = 0.99920 - rndMon[0];
-      }
-      else if(TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
-	corr[0] = 0.99934 - rndMon[1];
-      }
-      else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) <  1.479){
-	corr[0] = 0.99807 - rndMon[2];
-      }
-      else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
-	corr[0] = 0.99952 - rndMon[3];
-      }
-      if (TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) <  1.479){
-	corr[1] = 0.99920 - rndMon[4];
-      }
-      else if(TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
-	corr[1] = 0.99934 - rndMon[5];
-      }
-      else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) <  1.479){
-	corr[1] = 0.99807 - rndMon[6];
-      }
-      else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
-	corr[1] = 0.99952 - rndMon[7];
-      }
-      if (TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) <  1.479){
-	corr[2] = 0.99920 - rndMon[8];
-      }
-      else if(TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
-	corr[2] = 0.99934 - rndMon[9];
-      }
-      else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) <  1.479){
-	corr[2] = 0.99807 - rndMon[10];
-      }
-      else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
-	corr[2] = 0.99952 - rndMon[10];
       } 
+    
+      if (syst == 5 && !isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+	if (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	  corr[0] = 0.99920 - rndMon[0];
+	}
+	else if(TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	  corr[0] = 0.99934 - rndMon[1];
+	}
+	else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	  corr[0] = 0.99807 - rndMon[2];
+	}
+	else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	  corr[0] = 0.99952 - rndMon[3];
+	}
+	if (TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	  corr[1] = 0.99920 - rndMon[4];
+	}
+	else if(TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	  corr[1] = 0.99934 - rndMon[5];
+	}
+	else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	  corr[1] = 0.99807 - rndMon[6];
+	}
+	else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	  corr[1] = 0.99952 - rndMon[7];
+	}
+	if (TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) <  1.479){
+	  corr[2] = 0.99920 - rndMon[8];
+	}
+	else if(TMath::Abs(sample.lid3_) == 13 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
+	  corr[2] = 0.99934 - rndMon[9];
+	}
+	else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) <  1.479){
+	  corr[2] = 0.99807 - rndMon[10];
+	}
+	else if(TMath::Abs(sample.lid3_) == 11 && TMath::Abs(sample.lep3_.eta()) >= 1.479){
+	  corr[2] = 0.99952 - rndMon[10];
+	} 
+      }
+    } else {
+      if (syst == 5 && isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+    
+	if	 (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	  corr[0] = 1.01 + rndMon[0];
+	}
+	else if(TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	  corr[0] = 1.01 + rndMon[1];
+	}
+	else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	  corr[0] = 1.01 + rndMon[2];
+	}
+	else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	  corr[0] = 1.06 + rndMon[3];
+	}
+	if	 (TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	  corr[1] = 1.01 + rndMon[4];
+	}
+	else if(TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	  corr[1] = 1.01 + rndMon[5];
+	}
+	else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	  corr[1] = 1.01 + rndMon[6];
+	}
+	else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	  corr[1] = 1.06 + rndMon[7];
+	}
+    
+    
+     
+      } 
+    
+      if (syst == 5 && !isUp  && sample.dstype_ != SmurfTree::data && ntype !=61 ){
+    
+	if	 (TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	  corr[0] = 1.01 + rndMon[0];
+	}
+	else if(TMath::Abs(sample.lid1_) == 13 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	  corr[0] = 1.01 + rndMon[1];
+	}
+	else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) <  1.479){
+	  corr[0] = 1.01 + rndMon[2];
+	}
+	else if(TMath::Abs(sample.lid1_) == 11 && TMath::Abs(sample.lep1_.eta()) >= 1.479){
+	  corr[0] = 1.06 + rndMon[3];
+	}
+	if	 (TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	  corr[1] = 1.01 + rndMon[4];
+	}
+	else if(TMath::Abs(sample.lid2_) == 13 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	  corr[1] = 1.01 + rndMon[5];
+	}
+	else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) <  1.479){
+	  corr[1] = 1.01 + rndMon[6];
+	}
+	else if(TMath::Abs(sample.lid2_) == 11 && TMath::Abs(sample.lep2_.eta()) >= 1.479){
+	  corr[1] = 1.06 + rndMon[7];
+	}
+    
+   
+      }
     }
     
     
@@ -384,7 +459,9 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   
   if (syst == 7 && !isUp){
     // read the new file
-    TFile *_file0 = TFile::Open("WZ.root");
+    char extraRootFile[300];
+    sprintf(extraRootFile,"WZ%dTeV.root", cem);
+    TFile *_file0 = TFile::Open(extraRootFile);
     TH1F* h;
     h = (TH1F*) _file0->Get("histogram");
     
@@ -401,7 +478,9 @@ void syst(int nsel = 1, int mh = 125, int syst = 0, bool isUp = true){
   
   if (syst == 8){
     // read the new file
-    TFile *_file0 = TFile::Open("fakesAux.root");
+    char extraRootFile[300];
+    sprintf(extraRootFile,"fakesAux%dTeV.root", cem);
+    TFile *_file0 = TFile::Open(extraRootFile);
     TH1F* h;
     h = (TH1F*) _file0->Get("histogram");
     

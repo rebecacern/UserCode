@@ -12,7 +12,7 @@
 #include "inputs.h"
 
 using namespace std;
-void datacardmaker(int mh = 125){
+void datacardmaker(cem = 8, int mh = 125){
 
   const int np = 6;
   TString processName[np] =  { "ZH", "WZ","ZZ", "VVV", "Wjets", "Data"};
@@ -28,7 +28,11 @@ void datacardmaker(int mh = 125){
   }
  
   char datacardFile[300];
-  sprintf(datacardFile,"%d/zh3l2j_shape_8TeV.txt", mh);
+  if (cem != 7 && cem !=8) cem = 8;
+  double lumi = lumi8;
+  if (cem == 7) lumi = lumi7;
+
+  sprintf(datacardFile,"%d/zh3l2j_shape_%dTeV.txt", mh, cem);
 
   ofstream datacard(datacardFile); 
   
@@ -36,9 +40,13 @@ void datacardmaker(int mh = 125){
   datacard << "jmax * number of background" << endl;
   datacard << "kmax * number of nuisance parameters" << endl;
   datacard << "Observation " << h[5]->Integral(1,nbins) << endl;
-  
-  datacard << "shapes *   *   zh3l2j_input_8TeV.root  histo_$PROCESS histo_$PROCESS_$SYSTEMATIC" << endl;
-  datacard << "shapes data_obs * zh3l2j_input_8TeV.root  histo_Data " << endl;
+  if (cem == 8){
+    datacard << "shapes *   *   zh3l2j_input_8TeV.root  histo_$PROCESS histo_$PROCESS_$SYSTEMATIC" << endl;
+    datacard << "shapes data_obs * zh3l2j_input_8TeV.root  histo_Data " << endl;
+  } else {
+    datacard << "shapes *   *   zh3l2j_input_7TeV.root  histo_$PROCESS histo_$PROCESS_$SYSTEMATIC" << endl;
+    datacard << "shapes data_obs * zh3l2j_input_7TeV.root  histo_Data " << endl;
+  }
   datacard << "bin " ;
   for (int i = 0; i < np -1; i++) { datacard << "1 ";} 
   datacard << endl;

@@ -23,7 +23,8 @@ const int verboseLevel =   1;
 const double mz = 91.1876;
 const double mw = 80.4;
 const double mmu = 0.105;
-const double lumi = 19.467;
+const double lumi8 = 19.467;
+const double lumi7 = 4.924;
 
 //kinamtic cuts
 const double ptleadingcut = 30; //leading jet

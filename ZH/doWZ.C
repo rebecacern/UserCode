@@ -2,7 +2,7 @@
 // Attempt to optimize the work
 #include "inputs.h"
 
-void doWZ(){
+void doWZ(int cem = 8){
 
   char plotName[300];
   sprintf(plotName,"test");
@@ -13,8 +13,14 @@ void doWZ(){
   int nsel = 2;
   
   char myRootFile[300];
-  sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
- 
+  if (cem != 7 && cem !=8) cem = 8;
+  double lumi = lumi8;
+  if (cem == 8){
+    sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
+  } else {
+    lumi = lumi7;
+    sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/backgroundA_3l.root");
+  }
   //Load datasets
   SmurfTree sample;
   sample.LoadTree(myRootFile,-1);
@@ -22,7 +28,8 @@ void doWZ(){
 
   // Prepare putput file
   char rootFile[300];
-  sprintf(rootFile,"WZ.root");
+  if (cem == 8) sprintf(rootFile,"WZ8TeV.root");
+  else sprintf(rootFile,"WZ7TeV.root");
 
   TFile f_root(rootFile, "RECREATE");
   
