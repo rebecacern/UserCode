@@ -12,13 +12,13 @@
 #include "inputs.h"
 
 using namespace std;
-void datacardmaker(cem = 8, int mh = 125){
+void datacardmaker(int cem = 8, int mh = 125){
 
   const int np = 6;
   TString processName[np] =  { "ZH", "WZ","ZZ", "VVV", "Wjets", "Data"};
  
   char rootFile[300];
-  sprintf(rootFile,"%d/zh3l2j_input_8TeV.root", mh);
+  sprintf(rootFile,"%d/zh3l2j_input_%dTeV.root", mh, cem);
   
   TFile *_file0 = TFile::Open(rootFile);
   
@@ -29,8 +29,6 @@ void datacardmaker(cem = 8, int mh = 125){
  
   char datacardFile[300];
   if (cem != 7 && cem !=8) cem = 8;
-  double lumi = lumi8;
-  if (cem == 7) lumi = lumi7;
 
   sprintf(datacardFile,"%d/zh3l2j_shape_%dTeV.txt", mh, cem);
 

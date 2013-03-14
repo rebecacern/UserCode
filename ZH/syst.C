@@ -42,7 +42,7 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
   } else {
     lumi = lumi7;
     if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/backgroundA_3l.root");
-    else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/hww124.root");
+    else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/zhww125.root");
     else sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/data_3l.root");
   }
   
