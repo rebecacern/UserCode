@@ -3,7 +3,7 @@
 #include "inputs.h"
 
 
-void doFakes(int cem = 8){
+void doFakes(int cem = 8, int mode = 0){
   
   char plotName[300];
   sprintf(plotName,"test");
@@ -53,6 +53,21 @@ void doFakes(int cem = 8){
     if (i%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",i,nSample);
     sample.tree_->GetEntry(i);
+    
+      //Modes, 0 = all, 1 = eee, 2 = eem, 3 = emm, 4 = mmm
+    if (mode == 1 && (abs(sample.lid1_)!= 11 || abs(sample.lid2_) != 11 || abs(sample.lid3_) != 11)) continue;
+    if (mode == 2 && 
+       ((abs(sample.lid1_)!= abs(sample.lid2_) && abs(sample.lid1_) != abs(sample.lid3_) && abs(sample.lid1_) == 11) ||
+        (abs(sample.lid2_)!= abs(sample.lid1_) && abs(sample.lid2_) != abs(sample.lid3_) && abs(sample.lid2_) == 11) ||
+	(abs(sample.lid3_)!= abs(sample.lid1_) && abs(sample.lid3_) != abs(sample.lid2_) && abs(sample.lid3_) == 11) ||
+	(abs(sample.lid1_) == abs(sample.lid2_) && abs(sample.lid1_) == abs(sample.lid3_)))) continue;
+    if (mode == 3 && 
+       ((abs(sample.lid1_)!= abs(sample.lid2_) && abs(sample.lid1_) != abs(sample.lid3_) && abs(sample.lid1_) == 13) ||
+        (abs(sample.lid2_)!= abs(sample.lid1_) && abs(sample.lid2_) != abs(sample.lid3_) && abs(sample.lid2_) == 13) ||
+	(abs(sample.lid3_)!= abs(sample.lid1_) && abs(sample.lid3_) != abs(sample.lid2_) && abs(sample.lid3_) == 13) ||
+	(abs(sample.lid1_) == abs(sample.lid2_) && abs(sample.lid1_) == abs(sample.lid3_)))) continue;
+    if (mode == 4 && (abs(sample.lid1_)!= 13 || abs(sample.lid2_) != 13 || abs(sample.lid3_) != 13)) continue;
+   
     
     weight = 1;
     if (!isData && sample.dstype_ != SmurfTree::data) weight = lumi*sample.scale1fb_*sample.sfWeightPU_*sample.sfWeightEff_*sample.sfWeightTrig_;    
