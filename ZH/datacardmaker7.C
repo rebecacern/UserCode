@@ -74,7 +74,7 @@ void datacardmaker7(int mh = 125, int mode = 0){
   for (int i = 0; i < np -1; i++) { datacard << setprecision(precision(h[i]->Integral(1,nbins))) << h[i]->Integral(1,nbins) << "\t";}
   datacard << endl;
   datacard << "lumi_7TeV\t\t\tlnN\t ";
-  for (int i = 0; i < np -1; i++) { if (i!=3) datacard << "1.045\t"; else datacard << "-\t";}
+  for (int i = 0; i < np -1; i++) { if (i!=3) datacard << "1.022\t"; else datacard << "-\t";}
   datacard << endl;
   datacard << "CMS_LepEffBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=3) datacard << "1.000\t"; else datacard << "-\t";}
@@ -113,19 +113,19 @@ void datacardmaker7(int mh = 125, int mode = 0){
   for (int i = 0; i < np -1; i++) { if (i==0) datacard << "1.030\t"; else datacard << "-\t";}
   datacard << endl;
 
-  datacard << "CMS_ZHStatBound\t\t\tshape\t";
+  datacard << "CMS_ZHStatBound7TeV\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=0) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 
-  datacard << "CMS_WZStatBound\t\t\tshape\t";
+  datacard << "CMS_WZStatBound7TeV\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=1) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 
-  datacard << "CMS_ZZStatBound\t\t\tshape\t";
+  datacard << "CMS_ZZStatBound7TeV\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=2) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 
-  datacard << "CMS_WjetsStatBound\t\tshape\t";
+  datacard << "CMS_WjetsStatBound7TeV\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=3) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 

@@ -114,23 +114,23 @@ void datacardmaker8(int mh = 125, int mode = 0){
   for (int i = 0; i < np -1; i++) { if (i==0) datacard << "1.030\t"; else datacard << "-\t";}
   datacard << endl;
 
-  datacard << "CMS_ZHStatBound\t\t\tshape\t";
+  datacard << "CMS_ZHStatBound8TeV\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=0) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 
-  datacard << "CMS_WZStatBound\t\t\tshape\t";
+  datacard << "CMS_WZStatBound8TeV\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=1) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 
-  datacard << "CMS_ZZStatBound\t\t\tshape\t";
+  datacard << "CMS_ZZStatBound8TeV\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=2) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 
-  datacard << "CMS_VVVStatBound\t\tshape\t";
+  datacard << "CMS_VVVStatBound8TeV\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=3) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 
-  datacard << "CMS_WjetsStatBound\t\tshape\t";
+  datacard << "CMS_WjetsStatBound8TeV\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
 

@@ -30,7 +30,10 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
     else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/zhww125.root");
     else sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/data_3l.root");
   }
-									    
+  
+  cout << "[Info:] "<< cem <<  "TeV" << endl;
+  cout << "[Info:] mode " << mode << " (0 = all, 1 = eee, 2 = eem, 3 = emm, 4 = mmm)" << endl;
+ 								    
   //Load datasets
   SmurfTree sample;
   sample.LoadTree(myRootFile,-1);

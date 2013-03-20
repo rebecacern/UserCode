@@ -46,7 +46,8 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
     else sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/data_3l.root");
   }
   
-   
+  cout << "[Info:] "<< cem <<  "TeV" << endl;
+  cout << "[Info:] mode " << mode << " (0 = all, 1 = eee, 2 = eem, 3 = emm, 4 = mmm)" << endl;
   cout << "[Info:] Systematic calculation of " << systName << endl;
   cout << "[Info:] Systematic "<< direction << endl;
   
@@ -67,7 +68,8 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
   
   // Prepare histograms
   char title[300];
-  if (syst == 1) sprintf(title,"histo_%s_CMS_%s%sBound%s",plotName, plotName, systName, direction);
+  if (syst == 1 && cem == 7) sprintf(title,"histo_%s_CMS_%s%sBound7TeV%s",plotName, plotName, systName, direction);
+  else if (syst == 1 && cem == 8) sprintf(title,"histo_%s_CMS_%s%sBound8TeV%s",plotName, plotName, systName, direction);
   else sprintf(title,"histo_%s_CMS_%sBound%s",plotName, systName, direction);
   TH1F* histo = new TH1F( title, " ", nbins, nbinlow, nbinhigh);
   histo->Sumw2();
