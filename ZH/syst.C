@@ -472,6 +472,7 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
       double content = 0;
       if (isUp) content = histo->GetBinContent(i) + histo->GetBinError(i);
       else content = histo->GetBinContent(i) - histo->GetBinError(i);
+      if (content < 0) content = histo->GetBinContent(i);
       histo->SetBinContent(i,content);
     }
   }
@@ -487,6 +488,7 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
     for (int i = 1; i < nbins+1; i ++){
       double content = 0;
       content = 2*h->GetBinContent(i) - histo->GetBinContent(i);
+      if (content < 0) content = h->GetBinContent(i);
       histo->SetBinContent(i,content);
     }
     delete h;
@@ -507,6 +509,7 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
       for (int i = 1; i < nbins+1; i ++){
         double content = 0;
 	content = 2*h->GetBinContent(i) - histo->GetBinContent(i);
+	if (content < 0) content = h->GetBinContent(i);
 	histo->SetBinContent(i,content);
       }
     }
