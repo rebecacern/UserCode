@@ -31,8 +31,12 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
     else sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/data_3l.root");
   }
   
-  cout << "[Info:] "<< cem <<  "TeV" << endl;
-  cout << "[Info:] mode " << mode << " (0 = all, 1 = eee, 2 = eem, 3 = emm, 4 = mmm)" << endl;
+  cout << "[Info:] "<< cem <<  "TeV, " << plotName << "," ;
+  if (mode == 1) cout << " eee channel" << endl ;
+  else if (mode == 2) cout << " eem channel" << endl ; 
+  else if (mode == 3) cout << " emm channel" << endl ; 
+  else if (mode == 4) cout << " mmm channel" << endl ; 
+  else cout << " all final states" << endl;
  								    
   //Load datasets
   SmurfTree sample;
