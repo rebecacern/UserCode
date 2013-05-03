@@ -25,7 +25,7 @@ const int verboseLevel =   1;
 const double mz = 91.1876;
 const double mw = 80.4;
 const double mmu = 0.105;
-const double lumi = 19.467;
+const double lumi = 4.924;
 
 const double separation = 15; //15 is the chosen cut
 const double metcut = -10; //10 is the proposed
@@ -33,12 +33,12 @@ const double mtcut = 85;
 const double separationjj = 60; //60
 const double phicut = 1.8; // 1.8
 
-void Signal() {
+void Signal_7() {
   
-  TString bgdInputFile    = "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root";
+  TString bgdInputFile    = "/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/backgroundA_3l.root";
  // TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww125.root";
-  TString sigInputFile   =  "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root";
-  TString dataInputFile   = "/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/data_3l.root";
+  TString sigInputFile   =  "/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/zhww125.root";
+  TString dataInputFile   = "/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/data_3l.root";
   
   //Load datasets
   SmurfTree background;
@@ -56,7 +56,7 @@ void Signal() {
   
   //Prepare output
   char output[200];
-  sprintf(output,"rootfiles/signal_study.root");     
+  sprintf(output,"rootfiles/signal_study_7TeV.root");     
   TFile* outFileNjets = new TFile(output,"recreate");
   
   //Histograms 

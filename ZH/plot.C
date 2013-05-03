@@ -18,6 +18,15 @@ void plot(){
   gStyle->SetCanvasDefW(600);
   gStyle->SetLabelFont(18,"");
   
+  labelcms  = new TPaveText(0.12,0.88,0.5,0.94,"NDCBR");
+  labelcms->SetTextAlign(12);
+  labelcms->SetTextSize(0.045);
+  labelcms->SetFillColor(kWhite);
+  labelcms->AddText("CMS Preliminary, #sqrt{s} = 7 TeV");
+  labelcms->SetBorderSize(0);
+    
+  
+  
   char myRootFile[300];
   sprintf(myRootFile,"rootfiles/signal_study.root");
   
@@ -84,6 +93,7 @@ void plot(){
     h0[iPlot]->Draw("histo,sames");
     h1[iPlot]->Draw("e,sames");
     hStack[iPlot]->GetYaxis()->SetTitle("events / 19.46 fb^{-1}");
+    //hStack[iPlot]->GetYaxis()->SetTitle("events / 4.924 fb^{-1}");
    
     if (cutLabel[iPlot] == "id") {
       hStack[iPlot]->GetXaxis()->SetBinLabel(1,"eee");
@@ -97,10 +107,11 @@ void plot(){
     hStack[iPlot]->GetYaxis()->SetTitleOffset(1.3);
     if (iPlot == 1 || iPlot == 2) hStack[iPlot]->GetXaxis()->SetRangeUser(0.0, 3.14);
     leg->Draw();
+    labelcms->Draw();
     
-    c1->SaveAs("plots/final_"+cutLabel[iPlot]+".png");
+    c1->SaveAs("plots/all_8_"+cutLabel[iPlot]+".pdf");
     c1->SetLogy();
-    c1->SaveAs("plots/final_"+cutLabel[iPlot]+"_log.png");
+    c1->SaveAs("plots/all_8_"+cutLabel[iPlot]+"_log.pdf");
     
     
     

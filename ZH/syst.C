@@ -404,7 +404,7 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
     if (sample.lep1_.Pt()*corr[0] < 10) continue;
     if (sample.lep2_.Pt()*corr[1] < 10) continue;
     if (sample.lep2_.Pt()*corr[2] < 10) continue;
-    if (sample.lep1_.Pt()*corr[0] < 20 && sample.lep2_.Pt()*corr[1] < 20 && sample.lep2_.Pt()*corr[2]) continue;
+    if (sample.lep1_.Pt()*corr[0] < 20 && sample.lep2_.Pt()*corr[1] < 20 && sample.lep3_.Pt()*corr[2] < 20) continue;
     
     //Make z-compatible pairs
     double m[3] = {0, 0, 0};

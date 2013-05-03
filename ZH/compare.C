@@ -18,6 +18,14 @@ void compare(){
   gStyle->SetCanvasDefW(600);
   gStyle->SetLabelFont(18,"");
   
+  labelcms  = new TPaveText(0.12,0.88,0.5,0.94,"NDCBR");
+  labelcms->SetTextAlign(12);
+  labelcms->SetTextSize(0.045);
+  labelcms->SetFillColor(kWhite);
+  labelcms->AddText("Simulation, #sqrt{s} = 8 TeV");
+  labelcms->SetBorderSize(0);
+    
+  
   char myRootFile[300];
   sprintf(myRootFile,"rootfiles/signal_study.root");
   
@@ -64,10 +72,11 @@ void compare(){
     h[0][iPlot]->GetYaxis()->CenterTitle(); 
     h[0][iPlot]->GetYaxis()->SetTitleOffset(1.5);
     leg->Draw();
+    labelcms->Draw();
     
-    c1->SaveAs("plots/norm_"+cutLabel[iPlot]+".png");
+    c1->SaveAs("plots/all_norm_"+cutLabel[iPlot]+".pdf");
     c1->SetLogy();
-    c1->SaveAs("plots/norm_"+cutLabel[iPlot]+"_log.png");
+    c1->SaveAs("plots/all_norm_"+cutLabel[iPlot]+"_log.pdf");
   }
   
 }

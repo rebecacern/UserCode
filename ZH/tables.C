@@ -38,8 +38,8 @@ void tables(){
   ofstream output(myTexFile); 
   
   const int nProcess = 7;
-  TString processName[nProcess] =  { "sig_cuts_zh", "data_cuts", "bck_cuts", "bck_cuts_wz", "bck_cuts_fakes", "bck_cuts_www","bck_cuts_zz"};
-  TString processTitle[nProcess] = { "ZH, HWW", "data", "background", "WZ", "fakes", "tri-bosons", "ZZ"};
+  TString processName[nProcess] =  { "sig_cuts_zh", "data_cuts", "bck_cuts", "bck_cuts_wz", "bck_cuts_fakes", "bck_cuts_zz","bck_cuts_www"};
+  TString processTitle[nProcess] = { "ZH, HWW", "data", "background", "WZ", "fakes", "ZZ", "tri-bosons"};
  
   const int nCuts = 8;
   TString cutLabel[nCuts] = { "3 lep", "OSSF", "2 jets", "$m_{ll}$", "$E_{T}^{miss}$", "$m_{T}$", "$m_{jj}$", "$\\Delta\\Phi_{jj-l\\nu}$"};
@@ -59,7 +59,7 @@ void tables(){
   
   output << "  \\begin{table}" << endl;
   output << "  \\begin{center}" << endl;
-  output << "  \\begin{tabular} {|l|c|c|c|c|c|c|c|c|}" << endl;
+  output << "  \\begin{tabular} {|l|c|c|c|c|c|c|c|c|c|}" << endl;
   output << "  \\hline " << endl;
  
   for (int i = 0; i < nProcess; i++){
