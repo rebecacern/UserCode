@@ -22,7 +22,7 @@ void plot(){
   labelcms->SetTextAlign(12);
   labelcms->SetTextSize(0.045);
   labelcms->SetFillColor(kWhite);
-  labelcms->AddText("CMS Preliminary, #sqrt{s} = 7 TeV");
+  labelcms->AddText("CMS Preliminary, #sqrt{s} = 8 TeV");
   labelcms->SetBorderSize(0);
     
   
@@ -37,11 +37,11 @@ void plot(){
   TString processTitle[nProcess] = { "WZ", "tri-boson", "fakes", "ZZ"};
   Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kGray+2};
  
-  const int nPlots = 14;
-  TString cutLabel[nPlots] =     { "mH_2d", "dphiljj", "dphilmjj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll", "id"};
-  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10, 1};
+  const int nPlots = 16;
+  TString cutLabel[nPlots] =     { "mH_2d", "dphiljj", "dphilmjj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll", "id", "mlll", "mH"};
+  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10, 1, 10, 10};
   TString cutTitle[nPlots] =     { "Reconstructed mass m_{H}", "#Delta#Phi_{jjl}", "#Delta#Phi_{jjlMET}", "MET", "m_{ll} Z", "m_{T}", "P_{T} of the leading jet",
-                                   "m_{jj}", "#DeltaR_{ll}", "tracker MET", "min(MET, tracker MET)", "# of jets", "|m_{jj} - m{Z}|", "lepton content"  }; 
+                                   "m_{jj}", "#DeltaR_{ll}", "tracker MET", "min(MET, tracker MET)", "# of jets", "|m_{jj} - m{Z}|", "lepton content", "m_{lll}", "Reconstructed mass m_{H}"  }; 
  
   TH1D*  h [nPlots][nProcess];
   TH1D*  h0 [nPlots];

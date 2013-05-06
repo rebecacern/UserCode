@@ -103,7 +103,7 @@ void datacardmaker8(int mh = 125, int mode = 0){
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
   datacard << "CMS_FakeRate\t\t\tlnN\t";
-  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "-\t"; else datacard << "1.360\t";}
+  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "-\t"; else datacard << "1.400\t";}
   datacard << endl;
 
   datacard << "CMS_WZBound\t\t\tshape\t";
