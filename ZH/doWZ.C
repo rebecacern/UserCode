@@ -136,7 +136,7 @@ void doWZ(int cem = 8, int mode = 0){
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  sample.mt2_; tlepton = sample.lep2_;} 
     pairjet = sample.jet1_+ sample.jet2_;
     LorentzVector metvector(sample.met_*cos(sample.metPhi_), sample.met_*sin(sample.metPhi_), 0, 0);
-   // LorentzVector higgsSystem = tlepton + metvector + sample.jet1_+ sample.jet2_;
+    LorentzVector higgsSystem = tlepton + metvector + sample.jet1_+ sample.jet2_;
     LorentzVector lm = tlepton + metvector;
    
       
@@ -191,7 +191,8 @@ void doWZ(int cem = 8, int mode = 0){
     if (deltaPhi > phicut) continue;
    
     
-    histo->Fill(recomth, weight);
+    //histo->Fill(recomth, weight);
+    histo->Fill(higgsSystem.M(), weight);
     eventsPass+= weight;
      
   

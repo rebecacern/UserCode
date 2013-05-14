@@ -137,7 +137,7 @@ void doFakes(int cem = 8, int mode = 0){
     else if (min == fabs(mz - m[2])){  pair = pair3;  mt =  sample.mt2_; tlepton = sample.lep2_;} 
     pairjet = sample.jet1_+ sample.jet2_;
     LorentzVector metvector(sample.met_*cos(sample.metPhi_), sample.met_*sin(sample.metPhi_), 0, 0);
-   // LorentzVector higgsSystem = tlepton + metvector + sample.jet1_+ sample.jet2_;
+    LorentzVector higgsSystem = tlepton + metvector + sample.jet1_+ sample.jet2_;
     LorentzVector lm = tlepton + metvector;
    
       
@@ -198,7 +198,10 @@ void doFakes(int cem = 8, int mode = 0){
     if (nsel == 5 && ntype != 61) continue; //fakes
     if (nsel == 0 && ntype != 0)  continue; //data
     
-    histo->Fill(recomth, weight);
+   
+    
+    //histo->Fill(recomth, weight);
+    histo->Fill(higgsSystem.M(), weight);
     eventsPass+= weight;
      
   

@@ -215,7 +215,10 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
     if (nsel == 5 && ntype != 61) continue; //fakes
     if (nsel == 0 && ntype != 0)  continue; //data
 																																																																																											    
-    histo->Fill(recomth, weight);
+    
+    
+    //histo->Fill(recomth, weight);
+    histo->Fill(higgsSystem.M(), weight);
     eventsPass+= weight;
 																																																																																												         
 																																																																																													   
