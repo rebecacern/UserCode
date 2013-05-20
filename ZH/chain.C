@@ -22,16 +22,18 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
   double lumi = lumi8;
   if (cem == 8){
     if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
-    else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
+    else if (nsel == 1 && mh == 125) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
+    else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww%d.root", mh);
     else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/data_3l.root");
   } else {
     lumi = lumi7;
     if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/backgroundA_3l.root");
-    else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/zhww125.root");
+    else if (nsel == 1 && mh == 125) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/zhww125.root");
+    else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/hww%d.root", mh);
     else sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/data_3l.root");
   }
   
-  cout << "[Info:] "<< cem <<  "TeV, " << plotName << "," ;
+  cout << "[Info:] "<< cem <<  "TeV, " << plotName << ", Higgs mass " << mh << ","  ;
   if (mode == 1) cout << " eee channel" << endl ;
   else if (mode == 2) cout << " eem channel" << endl ; 
   else if (mode == 3) cout << " emm channel" << endl ; 
