@@ -42,6 +42,7 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
  								    
   //Load datasets
   SmurfTree sample;
+  cout << myRootFile << endl;
   sample.LoadTree(myRootFile,-1);
   sample.InitTree(0);
 

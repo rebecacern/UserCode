@@ -31,7 +31,7 @@ const double separation = 15; //15 is the chosen cut
 const double metcut = -10; //10 is the proposed
 const double mtcut = 85;
 const double separationjj = 60; //60
-const double phicut = 1.8; // 1.8
+const double phicut = 1.8;
 
 void Signal_7() {
   

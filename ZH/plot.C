@@ -2,7 +2,7 @@
 // Basic plotter - comparing quantities
 // November 2012
 
-void plot(){
+void plot(int cem = 8){
   
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
@@ -22,13 +22,15 @@ void plot(){
   labelcms->SetTextAlign(12);
   labelcms->SetTextSize(0.045);
   labelcms->SetFillColor(kWhite);
-  labelcms->AddText("CMS Preliminary, #sqrt{s} = 8 TeV");
+  if (cem !=8) labelcms->AddText("CMS Preliminary, #sqrt{s} = 7 TeV");
+  else labelcms->AddText("CMS Preliminary, #sqrt{s} = 8 TeV");
   labelcms->SetBorderSize(0);
     
   
   
   char myRootFile[300];
-  sprintf(myRootFile,"rootfiles/signal_study.root");
+  if (cem !=8) sprintf(myRootFile,"rootfiles/signal_study_7TeV.root");
+  else sprintf(myRootFile,"rootfiles/signal_study.root");
   
   TFile *_file0 = TFile::Open(myRootFile);
   
@@ -91,9 +93,32 @@ void plot(){
     hStack[iPlot]->SetMaximum(max*1.5);
     hStack[iPlot]->SetMinimum(0.01);
     h0[iPlot]->Draw("histo,sames");
-    h1[iPlot]->Draw("e,sames");
-    hStack[iPlot]->GetYaxis()->SetTitle("events / 19.46 fb^{-1}");
-    //hStack[iPlot]->GetYaxis()->SetTitle("events / 4.924 fb^{-1}");
+    //h1[iPlot]->Draw("e,sames");
+    
+    bool plotCorrectErrorBars = true;
+    if(plotCorrectErrorBars == true) {
+      TGraphAsymmErrors * g = new TGraphAsymmErrors(h1[iPlot]);
+      for (int i = 0; i < g->GetN(); ++i) {
+	double N = g->GetY()[i];
+	double alpha=(1-0.6827);
+	double L =  (N==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,N,1.));
+	double U =  (N==0) ?  ( ROOT::Math::gamma_quantile_c(alpha,N+1,1.) ) :
+	  ( ROOT::Math::gamma_quantile_c(alpha/2,N+1,1.) );
+	g->SetPointEYlow(i,double(N)-L);
+	if(N > 0)
+	  g->SetPointEYhigh(i, U-double(N));
+	else
+	  g->SetPointEYhigh(i, 0.0);
+      }
+      g->Draw("P");
+    }
+    else {
+      h1[iPlot]->Draw("ep,same");
+    }
+    
+    if (cem !=8) hStack[iPlot]->GetYaxis()->SetTitle("events / 4.924 fb^{-1}");
+    else hStack[iPlot]->GetYaxis()->SetTitle("events / 19.46 fb^{-1}");
+    
    
     if (cutLabel[iPlot] == "id") {
       hStack[iPlot]->GetXaxis()->SetBinLabel(1,"eee");
@@ -109,10 +134,15 @@ void plot(){
     leg->Draw();
     labelcms->Draw();
     
-    c1->SaveAs("plots/all_8_"+cutLabel[iPlot]+".pdf");
-    c1->SetLogy();
-    c1->SaveAs("plots/all_8_"+cutLabel[iPlot]+"_log.pdf");
-    
+    if (cem != 8){
+      c1->SaveAs("plots/all_7_"+cutLabel[iPlot]+".pdf");
+      c1->SetLogy();
+      c1->SaveAs("plots/all_7_"+cutLabel[iPlot]+"_log.pdf");
+    } else {
+      c1->SaveAs("plots/all_8_"+cutLabel[iPlot]+".pdf");
+      c1->SetLogy();
+      c1->SaveAs("plots/all_8_"+cutLabel[iPlot]+"_log.pdf");
+    }
     
     
   }
