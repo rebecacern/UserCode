@@ -92,6 +92,7 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
       printf("--- reading event %5d of %5d\n",i,nSample);
     sample.tree_->GetEntry(i);
     
+    if(nsel == 1 && sample.processId_ != 24) continue;
      //Modes, 0 = all, 1 = eee, 2 = eem, 3 = emm, 4 = mmm
     if (mode == 1 && (abs(sample.lid1_)!= 11 || abs(sample.lid2_) != 11 || abs(sample.lid3_) != 11)) continue;
     if (mode == 2 && 
