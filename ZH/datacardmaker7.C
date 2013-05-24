@@ -110,7 +110,7 @@ void datacardmaker7(int mh = 125, int mode = 0){
   datacard << endl;
 
   datacard << "UEPS\t\t\t\tlnN\t";
-  for (int i = 0; i < np -1; i++) { if (i==0) datacard << "1.030\t"; else datacard << "-\t";}
+  for (int i = 0; i < np -1; i++) { if (i==0) datacard << "1.050\t"; else datacard << "-\t";}
   datacard << endl;
 
   datacard << "CMS_ZHStatBound7TeV\t\tshape\t";
