@@ -27,9 +27,9 @@ const double mw = 80.4;
 const double mmu = 0.105;
 const double lumi = 19.467;
 
-const double separation = 15; //15 is the chosen cut
+const double separation = 150000; //15 is the chosen cut
 const double metcut = -10; //10 is the proposed
-const double mtcut = 85;
+const double mtcut = 85; //85
 const double separationjj = 60; //60
 const double phicut = 1.8; // 1.8
 
@@ -675,9 +675,7 @@ void Signal() {
   bckName[60] = "dyttdd";    
   
   double eventsPassBck = 0;
-  int previous = -1;
-   double neach[8]{.0, .0, .0, .0, .0, .0, .0, .0};
-
+ 
   int nBck=background.tree_->GetEntries();
   for (int i=0; i<nBck; ++i) {
     
@@ -1026,19 +1024,7 @@ void Signal() {
       bck_id_fakes->Fill(idcat, weight);
       bck_mlll_fakes->Fill(trilep.M(), weight);
     } 
-  
- if (nsel == 61){
-   if  (background.dstype_ == 0) neach[0]+= weight;
-   if  (background.dstype_ == 43) neach[1]+= weight;
-   if  (background.dstype_ == 46) neach[2]+= weight;
-   if  (background.dstype_ == 49) neach[3]+= weight;
-   if  (background.dstype_ == 50) neach[4]+= weight;
-   if  (background.dstype_ == 59) neach[5]+= weight;
-   if  (background.dstype_ == 61) neach[6]+= weight;
-   if  (background.dstype_ == 89) neach[7]+= weight;
- }  
- if (nsel == 61 && background.dstype_ != previous) { cout << "fake comes from:" <<  background.dstype_ << endl; previous = background.dstype_; }
-  
+ 
     eventsPassBck += weight;
         
     bckType[(int)nsel] += weight;
@@ -1051,10 +1037,7 @@ void Signal() {
   cout << endl;
   cout << eventsPassBck << " background events in " << lumi << " fb" << endl; 
   cout << endl;
-  for (int i = 0; i < 8; i++){
-  cout << neach[i] << ", ";
-  }
-  cout << endl;
+ 
   
   //data
   double eventsPassData = 0;
