@@ -191,8 +191,8 @@ void doWZ(int cem = 8, int mode = 0){
     if (deltaPhi > phicut) continue;
    
     
-    //histo->Fill(recomth, weight);
-    histo->Fill(higgsSystem.M(), weight);
+    histo->Fill(recomth, weight);
+    //histo->Fill(higgsSystem.M(), weight);
     eventsPass+= weight;
      
   

@@ -222,8 +222,8 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
 																																																																																											    
     
     
-    //histo->Fill(recomth, weight);
-    histo->Fill(higgsSystem.M(), weight);
+    histo->Fill(recomth, weight);
+    //histo->Fill(higgsSystem.M(), weight);
     eventsPass+= weight;
 																																																																																												         
 																																																																																													   
