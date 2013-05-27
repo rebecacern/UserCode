@@ -37,12 +37,12 @@ void ratioplot(int cem = 8){
   TString processTitle[nProcess] = { "WZ", "tri-boson", "fakes", "ZZ"};
   Color_t color[nProcess] =        { kBlue+2, kBlue-9, kGray, kGray+2};
   
-  const int nPlots = 16;
-  TString cutLabel[nPlots] =     { "mH_2d", "dphiljj", "dphilmjj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll", "id", "mlll", "mH"};
-  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10, 1, 10, 10};
+  const int nPlots = 17;
+  TString cutLabel[nPlots] =     { "mH_2d", "dphiljj", "dphilmjj", "met", "mllz", "mt", "ptjet", "mjj", "dRll", "tmet", "minmet", "njets", "minmll", "id", "mlll", "mH", "njets"};
+  int rebinHisto[nPlots] =       { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 10, 1, 10, 10, 1};
   TString cutTitle[nPlots] =     { "Reconstructed mass m_{H}", "#Delta#Phi_{jjl}", "#Delta#Phi_{jjlMET}", "MET", "m_{ll} Z", "m_{T}", "P_{T} of the leading jet",
-                                   "m_{jj}", "#DeltaR_{ll}", "tracker MET", "min(MET, tracker MET)", "# of jets", "|m_{ll} - m{Z}|", "lepton content", "m_{lll}", "Reconstructed mass m_{H}"  }; 
-  
+                                   "m_{jj}", "#DeltaR_{ll}", "tracker MET", "min(MET, tracker MET)", "# of jets", "|m_{jj} - m{Z}|", "lepton content", "m_{lll}", "Reconstructed mass m_{H}", 
+				   "Number of jets"  };  
   TH1D*  h [nPlots][nProcess];
   TH1D*  h0 [nPlots];
   TH1D*  h1 [nPlots];
