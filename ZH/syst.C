@@ -106,7 +106,7 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
 	(abs(sample.lid3_)!= abs(sample.lid1_) && abs(sample.lid3_) != abs(sample.lid2_) && abs(sample.lid3_) == 13) ||
 	(abs(sample.lid1_) == abs(sample.lid2_) && abs(sample.lid1_) == abs(sample.lid3_)))) continue;
     if (mode == 4 && (abs(sample.lid1_)!= 13 || abs(sample.lid2_) != 13 || abs(sample.lid3_) != 13)) continue;
-   
+    
     
     weight = 1;
     double puweight = sample.sfWeightPU_;
@@ -409,8 +409,8 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
     if (sample.lep2_.Pt()*corr[2] < 10) continue;
     if (sample.lep1_.Pt()*corr[0] < 20 && sample.lep2_.Pt()*corr[1] < 20 && sample.lep3_.Pt()*corr[2] < 20) continue;
     
-     //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    //Make z-compatible pairs
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(sample.lid1_) == fabs(sample.lid2_) && sample.lq1_*sample.lq2_ < 0){
       pair1 = sample.lep1_ + sample.lep2_ ;
@@ -427,10 +427,11 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
       m[2] = pair3.M();
       if (m[2] < 12) continue;
     }
-    				
-   LorentzVector trelep = sample.lep1_ + sample.lep2_ + sample.lep3_;
-   if (fabs(trelep.M() - mz) < 10) continue; 
-						
+    if ( (m[0] > 0 && m[0] < 12) || (m[1] > 0 && m[1] < 12) || (m[2] > 0 && m[2] < 12)) continue;
+    
+    LorentzVector trelep = sample.lep1_ + sample.lep2_ + sample.lep3_;
+    if (fabs(trelep.M() - mz) < 10) continue; 
+    
     //Get the closest to the Z mass
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
     
@@ -534,7 +535,7 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
     }
     double scaleHisto = h->Integral(1,nbins)/histo->Integral(1,nbins);
     histo->Scale(scaleHisto);
-      
+    
 
     delete h;
     _file0->Close();

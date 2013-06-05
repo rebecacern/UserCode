@@ -105,7 +105,7 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
     }
 																									         
     int ntype = sample.dstype_;
-																										         
+    
     //Check for fakes
     int nFake = 0;
     if(((sample.cuts_ & SmurfTree::Lep1LooseMuV2)  == SmurfTree::Lep1LooseMuV2)  && (sample.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection) nFake++;
@@ -120,19 +120,19 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
       weight*= sample.sfWeightFR_*factor;
       //if (sample.dstype_ != SmurfTree::data) weight *=-1;
     }
-																																			    
-																																			        
+    
+    
     //2 same flavor, oppposite sign leptons + extra one
     if (sample.lid3_ == sample.lid2_ && sample.lid3_ == sample.lid1_) continue;
     if (sample.lid3_ == sample.lid2_ && fabs(sample.lid3_) != fabs(sample.lid1_)) continue;
     if (sample.lid3_ == sample.lid1_ && fabs(sample.lid3_) != fabs(sample.lid2_)) continue;
     if (sample.lid2_ == sample.lid1_ && fabs(sample.lid2_) != fabs(sample.lid3_)) continue;
-																																						        
+    
     // At least 2 jets 
     if (sample.njets_ < 2) continue; 
-																																								    
+    
     //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(sample.lid1_) == fabs(sample.lid2_) && sample.lq1_*sample.lq2_ < 0){
       pair1 = sample.lep1_ + sample.lep2_ ;
@@ -149,13 +149,14 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
       m[2] = pair3.M();
       if (m[2] < 12) continue;
     }
-			
-   LorentzVector trelep = sample.lep1_ + sample.lep2_ + sample.lep3_;
-   if (fabs(trelep.M() - mz) < 10) continue; 
+    if ( (m[0] > 0 && m[0] < 12) || (m[1] > 0 && m[1] < 12) || (m[2] > 0 && m[2] < 12)) continue;
+    
+    LorentzVector trelep = sample.lep1_ + sample.lep2_ + sample.lep3_;
+    if (fabs(trelep.M() - mz) < 10) continue; 
 																																																	         
     //Get the closest to the Z mass
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
-																																																			    
+    
     //Select the different things: Z pair, extra lepton, Higgs system
     LorentzVector pair, tlepton, pairjet;
     double mt = 0;
@@ -167,13 +168,13 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
     LorentzVector metvector(sample.met_*cos(sample.metPhi_), sample.met_*sin(sample.metPhi_), 0, 0);
     LorentzVector higgsSystem = tlepton + metvector + sample.jet1_+ sample.jet2_;
     LorentzVector lm = tlepton + metvector;
-																																																								         
-																																																									       
+    
+    
     double hp[5];
     hp[0] = tlepton.Px() + sample.jet1_.Px()+ sample.jet2_.Px()+ metvector.Px();
     hp[1] = tlepton.Py() + sample.jet1_.Py()+ sample.jet2_.Py()+ metvector.Py();
     hp[2] = tlepton.Pz() + sample.jet1_.Pz()+ sample.jet2_.Pz()+ metvector.Pz();
-																																																											           
+    
     //Calculate p of the neutrino using Maria's code
     double metp = 0;
     // double otherSol = 0;
@@ -199,46 +200,46 @@ void chain(int cem = 8, int nsel = 0, int mh = 125, int mode = 0){
 	//otherSol = tmpsol1; 
       }
     }
-																																																																														        
-																																																																															    
+    
+    
     // hp[3] = tlepton.P() + sample.jet1_.P()+ sample.jet2_.P()+ metvector.P(); //crappy solution
     hp[3] = tlepton.P() + sample.jet1_.P()+ sample.jet2_.P()+ metp;
     hp[4] = tlepton.Pt() + sample.jet1_.Pt()+ sample.jet2_.Pt()+ sample.met_;
-																																																																																           
+    
     double recomh  = hp[3]*hp[3]-hp[0]*hp[0]-hp[1]*hp[1]-hp[2]*hp[2]; if(recomh  > 0) recomh  = sqrt(recomh);else recomh   = 0.0;
     double recomth = hp[4]*hp[4]-hp[0]*hp[0]-hp[1]*hp[1]; if(recomth > 0) recomth = sqrt(recomth); else recomth  = 0.0;
-																																																																																		       
-																																																																																		          
+    
+    
     //Kinematic cuts
     if (pair.M() < (mz - separation)|| pair.M() > (mz + separation)) continue; 
     if (sample.met_ < metcut) continue;
     if (mt > mtcut) continue;
     if (pairjet.M() < (mw - separationjj) || pairjet.M() > (mw + separationjj)) continue;
-																																																																																					          
+    
     //double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),tlepton.Phi()));
     double deltaPhi = fabs(DeltaPhi(pairjet.Phi(),lm.Phi()));
     if (deltaPhi > phicut) continue;
-																																																																																							        
-																																																																																								    
+    
+    
     if (nsel == 2 && ntype != 49) continue; //WZ
     if (nsel == 3 && ntype != 50) continue; //ZZ
     if (nsel == 4 && ntype != 59) continue; //VVV
     if (nsel == 5 && ntype != 61) continue; //fakes
     if (nsel == 0 && ntype != 0)  continue; //data
-																																																																																											    
+    
     
     
     histo->Fill(recomth, weight);
     //histo->Fill(higgsSystem.M(), weight);
     eventsPass+= weight;
-																																																																																												         
-																																																																																													   
+    
+    
   }    
-																																																																																													       
+  
   cout << "[Info:] (" << plotName << ") " <<  eventsPass << " events pass " << endl;
-																																																																																														    
-																																																																																														      
+  
+  
   f_root.Write();
   f_root.Close();
-																																																																																															       
+  
 }

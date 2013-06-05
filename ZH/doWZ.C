@@ -109,7 +109,7 @@ void doWZ(int cem = 8, int mode = 0){
     if (sample.njets_ < 2) continue; 
     
        //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(sample.lid1_) == fabs(sample.lid2_) && sample.lq1_*sample.lq2_ < 0){
       pair1 = sample.lep1_ + sample.lep2_ ;
@@ -126,6 +126,7 @@ void doWZ(int cem = 8, int mode = 0){
       m[2] = pair3.M();
       if (m[2] < 12) continue;
     }
+    if ( (m[0] > 0 && m[0] < 12) || (m[1] > 0 && m[1] < 12) || (m[2] > 0 && m[2] < 12)) continue;
     				
    LorentzVector trelep = sample.lep1_ + sample.lep2_ + sample.lep3_;
    if (fabs(trelep.M() - mz) < 10) continue; 

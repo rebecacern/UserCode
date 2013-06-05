@@ -81,18 +81,22 @@ void datacardmaker8(int mh = 125, int mode = 0){
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
   
-  //This can be shape
-  datacard << "CMS_p_scale_m\t\t\tlnN\t";
-  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.015\t"; else datacard << "-\t";}
+  //This is now shape
+  datacard << "CMS_p_scale_m\t\t\tshape\t";
+  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
-  datacard << "CMS_p_scale_e\t\t\tlnN\t";
-  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.020\t"; else datacard << "-\t";}
+  datacard << "CMS_p_scale_e\t\t\tshape\t";
+  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
-  datacard << "CMS_res_met\t\t\tlnN\t";
-  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.020\t"; else datacard << "-\t";}
+  datacard << "CMS_res_met\t\t\tshape\t";
+  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
   
   datacard << "CMS_JESBound\t\t\tshape\t";
+  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
+  datacard << endl;
+  
+  datacard << "CMS_PUBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
 
@@ -108,6 +112,14 @@ void datacardmaker8(int mh = 125, int mode = 0){
 
   datacard << "CMS_WZBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=1) datacard << "-\t"; else datacard << "1.000\t";}
+  datacard << endl;
+
+  datacard << "CMS_ZZBound\t\t\tshape\t";
+  for (int i = 0; i < np -1; i++) { if (i!=2) datacard << "-\t"; else datacard << "1.065\t";}
+  datacard << endl;
+
+  datacard << "CMS_VVVBound\t\t\tshape\t";
+  for (int i = 0; i < np -1; i++) { if (i!=3) datacard << "-\t"; else datacard << "1.500\t";}
   datacard << endl;
 
   datacard << "UEPS\t\t\t\tlnN\t";

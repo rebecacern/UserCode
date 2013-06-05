@@ -27,11 +27,11 @@ const double mw = 80.4;
 const double mmu = 0.105;
 const double lumi = 19.467;
 
-const double separation = 15; //15 is the chosen cut
+const double separation = 150000; //15 is the chosen cut
 const double metcut = -10; //10 is the proposed
-const double mtcut = 85; //85
-const double separationjj = 60; //60
-const double phicut = 1.8; // 1.8
+const double mtcut = 850000; //85
+const double separationjj = 600000; //60
+const double phicut = 180000; // 1.8
 
 void Signal() {
   
@@ -522,23 +522,23 @@ void Signal() {
     else  if (fabs(signal.lid1_) == 13 && fabs(signal.lid2_) == 13 && fabs(signal.lid3_) == 13)  idcat = 3;
     
    //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(signal.lid1_) == fabs(signal.lid2_) && signal.lq1_*signal.lq2_ < 0){
       pair1 = signal.lep1_ + signal.lep2_ ;
       m[0] = pair1.M();
-      if (m[0] < 12) continue;
     }
     if (fabs(signal.lid2_) == fabs(signal.lid3_) && signal.lq2_*signal.lq3_ < 0){
       pair2 = signal.lep2_ + signal.lep3_ ;
       m[1] = pair2.M();
-      if (m[1] < 12) continue;
     }
     if (fabs(signal.lid1_) == fabs(signal.lid3_) && signal.lq1_*signal.lq3_ < 0){
       pair3 = signal.lep1_ + signal.lep3_ ;
       m[2] = pair3.M();
-      if (m[2] < 12) continue;
+     
     }
+
+if ( (m[0] !=-1 && m[0] < 12) || (m[1] !=-1 && m[1] < 12) || (m[2] =!-1 && m[2] < 12)) continue;
 			
    LorentzVector trelep = signal.lep1_ + signal.lep2_ + signal.lep3_;
    if (fabs(trelep.M() - mz) < 10) continue; 
@@ -764,7 +764,7 @@ void Signal() {
     else bck_cuts_other->Fill(2., weight);
     
      //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(background.lid1_) == fabs(background.lid2_) && background.lq1_*background.lq2_ < 0){
       pair1 = background.lep1_ + background.lep2_ ;
@@ -781,6 +781,7 @@ void Signal() {
       m[2] = pair3.M();
       if (m[2] < 12) continue;
     }
+    if ( (m[0] !=-1 && m[0] < 12) || (m[1] !=-1 && m[1] < 12) || (m[2] !=-1 && m[2] < 12)) continue;
 			
    LorentzVector trelep = background.lep1_ + background.lep2_ + background.lep3_;
    if (fabs(trelep.M() - mz) < 10) continue; 
@@ -1098,7 +1099,7 @@ void Signal() {
 
     
     //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(data.lid1_) == fabs(data.lid2_) && data.lq1_*data.lq2_ < 0){
       pair1 = data.lep1_ + data.lep2_ ;
@@ -1115,7 +1116,7 @@ void Signal() {
       m[2] = pair3.M();
       if (m[2] < 12) continue;
     }
-			
+			if ( (m[0] > 0 && m[0] < 12) || (m[1] > 0 && m[1] < 12) || (m[2] > 0 && m[2] < 12)) continue;
    LorentzVector trelep = data.lep1_ + data.lep2_ + data.lep3_;
    if (fabs(trelep.M() - mz) < 10) continue; 
 

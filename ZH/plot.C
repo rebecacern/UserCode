@@ -137,13 +137,13 @@ void plot(int cem = 8){
     labelcms->Draw();
     
     if (cem != 8){
-      c1->SaveAs("plots/all_7_"+cutLabel[iPlot]+".pdf");
+      c1->SaveAs("plots/nocuts_7_"+cutLabel[iPlot]+".pdf");
       c1->SetLogy();
-      c1->SaveAs("plots/all_7_"+cutLabel[iPlot]+"_log.pdf");
+      c1->SaveAs("plots/nocuts_7_"+cutLabel[iPlot]+"_log.pdf");
     } else {
-      c1->SaveAs("plots/all_8_"+cutLabel[iPlot]+".pdf");
+      c1->SaveAs("plots/nocuts_8_"+cutLabel[iPlot]+".pdf");
       c1->SetLogy();
-      c1->SaveAs("plots/all_8_"+cutLabel[iPlot]+"_log.pdf");
+      c1->SaveAs("plots/nocuts_8_"+cutLabel[iPlot]+"_log.pdf");
     }
     
     

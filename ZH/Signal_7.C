@@ -523,7 +523,7 @@ void Signal_7() {
     else  if (fabs(signal.lid1_) == 13 && fabs(signal.lid2_) == 13 && fabs(signal.lid3_) == 13)  idcat = 3;
     
      //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(signal.lid1_) == fabs(signal.lid2_) && signal.lq1_*signal.lq2_ < 0){
       pair1 = signal.lep1_ + signal.lep2_ ;
@@ -540,6 +540,7 @@ void Signal_7() {
       m[2] = pair3.M();
       if (m[2] < 12) continue;
     }
+    if ( (m[0] > 0 && m[0] < 12) || (m[1] > 0 && m[1] < 12) || (m[2] > 0 && m[2] < 12)) continue;
 			
    LorentzVector trelep = signal.lep1_ + signal.lep2_ + signal.lep3_;
    if (fabs(trelep.M() - mz) < 10) continue; 
@@ -766,7 +767,7 @@ void Signal_7() {
     else bck_cuts_other->Fill(2., weight);
     
      //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(background.lid1_) == fabs(background.lid2_) && background.lq1_*background.lq2_ < 0){
       pair1 = background.lep1_ + background.lep2_ ;
@@ -783,7 +784,7 @@ void Signal_7() {
       m[2] = pair3.M();
       if (m[2] < 12) continue;
     }
-			
+	if ( (m[0] > 0 && m[0] < 12) || (m[1] > 0 && m[1] < 12) || (m[2] > 0 && m[2] < 12)) continue;		
    LorentzVector trelep = background.lep1_ + background.lep2_ + background.lep3_;
    if (fabs(trelep.M() - mz) < 10) continue; 
 
@@ -1099,7 +1100,7 @@ void Signal_7() {
 
     
      //Make z-compatible pairs
-    double m[3] = {0, 0, 0};
+    double m[3] = {-1, -1, -1};
     LorentzVector pair1, pair2, pair3;
     if (fabs(data.lid1_) == fabs(data.lid2_) && data.lq1_*data.lq2_ < 0){
       pair1 = data.lep1_ + data.lep2_ ;
@@ -1116,7 +1117,7 @@ void Signal_7() {
       m[2] = pair3.M();
       if (m[2] < 12) continue;
     }
-			
+			if ( (m[0] > 0 && m[0] < 12) || (m[1] > 0 && m[1] < 12) || (m[2] > 0 && m[2] < 12)) continue;
    LorentzVector trelep = data.lep1_ + data.lep2_ + data.lep3_;
    if (fabs(trelep.M() - mz) < 10) continue; 
 
