@@ -109,22 +109,28 @@ void doFakes(int cem = 8, int mode = 0){
     // At least 2 jets 
     if (sample.njets_ < 2) continue; 
     
-     //Make z-compatible pairs
+       //Make z-compatible pairs
     double m[3] = {0, 0, 0};
     LorentzVector pair1, pair2, pair3;
     if (fabs(sample.lid1_) == fabs(sample.lid2_) && sample.lq1_*sample.lq2_ < 0){
       pair1 = sample.lep1_ + sample.lep2_ ;
       m[0] = pair1.M();
+      if (m[0] < 12) continue;
     }
     if (fabs(sample.lid2_) == fabs(sample.lid3_) && sample.lq2_*sample.lq3_ < 0){
       pair2 = sample.lep2_ + sample.lep3_ ;
       m[1] = pair2.M();
+      if (m[1] < 12) continue;
     }
     if (fabs(sample.lid1_) == fabs(sample.lid3_) && sample.lq1_*sample.lq3_ < 0){
       pair3 = sample.lep1_ + sample.lep3_ ;
       m[2] = pair3.M();
+      if (m[2] < 12) continue;
     }
-    
+    				
+   LorentzVector trelep = sample.lep1_ + sample.lep2_ + sample.lep3_;
+   if (fabs(trelep.M() - mz) < 10) continue; 
+						
     //Get the closest to the Z mass
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
    

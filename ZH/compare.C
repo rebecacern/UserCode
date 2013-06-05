@@ -27,7 +27,7 @@ void compare(){
     
   
   char myRootFile[300];
-  sprintf(myRootFile,"rootfiles/signal_study_presel.root");
+  sprintf(myRootFile,"rootfiles/signal_study_nocuts.root");
   
   TFile *_file0 = TFile::Open(myRootFile);
   
@@ -74,9 +74,9 @@ void compare(){
     leg->Draw();
     labelcms->Draw();
     
-    c1->SaveAs("plots/presel_norm_"+cutLabel[iPlot]+".pdf");
+    c1->SaveAs("plots/nocuts_norm_"+cutLabel[iPlot]+".pdf");
     c1->SetLogy();
-    c1->SaveAs("plots/presel_norm_"+cutLabel[iPlot]+"_log.pdf");
+    c1->SaveAs("plots/nocuts_norm_"+cutLabel[iPlot]+"_log.pdf");
   }
   
 }

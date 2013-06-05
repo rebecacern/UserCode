@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void tables(){
+void tables(int cem = 8){
   
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
@@ -30,19 +30,22 @@ void tables(){
   
   char myRootFile[300];
   sprintf(myRootFile,"rootfiles/signal_study.root");
+  if (cem != 8) sprintf(myRootFile,"rootfiles/signal_study_7TeV.root");
   TFile *_file0 = TFile::Open(myRootFile);
   
   double lumi = 18.8;
   char myTexFile[300];
-  sprintf(myTexFile,"tables/table_%dpb.tex", lumi);
+  sprintf(myTexFile,"tables/table_8TeV.tex");
+  if (cem !=8) sprintf(myTexFile,"tables/table_7TeV.tex");
   ofstream output(myTexFile); 
   
   const int nProcess = 7;
   TString processName[nProcess] =  { "sig_cuts_zh", "data_cuts", "bck_cuts", "bck_cuts_wz", "bck_cuts_fakes", "bck_cuts_zz","bck_cuts_www"};
   TString processTitle[nProcess] = { "ZH, HWW", "data", "background", "WZ", "fakes", "ZZ", "tri-bosons"};
  
+  
   const int nCuts = 8;
-  TString cutLabel[nCuts] = { "3 lep", "OSSF", "2 jets", "$m_{ll}$", "$E_{T}^{miss}$", "$m_{T}$", "$m_{jj}$", "$\\Delta\\Phi_{jj-l\\nu}$"};
+  TString cutLabel[nCuts] = { "3 leptons", "OSSF", "$\\geq2$ jets",  "$|m_{ll}-m_{\\cPZ}| < 15$", "$E_{T}^{miss}$", "\mt", "$m_{jj}$", "$\\Delta\\Phi_{l\\nu - jj'}$"};
  
    
   TH1F*  h [nProcess];

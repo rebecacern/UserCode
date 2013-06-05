@@ -132,6 +132,7 @@ void plot(int cem = 8){
     hStack[iPlot]->GetYaxis()->CenterTitle(); 
     hStack[iPlot]->GetYaxis()->SetTitleOffset(1.3);
     if (iPlot == 1 || iPlot == 2) hStack[iPlot]->GetXaxis()->SetRangeUser(0.0, 3.14);
+    if (iPlot == 16) hStack[iPlot]->GetXaxis()->SetRangeUser(0.0, 10);
     leg->Draw();
     labelcms->Draw();
     

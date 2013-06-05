@@ -522,22 +522,28 @@ void Signal_7() {
 	  || (fabs(signal.lid1_) == 13 && fabs(signal.lid2_) == 11 && fabs(signal.lid3_) == 13)) idcat = 2;
     else  if (fabs(signal.lid1_) == 13 && fabs(signal.lid2_) == 13 && fabs(signal.lid3_) == 13)  idcat = 3;
     
-    //Make z-compatible pairs
+     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
-    LorentzVector pair1, pair2, pair3, trilep;
+    LorentzVector pair1, pair2, pair3;
     if (fabs(signal.lid1_) == fabs(signal.lid2_) && signal.lq1_*signal.lq2_ < 0){
       pair1 = signal.lep1_ + signal.lep2_ ;
       m[0] = pair1.M();
+      if (m[0] < 12) continue;
     }
     if (fabs(signal.lid2_) == fabs(signal.lid3_) && signal.lq2_*signal.lq3_ < 0){
       pair2 = signal.lep2_ + signal.lep3_ ;
       m[1] = pair2.M();
+      if (m[1] < 12) continue;
     }
     if (fabs(signal.lid1_) == fabs(signal.lid3_) && signal.lq1_*signal.lq3_ < 0){
       pair3 = signal.lep1_ + signal.lep3_ ;
       m[2] = pair3.M();
+      if (m[2] < 12) continue;
     }
-    trilep = signal.lep1_ + signal.lep2_ + signal.lep3_ ;
+			
+   LorentzVector trelep = signal.lep1_ + signal.lep2_ + signal.lep3_;
+   if (fabs(trelep.M() - mz) < 10) continue; 
+
 
     
     //Get the closest to the Z mass
@@ -633,7 +639,7 @@ void Signal_7() {
     sig_minmet->Fill(TMath::Min(signal.met_, signal.trackMet_), weight);
     sig_minmll->Fill(fabs(mz - pair.M()), weight);
     sig_id->Fill(idcat, weight);
-    sig_mlll->Fill(trilep.M(), weight);
+    sig_mlll->Fill(trelep.M(), weight);
     
     eventstouse++;
     
@@ -759,22 +765,28 @@ void Signal_7() {
     else if (nsel == 61) bck_cuts_fakes->Fill(2., weight);
     else bck_cuts_other->Fill(2., weight);
     
-    //Make z-compatible pairs
+     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
-    LorentzVector pair1, pair2, pair3, trilep;
+    LorentzVector pair1, pair2, pair3;
     if (fabs(background.lid1_) == fabs(background.lid2_) && background.lq1_*background.lq2_ < 0){
       pair1 = background.lep1_ + background.lep2_ ;
       m[0] = pair1.M();
+      if (m[0] < 12) continue;
     }
     if (fabs(background.lid2_) == fabs(background.lid3_) && background.lq2_*background.lq3_ < 0){
       pair2 = background.lep2_ + background.lep3_ ;
       m[1] = pair2.M();
+      if (m[1] < 12) continue;
     }
     if (fabs(background.lid1_) == fabs(background.lid3_) && background.lq1_*background.lq3_ < 0){
       pair3 = background.lep1_ + background.lep3_ ;
       m[2] = pair3.M();
+      if (m[2] < 12) continue;
     }
-    trilep = background.lep1_ + background.lep2_ + background.lep3_ ;
+			
+   LorentzVector trelep = background.lep1_ + background.lep2_ + background.lep3_;
+   if (fabs(trelep.M() - mz) < 10) continue; 
+
 
     //Get the closest to the Z mass
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
@@ -902,7 +914,7 @@ void Signal_7() {
     bck_minmet->Fill(TMath::Min(background.met_, background.trackMet_), weight);
     bck_minmll->Fill(fabs(mz - pair.M()), weight);
     bck_id->Fill(idcat, weight);
-    bck_mlll->Fill(trilep.M(), weight);
+    bck_mlll->Fill(trelep.M(), weight);
     
     if (nsel == 49){
       bck_njets_wz->Fill(background.njets_, weight);
@@ -923,7 +935,7 @@ void Signal_7() {
       bck_minmet_wz->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_wz->Fill(fabs(mz - pair.M()), weight);
       bck_id_wz->Fill(idcat, weight);
-      bck_mlll_wz->Fill(trilep.M(), weight);
+      bck_mlll_wz->Fill(trelep.M(), weight);
     } else if (nsel == 59){
       bck_njets_www->Fill(background.njets_, weight);
       bck_met_www->Fill(background.met_, weight);
@@ -943,7 +955,7 @@ void Signal_7() {
       bck_minmet_www->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_www->Fill(fabs(mz - pair.M()), weight);
       bck_id_www->Fill(idcat, weight);
-      bck_mlll_www->Fill(trilep.M(), weight);
+      bck_mlll_www->Fill(trelep.M(), weight);
     } else if (nsel == 0){
       bck_njets_data->Fill(background.njets_, weight);
       bck_met_data->Fill(background.met_, weight);
@@ -962,7 +974,7 @@ void Signal_7() {
       bck_minmet_data->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_data->Fill(fabs(mz - pair.M()), weight);
       bck_id_data->Fill(idcat, weight);
-      bck_mlll_data->Fill(trilep.M(), weight);
+      bck_mlll_data->Fill(trelep.M(), weight);
     } else if (nsel == 50){
       bck_njets_zz->Fill(background.njets_, weight);
       bck_met_zz->Fill(background.met_, weight);
@@ -982,7 +994,7 @@ void Signal_7() {
       bck_minmet_zz->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_zz->Fill(fabs(mz - pair.M()), weight);
       bck_id_zz->Fill(idcat, weight);
-      bck_mlll_zz->Fill(trilep.M(), weight);
+      bck_mlll_zz->Fill(trelep.M(), weight);
     } else if (nsel == 43){
       bck_njets_tt->Fill(background.njets_, weight);
       bck_met_tt->Fill(background.met_, weight);
@@ -1002,7 +1014,7 @@ void Signal_7() {
       bck_minmet_tt->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_tt->Fill(fabs(mz - pair.M()), weight);
       bck_id_tt->Fill(idcat, weight);
-      bck_mlll_tt->Fill(trilep.M(), weight);
+      bck_mlll_tt->Fill(trelep.M(), weight);
     } 
     else if (nsel == 61) {
       bck_njets_fakes->Fill(background.njets_, weight);
@@ -1023,7 +1035,7 @@ void Signal_7() {
       bck_minmet_fakes->Fill(TMath::Min(background.met_, background.trackMet_), weight);
       bck_minmll_fakes->Fill(fabs(mz - pair.M()), weight);
       bck_id_fakes->Fill(idcat, weight);
-      bck_mlll_fakes->Fill(trilep.M(), weight);
+      bck_mlll_fakes->Fill(trelep.M(), weight);
     } 
   
  
@@ -1086,22 +1098,28 @@ void Signal_7() {
     data_cuts->Fill(2., weight);
 
     
-    //Make z-compatible pairs
+     //Make z-compatible pairs
     double m[3] = {0, 0, 0};
-    LorentzVector pair1, pair2, pair3, trilep;
+    LorentzVector pair1, pair2, pair3;
     if (fabs(data.lid1_) == fabs(data.lid2_) && data.lq1_*data.lq2_ < 0){
       pair1 = data.lep1_ + data.lep2_ ;
       m[0] = pair1.M();
+      if (m[0] < 12) continue;
     }
     if (fabs(data.lid2_) == fabs(data.lid3_) && data.lq2_*data.lq3_ < 0){
       pair2 = data.lep2_ + data.lep3_ ;
       m[1] = pair2.M();
+      if (m[1] < 12) continue;
     }
     if (fabs(data.lid1_) == fabs(data.lid3_) && data.lq1_*data.lq3_ < 0){
       pair3 = data.lep1_ + data.lep3_ ;
       m[2] = pair3.M();
+      if (m[2] < 12) continue;
     }
-    trilep = data.lep1_ + data.lep2_ + data.lep3_ ;
+			
+   LorentzVector trelep = data.lep1_ + data.lep2_ + data.lep3_;
+   if (fabs(trelep.M() - mz) < 10) continue; 
+
     
     //Get the closest to the Z mass
     double min = TMath::Min(TMath::Min(fabs(mz -m[0]), fabs(mz-m[1])), TMath::Min(fabs(mz -m[0]), fabs(mz-m[2])));
@@ -1193,7 +1211,7 @@ void Signal_7() {
     data_minmet->Fill(TMath::Min(data.met_, data.trackMet_), weight);
     data_minmll->Fill(fabs(mz - pair.M()), weight);
     data_id->Fill(idcat, weight);
-    data_mlll->Fill(trilep.M(), weight);
+    data_mlll->Fill(trelep.M(), weight);
     
     eventsPassData += weight;
     
