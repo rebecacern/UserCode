@@ -41,9 +41,9 @@ const double factor = 1; //Fake factor
 double JESerr = 0.05; // 0.10 also
 
 //Histos
-int nbins = 20;
+int nbins = 1;
 double nbinlow = 0;
-double nbinhigh = 400;
+double nbinhigh = 2;
 
 
 double precision(double value){

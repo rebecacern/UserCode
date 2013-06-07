@@ -38,14 +38,12 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
   if (cem == 8){
     if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/backgroundA_3l.root");
     else if (nsel == 1 && mh == 125) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/zhww125.root");
-    else if (nsel == 1 && mh == 1250) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww125.root");
     else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/hww%d.root", mh);
     else sprintf(myRootFile,"/data/smurf/data/Run2012_Summer12_SmurfV9_53X/mitf-alljets/data_3l.root");
   } else {
     lumi = lumi7;
     if (nsel > 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/backgroundA_3l.root");
     else if (nsel == 1 && mh == 125) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/zhww125.root");
-    else if (nsel == 1 && mh == 1250) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/hww125.root");
     else if (nsel == 1) sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/hww%d.root", mh);
     else sprintf(myRootFile,"/data/smurf/data/Run2011_Fall11_SmurfV9_42X/mitf-alljets/data_3l.root");
   }
@@ -480,8 +478,9 @@ void syst(int cem = 8, int nsel = 1, int mh = 125, int syst = 0, bool isUp = tru
     
     
     
-    histo->Fill(recomth, weight);
+      //histo->Fill(recomth, weight);
     //histo->Fill(higgsSystem.M(), weight);
+     histo->Fill(1, weight);
     eventsPass+= weight;
     
     
