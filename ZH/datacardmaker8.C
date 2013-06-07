@@ -77,29 +77,24 @@ void datacardmaker8(int mh = 125, int mode = 0){
   datacard << "lumi_8TeV\t\t\tlnN\t ";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.045\t"; else datacard << "-\t";}
   datacard << endl;
+  
   datacard << "CMS_LepEffBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
-  
-  //This is now shape
   datacard << "CMS_LepResBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
   datacard << "CMS_METResBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
-  
   datacard << "CMS_JESBound\t\t\tshape\t";
-  for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
-  datacard << endl;
-  
-  datacard << "CMS_PUBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.000\t"; else datacard << "-\t";}
   datacard << endl;
 
   datacard << "CMS_vh3l_pu\t\t\tlnN\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "1.010\t"; else datacard << "-\t";}
   datacard << endl;
+  
   datacard << "CMS_WBound\t\t\tshape\t";
   for (int i = 0; i < np -1; i++) { if (i!=4) datacard << "-\t"; else datacard << "1.000\t";}
   datacard << endl;
@@ -121,6 +116,10 @@ void datacardmaker8(int mh = 125, int mode = 0){
 
   datacard << "UEPS\t\t\t\tlnN\t";
   for (int i = 0; i < np -1; i++) { if (i==0) datacard << "1.050\t"; else datacard << "-\t";}
+  datacard << endl;
+  
+  datacard << "PDF\t\t\t\tlnN\t";
+  for (int i = 0; i < np -1; i++) { if (i==0) datacard << "1.047\t"; else if (i==1) datacard << "1.055\t"; else if (i==2) datacard << "1.041\t"; else datacard << "-\t";}
   datacard << endl;
 
   datacard << "CMS_ZHStatBound8TeV\t\tshape\t";
