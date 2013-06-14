@@ -27,7 +27,7 @@ void compare(){
     
   
   char myRootFile[300];
-  sprintf(myRootFile,"rootfiles/signal_study_nocuts.root");
+  sprintf(myRootFile,"rootfiles/signal_study.root");
   
   TFile *_file0 = TFile::Open(myRootFile);
   
